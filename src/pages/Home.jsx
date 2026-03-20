@@ -2,7 +2,6 @@ import React from 'react'
 import Sidebar from '../components/Sidebar.jsx'
 import {
   Dumbbell,
-  Users,
   Clock,
   Star,
   MapPin,
@@ -12,20 +11,22 @@ import {
   Heart,
   Zap,
   Target,
+  Users,
+  User,
 } from 'lucide-react'
 
-/* ── Data ────────────────────────────────────────────── */
+/* ── Data ─────────────────────────────────────────────── */
 
 const features = [
   {
     icon: Dumbbell,
     title: 'State-of-the-Art Equipment',
-    description: 'Premium fitness equipment designed specifically for women\'s training needs and goals.',
+    description: "Premium fitness equipment designed specifically for women's training needs and goals.",
   },
   {
     icon: Users,
     title: 'Expert Female Trainers',
-    description: 'Our certified trainers understand the unique needs of women\'s fitness journeys.',
+    description: "Our certified trainers understand the unique needs of women's fitness journeys.",
   },
   {
     icon: Heart,
@@ -40,11 +41,11 @@ const features = [
 ]
 
 const classes = [
-  { name: 'HIIT Training',           time: 'Mon, Wed, Fri – 6:00 AM',   spots: 8 },
-  { name: 'Yoga Flow',               time: 'Tue, Thu – 7:00 AM',        spots: 12 },
-  { name: 'Strength & Conditioning', time: 'Mon, Wed – 5:30 PM',        spots: 6 },
-  { name: 'Spin Class',              time: 'Tue, Thu, Sat – 6:30 PM',   spots: 15 },
-  { name: 'Pilates',                 time: 'Wed, Fri – 12:00 PM',       spots: 10 },
+  { name: 'HIIT Training',           time: 'Mon, Wed, Fri – 6:00 AM',  spots: 8 },
+  { name: 'Yoga Flow',               time: 'Tue, Thu – 7:00 AM',       spots: 12 },
+  { name: 'Strength & Conditioning', time: 'Mon, Wed – 5:30 PM',       spots: 6 },
+  { name: 'Spin Class',              time: 'Tue, Thu, Sat – 6:30 PM',  spots: 15 },
+  { name: 'Pilates',                 time: 'Wed, Fri – 12:00 PM',      spots: 10 },
 ]
 
 const testimonials = [
@@ -75,326 +76,244 @@ const stats = [
   { value: '98%',  label: 'Satisfaction Rate' },
 ]
 
-/* ── Reusable mini-components ────────────────────────── */
-
-function Card({ children, style = {} }) {
-  return (
-    <div style={{
-      background: 'var(--card)',
-      borderRadius: 'var(--radius)',
-      border: '1px solid var(--border)',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-      ...style,
-    }}>
-      {children}
-    </div>
-  )
-}
-
-function Btn({ children, variant = 'primary', size = 'md', style = {}, ...props }) {
-  const base = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '0.4rem',
-    fontWeight: 600,
-    borderRadius: 'var(--radius)',
-    cursor: 'pointer',
-    transition: 'opacity 0.15s, background 0.15s',
-    fontFamily: 'var(--font-sans)',
-    border: 'none',
-    fontSize: size === 'lg' ? '1rem' : size === 'sm' ? '0.8rem' : '0.875rem',
-    padding: size === 'lg' ? '0.75rem 1.5rem' : size === 'sm' ? '0.35rem 0.75rem' : '0.5rem 1rem',
-  }
-  const variants = {
-    primary:  { background: 'var(--primary)',   color: 'var(--primary-foreground)' },
-    secondary:{ background: '#ffffff',          color: 'var(--primary)' },
-    outline:  { background: 'transparent',      color: '#ffffff', border: '1px solid rgba(255,255,255,0.35)' },
-    'outline-border': { background: 'transparent', color: 'var(--foreground)', border: '1px solid var(--border)' },
-  }
-  return (
-    <button
-      style={{ ...base, ...variants[variant], ...style }}
-      onMouseEnter={e => { e.currentTarget.style.opacity = '0.88' }}
-      onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
-      {...props}
-    >
-      {children}
-    </button>
-  )
-}
-
-/* ── Page ────────────────────────────────────────────── */
+/* ── Page ─────────────────────────────────────────────── */
 
 export default function HomePage() {
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--background)' }}>
+    <div className="min-h-screen bg-background">
       <Sidebar />
 
-      {/* Main content pushed right on desktop */}
-      <main style={{ paddingLeft: 0 }} className="main-content">
+      <main className="lg:pl-64">
 
-        {/* ── Hero ───────────────────────────────────── */}
-        <section style={{
-          position: 'relative',
-          overflow: 'hidden',
-          background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)',
-        }}>
+        {/* ── Hero ──────────────────────────────────── */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-accent">
           {/* Decorative blobs */}
-          <div style={{ position: 'absolute', inset: 0, opacity: 0.1, pointerEvents: 'none' }}>
-            <div style={{ position: 'absolute', top: '5rem', right: '5rem', width: '16rem', height: '16rem', borderRadius: '50%', background: 'white', filter: 'blur(60px)' }} />
-            <div style={{ position: 'absolute', bottom: '5rem', left: '5rem', width: '12rem', height: '12rem', borderRadius: '50%', background: 'white', filter: 'blur(60px)' }} />
+          <div className="absolute inset-0 opacity-10 pointer-events-none">
+            <div className="absolute top-20 right-20 w-64 h-64 rounded-full bg-white blur-3xl" />
+            <div className="absolute bottom-20 left-20 w-48 h-48 rounded-full bg-white blur-3xl" />
           </div>
 
-          <div style={{ position: 'relative', padding: '4rem 2rem 6rem', textAlign: 'center' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', borderRadius: '9999px', background: 'rgba(255,255,255,0.2)', padding: '0.4rem 1rem', fontSize: '0.85rem', color: '#fff', marginBottom: '1.5rem' }}>
-              <Zap size={16} />
-              Women-Only Fitness Center
-            </div>
+          <div className="relative px-4 py-16 lg:px-8 lg:py-24">
+            <div className="mx-auto max-w-4xl text-center">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm text-white">
+                <Zap size={16} />
+                Women-Only Fitness Center
+              </div>
 
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, color: '#fff', marginBottom: '1.25rem', lineHeight: 1.15 }}>
-              Welcome to Atrevido Fitness
-            </h1>
+              <h1 className="mb-6 text-4xl font-bold tracking-tight text-white lg:text-5xl">
+                Welcome to Atrevido Fitness
+              </h1>
 
-            <p style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', color: 'rgba(255,255,255,0.9)', maxWidth: '42rem', margin: '0 auto 2rem', lineHeight: 1.7 }}>
-              Empowering women to achieve their fitness goals in a supportive,
-              judgment-free environment. Your transformation journey starts here.
-            </p>
+              <p className="mb-8 text-lg text-white/90 lg:text-xl max-w-2xl mx-auto">
+                Empowering women to achieve their fitness goals in a supportive,
+                judgment-free environment. Your transformation journey starts here.
+              </p>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem' }}>
-              <Btn variant="secondary" size="lg">
-                Start Your Journey
-                <ChevronRight size={18} />
-              </Btn>
-              <Btn variant="outline" size="lg">
-                View Class Schedule
-              </Btn>
+              <div className="flex flex-wrap justify-center gap-4">
+                <button className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-primary font-semibold text-base hover:bg-white/90 transition-opacity cursor-pointer">
+                  Start Your Journey
+                  <ChevronRight size={18} />
+                </button>
+                <button className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-white/30 text-white font-semibold text-base hover:bg-white/10 transition-colors cursor-pointer">
+                  View Class Schedule
+                </button>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ── Stats Bar ──────────────────────────────── */}
-        <section style={{ borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }} className="stats-grid">
+        {/* ── Stats Bar ─────────────────────────────── */}
+        <section className="border-b border-border bg-card">
+          <div className="grid grid-cols-2 lg:grid-cols-4">
             {stats.map((stat, i) => (
               <div
                 key={stat.label}
-                style={{
-                  padding: '1.5rem',
-                  textAlign: 'center',
-                  borderRight: i % 2 === 0 ? '1px solid var(--border)' : 'none',
-                  borderBottom: i < 2 ? '1px solid var(--border)' : 'none',
-                }}
+                className={[
+                  'p-6 text-center',
+                  i < stats.length - 1 ? 'border-r border-border' : '',
+                  i < 2 ? 'border-b border-border lg:border-b-0' : '',
+                ].join(' ')}
               >
-                <p style={{ fontSize: '1.875rem', fontWeight: 700, color: 'var(--primary)', fontFamily: 'var(--font-display)' }}>{stat.value}</p>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>{stat.label}</p>
+                <p className="text-3xl font-bold text-primary">{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* ── Features ───────────────────────────────── */}
-        <section style={{ padding: '4rem 2rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--foreground)', marginBottom: '1rem' }}>
+        {/* ── Features ──────────────────────────────── */}
+        <section className="px-4 py-16 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-foreground">
               Why Choose Atrevido Fitness?
             </h2>
-            <p style={{ color: 'var(--muted-foreground)', maxWidth: '40rem', margin: '0 auto' }}>
+            <p className="mx-auto max-w-2xl text-muted-foreground">
               We provide everything you need to succeed in your fitness journey,
               from top-tier equipment to personalized coaching.
             </p>
           </div>
 
-          <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', maxWidth: '1100px', margin: '0 auto' }}>
-            {features.map((f) => {
-              const Icon = f.icon
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
+            {features.map((feature) => {
+              const Icon = feature.icon
               return (
-                <Card key={f.title} style={{ padding: '2rem 1.5rem', textAlign: 'center' }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '3.5rem', height: '3.5rem', borderRadius: '50%', background: 'rgba(192,82,122,0.1)', marginBottom: '1rem' }}>
-                    <Icon size={28} color="var(--primary)" />
+                <div
+                  key={feature.title}
+                  className="bg-card border border-border rounded-lg p-6 text-center shadow-sm"
+                >
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                    <Icon size={28} className="text-primary" />
                   </div>
-                  <h3 style={{ fontWeight: 600, marginBottom: '0.5rem', color: 'var(--foreground)' }}>{f.title}</h3>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', lineHeight: 1.6 }}>{f.description}</p>
-                </Card>
+                  <h3 className="mb-2 font-semibold text-foreground">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
+                </div>
               )
             })}
           </div>
         </section>
 
-        {/* ── Classes ────────────────────────────────── */}
-        <section style={{ background: 'var(--muted)', padding: '4rem 2rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--foreground)', marginBottom: '1rem' }}>
-              Popular Classes
-            </h2>
-            <p style={{ color: 'var(--muted-foreground)', maxWidth: '40rem', margin: '0 auto' }}>
+        {/* ── Classes ───────────────────────────────── */}
+        <section className="bg-muted px-4 py-16 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-foreground">Popular Classes</h2>
+            <p className="mx-auto max-w-2xl text-muted-foreground">
               From high-intensity training to relaxing yoga sessions,
               we offer a variety of classes to fit every fitness level.
             </p>
           </div>
 
-          <div style={{ maxWidth: '48rem', margin: '0 auto' }}>
-            <Card>
+          <div className="mx-auto max-w-3xl">
+            <div className="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
               {classes.map((cls, i) => (
                 <div
                   key={cls.name}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '1rem 1.25rem',
-                    borderBottom: i < classes.length - 1 ? '1px solid var(--border)' : 'none',
-                    gap: '1rem',
-                    flexWrap: 'wrap',
-                  }}
+                  className={[
+                    'flex items-center justify-between p-4 gap-4 flex-wrap',
+                    i < classes.length - 1 ? 'border-b border-border' : '',
+                  ].join(' ')}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '2.5rem', height: '2.5rem', borderRadius: 'var(--radius)', background: 'rgba(192,82,122,0.1)', flexShrink: 0 }}>
-                      <Dumbbell size={20} color="var(--primary)" />
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                      <Dumbbell size={20} className="text-primary" />
                     </div>
                     <div>
-                      <p style={{ fontWeight: 500, color: 'var(--foreground)' }}>{cls.name}</p>
-                      <p style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                        <Clock size={12} /> {cls.time}
+                      <p className="font-medium text-foreground">{cls.name}</p>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1">
+                        <Clock size={12} />
+                        {cls.time}
                       </p>
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)', marginBottom: '0.25rem' }}>{cls.spots} spots left</p>
-                    <Btn variant="outline-border" size="sm">Book Now</Btn>
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground mb-1">{cls.spots} spots left</p>
+                    <button className="px-3 py-1.5 text-sm font-medium rounded-lg border border-border text-foreground hover:bg-muted transition-colors cursor-pointer">
+                      Book Now
+                    </button>
                   </div>
                 </div>
               ))}
-            </Card>
+            </div>
           </div>
         </section>
 
-        {/* ── Testimonials ───────────────────────────── */}
-        <section style={{ padding: '4rem 2rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 700, color: 'var(--foreground)', marginBottom: '1rem' }}>
-              What Our Members Say
-            </h2>
-            <p style={{ color: 'var(--muted-foreground)', maxWidth: '40rem', margin: '0 auto' }}>
+        {/* ── Testimonials ──────────────────────────── */}
+        <section className="px-4 py-16 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold text-foreground">What Our Members Say</h2>
+            <p className="mx-auto max-w-2xl text-muted-foreground">
               Hear from real members about their experience at Atrevido Fitness.
             </p>
           </div>
 
-          <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', maxWidth: '1000px', margin: '0 auto' }}>
+          <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
             {testimonials.map((t) => (
-              <Card key={t.name} style={{ padding: '1.75rem' }}>
-                <div style={{ display: 'flex', gap: '0.25rem', marginBottom: '1rem' }}>
+              <div
+                key={t.name}
+                className="bg-card border border-border rounded-lg p-6 shadow-sm"
+              >
+                <div className="flex gap-1 mb-4">
                   {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} size={16} color="var(--primary)" fill="var(--primary)" />
+                    <Star key={i} size={16} className="text-primary fill-primary" />
                   ))}
                 </div>
-                <p style={{ color: 'var(--muted-foreground)', marginBottom: '1rem', lineHeight: 1.7, fontSize: '0.9rem' }}>
+                <p className="text-muted-foreground mb-4 leading-relaxed text-sm">
                   "{t.content}"
                 </p>
-                <p style={{ fontWeight: 600, color: 'var(--foreground)' }}>{t.name}</p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--muted-foreground)' }}>{t.role}</p>
-              </Card>
+                <p className="font-semibold text-foreground">{t.name}</p>
+                <p className="text-sm text-muted-foreground">{t.role}</p>
+              </div>
             ))}
           </div>
         </section>
 
-        {/* ── Contact ────────────────────────────────── */}
-        <section style={{ background: 'var(--muted)', padding: '4rem 2rem' }}>
-          <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-            <Card>
-              <div style={{ padding: '2rem', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
-                <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--foreground)' }}>
-                  Visit Us Today
-                </h2>
+        {/* ── Contact ───────────────────────────────── */}
+        <section className="bg-muted px-4 py-16 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <div className="bg-card border border-border rounded-lg shadow-sm">
+              <div className="p-6 text-center border-b border-border">
+                <h2 className="text-2xl font-bold text-foreground">Visit Us Today</h2>
               </div>
-              <div style={{ padding: '2rem' }}>
-                <div style={{ display: 'grid', gap: '1.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', marginBottom: '2rem' }}>
+              <div className="p-6">
+                <div className="grid gap-6 md:grid-cols-3 mb-8">
                   {[
                     { Icon: MapPin, label: 'Location', value: '123 Fitness Street, Downtown' },
                     { Icon: Phone, label: 'Phone',    value: '(555) 123-4567' },
                     { Icon: Mail,  label: 'Email',    value: 'hello@atrevidofitness.com' },
                   ].map(({ Icon, label, value }) => (
-                    <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '3rem', height: '3rem', borderRadius: '50%', background: 'rgba(192,82,122,0.1)', flexShrink: 0 }}>
-                        <Icon size={22} color="var(--primary)" />
+                    <div key={label} className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 shrink-0">
+                        <Icon size={22} className="text-primary" />
                       </div>
                       <div>
-                        <p style={{ fontWeight: 500, color: 'var(--foreground)' }}>{label}</p>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>{value}</p>
+                        <p className="font-medium text-foreground">{label}</p>
+                        <p className="text-sm text-muted-foreground">{value}</p>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div style={{ background: 'var(--muted)', borderRadius: 'var(--radius)', padding: '1.5rem', textAlign: 'center' }}>
-                  <h3 style={{ fontWeight: 600, color: 'var(--foreground)', marginBottom: '0.5rem' }}>Operating Hours</h3>
-                  {['Monday – Friday: 5:00 AM – 10:00 PM', 'Saturday: 6:00 AM – 8:00 PM', 'Sunday: 7:00 AM – 6:00 PM'].map(h => (
-                    <p key={h} style={{ color: 'var(--muted-foreground)', fontSize: '0.9rem' }}>{h}</p>
-                  ))}
+                <div className="rounded-lg bg-muted p-6 text-center">
+                  <h3 className="font-semibold text-foreground mb-2">Operating Hours</h3>
+                  <p className="text-muted-foreground">Monday – Friday: 5:00 AM – 10:00 PM</p>
+                  <p className="text-muted-foreground">Saturday: 6:00 AM – 8:00 PM</p>
+                  <p className="text-muted-foreground">Sunday: 7:00 AM – 6:00 PM</p>
                 </div>
               </div>
-            </Card>
+            </div>
           </div>
         </section>
 
-        {/* ── CTA ────────────────────────────────────── */}
-        <section style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)', padding: '4rem 2rem', textAlign: 'center' }}>
-          <div style={{ maxWidth: '44rem', margin: '0 auto' }}>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 800, color: '#fff', marginBottom: '1rem' }}>
+        {/* ── CTA ───────────────────────────────────── */}
+        <section className="bg-gradient-to-r from-primary to-accent px-4 py-16 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-3xl font-bold text-white">
               Ready to Transform Your Life?
             </h2>
-            <p style={{ color: 'rgba(255,255,255,0.9)', marginBottom: '2rem', lineHeight: 1.7 }}>
+            <p className="mb-8 text-white/90 leading-relaxed">
               Join Atrevido Fitness today and become part of our empowering community.
               Your first week is on us!
             </p>
-            <Btn variant="secondary" size="lg">
+            <button className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-primary font-semibold text-base hover:bg-white/90 transition-opacity cursor-pointer">
               Claim Your Free Trial
               <ChevronRight size={18} />
-            </Btn>
+            </button>
           </div>
         </section>
 
-        {/* ── Footer ─────────────────────────────────── */}
-        <footer style={{ borderTop: '1px solid var(--border)', background: 'var(--card)', padding: '2rem' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Dumbbell size={20} color="var(--primary)" />
-              <span style={{ fontWeight: 700, color: 'var(--foreground)', fontFamily: 'var(--font-display)' }}>Atrevido Fitness</span>
+        {/* ── Footer ────────────────────────────────── */}
+        <footer className="border-t border-border bg-card px-4 py-8 lg:px-8">
+          <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+            <div className="flex items-center gap-2">
+              <Dumbbell size={20} className="text-primary" />
+              <span className="font-bold text-foreground">Atrevido Fitness</span>
             </div>
-            <p style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
-              © 2026 Atrevido Fitness. All rights reserved.
+            <p className="text-sm text-muted-foreground">
+              © 2024 Atrevido Fitness. All rights reserved.
             </p>
           </div>
         </footer>
-      </main>
 
-      {/* Responsive layout helpers */}
-      <style>{`
-        .main-content {
-          margin-left: 0;
-          padding-left: 0;
-          position: relative;
-          z-index: 0;
-        }
-        @media (min-width: 1024px) {
-          .main-content {
-            margin-left: 16rem;
-          }
-        }
-        @media (min-width: 1024px) {
-          .stats-grid {
-            grid-template-columns: repeat(4, 1fr) !important;
-          }
-          .stats-grid > div {
-            border-bottom: none !important;
-          }
-          .stats-grid > div:nth-child(2) {
-            border-right: 1px solid var(--border) !important;
-          }
-          .stats-grid > div:nth-child(4) {
-            border-right: none !important;
-          }
-        }
-      `}</style>
+      </main>
     </div>
   )
 }
