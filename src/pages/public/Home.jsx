@@ -38,7 +38,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
  
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary via-primary to-accent">
+      <section className="relative overflow-hidden bg-linear-to-br from-primary via-primary to-accent">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div className="absolute top-20 right-20 h-64 w-64 rounded-full bg-white blur-3xl" />
           <div className="absolute bottom-20 left-20 h-48 w-48 rounded-full bg-white blur-3xl" />
@@ -226,7 +226,7 @@ export default function Home() {
       </section>
  
       {/* CTA */}
-      <section className="bg-gradient-to-r from-primary to-accent px-4 py-16 lg:py-24">
+      <section className="bg-linear-to-r from-primary to-accent px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-3xl font-bold text-white">Ready to Transform Your Life?</h2>
           <p className="mb-8 text-white/90">

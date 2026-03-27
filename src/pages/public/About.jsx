@@ -29,7 +29,7 @@ export default function About() {
     <div className="min-h-screen bg-background">
  
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
+      <section className="bg-linear-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-4xl text-center">
           <span className="inline-block mb-4 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground">
             About Us
@@ -46,7 +46,7 @@ export default function About() {
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           {/* Image Placeholder */}
           <div className="relative">
-            <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+            <div className="aspect-4/5 overflow-hidden rounded-2xl bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center">
               <div className="text-center">
                 <div className="mx-auto mb-4 flex h-32 w-32 items-center justify-center rounded-full bg-primary/20">
                   <Users size={64} className="text-primary" />

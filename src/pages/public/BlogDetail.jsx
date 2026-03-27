@@ -49,7 +49,7 @@ export default function BlogDetail() {
     <div className="min-h-screen bg-background">
  
       {/* Header */}
-      <section className="bg-gradient-to-br from-primary/10 to-accent/10 px-4 py-12">
+      <section className="bg-linear-to-br from-primary/10 to-accent/10 px-4 py-12">
         <div className="container mx-auto max-w-3xl">
           <Link
             to="/blog"
@@ -73,7 +73,7 @@ export default function BlogDetail() {
       <section className="container mx-auto px-4 py-12">
         <div className="mx-auto max-w-3xl">
           {/* Image placeholder */}
-          <div className="mb-8 flex aspect-video items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20">
+          <div className="mb-8 flex aspect-video items-center justify-center rounded-lg bg-linear-to-br from-primary/20 to-accent/20">
             <div className="text-center text-muted-foreground">
               <div className="mx-auto mb-2 h-16 w-16 rounded-full bg-primary/20" />
               <p className="text-sm">Article Image</p>

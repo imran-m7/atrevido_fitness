@@ -52,7 +52,7 @@ export default function Programs() {
     <div className="min-h-screen bg-background">
  
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
+      <section className="bg-linear-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-4xl text-center">
           <span className="inline-block mb-4 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground">
             Training Programs

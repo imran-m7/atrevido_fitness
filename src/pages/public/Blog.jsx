@@ -34,7 +34,7 @@ export default function Blog() {
     <div className="min-h-screen bg-background">
  
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
+      <section className="bg-linear-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-4xl text-center">
           <span className="inline-block mb-4 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground">
             Blog
@@ -75,7 +75,7 @@ export default function Blog() {
       <section className="container mx-auto px-4 py-12">
         <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
           <div className="grid lg:grid-cols-2">
-            <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20 lg:aspect-auto">
+            <div className="flex aspect-video items-center justify-center bg-linear-to-br from-primary/20 to-accent/20 lg:aspect-auto">
               <div className="text-center text-muted-foreground">
                 <div className="mx-auto mb-2 h-16 w-16 rounded-full bg-primary/20" />
                 <p className="text-sm">Featured Image</p>
@@ -111,7 +111,7 @@ export default function Blog() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((post) => (
             <div key={post.id} className="flex flex-col rounded-lg border border-border bg-card shadow-sm overflow-hidden">
-              <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
+              <div className="flex aspect-video items-center justify-center bg-linear-to-br from-primary/10 to-accent/10">
                 <div className="h-10 w-10 rounded-full bg-primary/20" />
               </div>
               <div className="p-4 pb-2">

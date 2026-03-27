@@ -18,7 +18,7 @@ export default function Contact() {
     <div className="min-h-screen bg-background">
  
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
+      <section className="bg-linear-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-4xl text-center">
           <span className="inline-block mb-4 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground">
             Contact Us
@@ -125,7 +125,7 @@ export default function Contact() {
       {/* Map Placeholder */}
       <section className="bg-muted/50 px-4 py-16">
         <div className="container mx-auto">
-          <div className="flex aspect-[21/9] items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-accent/10">
+          <div className="flex aspect-21/9 items-center justify-center rounded-lg bg-linear-to-br from-primary/10 to-accent/10">
             <div className="text-center text-muted-foreground">
               <MapPin size={48} className="mx-auto mb-2" />
               <p>Map Integration Placeholder</p>
