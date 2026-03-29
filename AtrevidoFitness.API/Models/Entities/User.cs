@@ -14,7 +14,7 @@ namespace AtrevidoFitness.API.Models.Entities
 
         [Required, MaxLength(200)]
         public string Email { get; set; } = string.Empty;
-
+        
         [Required]
         public string PasswordHash { get; set; } = string.Empty;
 

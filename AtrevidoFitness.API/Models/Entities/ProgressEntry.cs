@@ -10,7 +10,7 @@ namespace AtrevidoFitness.API.Models.Entities
         public User User { get; set; } = null!;
 
         public DateOnly EntryDate { get; set; }
-
+        
         // Tezina u kg
         public decimal? WeightKg { get; set; }
 
