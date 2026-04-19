@@ -20,7 +20,6 @@ namespace AtrevidoFitness.API.DTOs
         public string? ImageUrl { get; set; }
         public string Category { get; set; } = string.Empty;
         public bool IsPublished { get; set; }
-        public int AuthorId { get; set; }
     }
 
     public class BlogPostUpdateDto

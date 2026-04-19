@@ -98,6 +98,18 @@ namespace AtrevidoFitness.API.Data
                 .WithMany()
                 .HasForeignKey(b => b.AuthorId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = 1,
+                FirstName = "Dika",
+                LastName = "Admin",
+                Email = "dika@atrevido.ba",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+                Role = "Admin",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            });
         }
     }
 }

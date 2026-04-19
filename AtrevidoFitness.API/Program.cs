@@ -1,4 +1,5 @@
 using AtrevidoFitness.API.Data;
+using AtrevidoFitness.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -75,7 +76,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddScoped<JwtHelper>();
+
 var app = builder.Build();
+
 
 //  Middleware pipeline 
 if (app.Environment.IsDevelopment()) 

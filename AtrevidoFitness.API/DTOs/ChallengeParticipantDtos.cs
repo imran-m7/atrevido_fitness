@@ -11,9 +11,7 @@ namespace AtrevidoFitness.API.DTOs
 
     public class ChallengeParticipantCreateDto
     {
-        public int UserId { get; set; }
         public int ChallengeId { get; set; }
-        public string Status { get; set; } = string.Empty;
     }
 
     public class ChallengeParticipantUpdateDto

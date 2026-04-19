@@ -12,10 +12,8 @@ namespace AtrevidoFitness.API.DTOs
 
     public class TrainingRegistrationCreateDto
     {
-        public int UserId { get; set; }
         public int TrainingSessionId { get; set; }
         public DateOnly SessionDate { get; set; }
-        public string? Status { get; set; }
     }
 
     public class TrainingRegistrationUpdateDto

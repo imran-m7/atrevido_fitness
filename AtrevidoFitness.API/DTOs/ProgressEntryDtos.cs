@@ -18,7 +18,6 @@ namespace AtrevidoFitness.API.DTOs
 
     public class ProgressEntryCreateDto
     {
-        public int UserId { get; set; }
         public DateOnly EntryDate { get; set; }
         public decimal? WeightKg { get; set; }
         public decimal? WaistCm { get; set; }
