@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Calendar, Users, Trophy,
-  Salad, BookOpen, LogOut, Menu, X, Dumbbell, Bell, Shield,
+  Salad, BookOpen, LogOut, Menu, X, Dumbbell, Bell, Shield, TrendingUp,
 } from 'lucide-react'
 
 const navItems = [
   { href: '/admin/dashboard',  label: 'Dashboard',         icon: LayoutDashboard },
   { href: '/admin/trainings',  label: 'Manage Trainings',  icon: Calendar },
   { href: '/admin/members',    label: 'Manage Members',    icon: Users },
+  { href: '/admin/progress',   label: 'Manage Progress',   icon: TrendingUp },
   { href: '/admin/challenges', label: 'Manage Challenges', icon: Trophy },
   { href: '/admin/nutrition',  label: 'Manage Nutrition',  icon: Salad },
   { href: '/admin/blog',       label: 'Manage Blog',       icon: BookOpen },

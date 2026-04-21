@@ -6,7 +6,6 @@ const stats = [
   { title: 'Total Members',       value: '127', change: '+5 this month',        icon: Users,     trend: 'up' },
   { title: "Today's Sessions",    value: '8',   change: '3 completed',           icon: Calendar,  trend: null },
   { title: 'Active Challenges',   value: '3',   change: '45 participants',       icon: Trophy,    trend: null },
-  { title: 'Weekly Registrations',value: '34',  change: '+12% vs last week',     icon: TrendingUp,trend: 'up' },
 ]
 
 const upcomingSessions = [
@@ -43,7 +42,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3 w-fit mx-auto">
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
@@ -122,43 +121,10 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Recent Members */}
-        <div className="rounded-lg border border-border bg-card shadow-sm">
-          <div className="flex items-center justify-between p-5 border-b border-border">
-            <div className="flex items-center gap-2">
-              <Users size={20} className="text-primary" />
-              <h3 className="font-semibold text-foreground">Recent Members</h3>
-            </div>
-            <Link to="/admin/members" className="text-sm font-medium text-primary hover:underline">View All</Link>
-          </div>
-          <div className="p-5 space-y-4">
-            {recentMembers.map((member, i) => (
-              <div
-                key={member.email}
-                className={`flex items-center justify-between ${i < recentMembers.length - 1 ? 'border-b border-border pb-4' : ''}`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
-                    <Users size={20} className="text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">{member.name}</p>
-                    <p className="text-sm text-muted-foreground">{member.email}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="inline-block rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground">
-                    {member.subscription}
-                  </span>
-                  <p className="mt-1 text-xs text-muted-foreground">{member.joined}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+
 
         {/* Active Challenges */}
-        <div className="rounded-lg border border-border bg-card shadow-sm lg:col-span-2">
+        <div className="rounded-lg border border-border bg-card shadow-sm">
           <div className="flex items-center justify-between p-5 border-b border-border">
             <div className="flex items-center gap-2">
               <Trophy size={20} className="text-primary" />

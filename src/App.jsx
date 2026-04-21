@@ -30,6 +30,7 @@ import MemberProfile from './pages/member/Profile.jsx'
 import AdminDashboard from './pages/admin/Dashboard.jsx'
 import AdminTrainings from './pages/admin/Trainings.jsx'
 import AdminMembers from './pages/admin/Members.jsx'
+import AdminProgress from './pages/admin/Progress.jsx'
 import AdminChallenges from './pages/admin/Challenges.jsx'
 import AdminNutrition from './pages/admin/Nutrition.jsx'
 import AdminBlog from './pages/admin/Blog.jsx'
@@ -72,6 +73,7 @@ export default function App() {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="trainings" element={<AdminTrainings />} />
           <Route path="members" element={<AdminMembers />} />
+          <Route path="progress" element={<AdminProgress />} />
           <Route path="challenges" element={<AdminChallenges />} />
           <Route path="nutrition" element={<AdminNutrition />} />
           <Route path="blog" element={<AdminBlog />} />

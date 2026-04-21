@@ -17,7 +17,6 @@ const statusColors = {
 const statCards = [
   { label: 'Total Challenges',   value: '4',   bg: 'bg-primary/10', color: 'text-primary',      icon: Trophy },
   { label: 'Active',             value: '2',   bg: 'bg-green-100',  color: 'text-green-600',    icon: Trophy },
-  { label: 'Upcoming',           value: '1',   bg: 'bg-blue-100',   color: 'text-blue-600',     icon: Calendar },
   { label: 'Total Participants', value: '133', bg: 'bg-purple-100', color: 'text-purple-600',   icon: Users },
 ]
 
@@ -35,7 +34,7 @@ export default function AdminChallenges() {
       </div>
 
       {/* Stats */}
-      <div className="mb-6 grid gap-4 md:grid-cols-4">
+      <div className="mb-6 grid gap-4 md:grid-cols-3 w-fit mx-auto">
         {statCards.map(({ label, value, bg, color, icon: Icon }) => (
           <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-3">

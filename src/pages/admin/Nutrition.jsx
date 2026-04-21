@@ -34,11 +34,10 @@ export default function AdminNutrition() {
       </div>
 
       {/* Stats */}
-      <div className="mb-8 grid gap-4 md:grid-cols-3">
+      <div className="mb-8 grid gap-4 md:grid-cols-2 w-fit mx-auto">
         {[
           { label: 'Members with Nutrition Access', value: withAccess.length,                                   bg: 'bg-primary/10', color: 'text-primary',    icon: User },
           { label: 'Plans Uploaded',                value: withAccess.filter(m => m.nutritionPlan).length,      bg: 'bg-green-100',  color: 'text-green-600',  icon: FileText },
-          { label: 'Pending Uploads',               value: withAccess.filter(m => !m.nutritionPlan).length,     bg: 'bg-amber-100',  color: 'text-amber-600',  icon: Upload },
         ].map(({ label, value, bg, color, icon: Icon }) => (
           <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-4">
@@ -60,7 +59,7 @@ export default function AdminNutrition() {
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             className={inputClass + ' pl-9'}
-            placeholder="Search members by name or email..."
+            placeholder="Search members by name..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
