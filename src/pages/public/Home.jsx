@@ -14,10 +14,8 @@ const features = [
  
  
 const testimonials = [
-  { name: 'Maria Santos',    role: 'Member for 2 years',  rating: 5, content: 'Atrevido Fitness changed my life. The trainers genuinely care about your progress, and the community feels like family.' },
-  { name: 'Jessica Rodriguez', role: 'Member for 1 year', rating: 5, content: "I've tried many gyms, but none compare to the welcoming atmosphere and expert guidance here. Highly recommend!" },
-  { name: 'Ana Martinez',    role: 'Member for 6 months', rating: 5, content: 'The personalized nutrition plans and workout programs helped me achieve results I never thought possible.' },
-]
+  { name: 'Amina Mehić',  rating: 5, content: 'Treniram već dugo i isprobala sam razne grupne treninge i teretane, ali Atrevido je najbolji! 💪 Atmosfera je motivirajuća i prijateljska, što treninge čini pravim užitkom. 🏋️‍♀️ Dika je izuzetno posvećena, pažljivo prati svakog člana i prilagođava treninge individualnim potrebama. Treninzi su dinamični, izazovni, ali istovremeno zabavni, što ih čini nečim čemu se uvijek radujem. 😊 Njena energija i trud su stvarno inspirativni. Preporučujem svakome ko želi trenirati u podržavajućem i pozitivnom okruženju! 🔥✨' },
+  ]
  
 const stats = [
   { value: '500+', label: 'Aktivnih Članova' },
@@ -120,19 +118,31 @@ export default function Home() {
             Otkrijte iskustva naših članova i njihov put u Atrevido Fitnessu.
           </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {testimonials.map((t) => (
-            <div key={t.name} className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <div className="mb-4 flex gap-1">
-                {Array.from({ length: t.rating }).map((_, i) => (
-                  <Star key={i} size={16} className="text-primary fill-primary" />
-                ))}
+        <div className="flex justify-center">
+          <div className="w-full max-w-2xl">
+            {testimonials.map((t) => (
+              <div key={t.name} className="rounded-lg border border-border bg-card p-6 shadow-sm text-justify">
+                <div className="mb-4 flex gap-1 justify-center">
+                  {Array.from({ length: t.rating }).map((_, i) => (
+                    <Star key={i} size={16} className="text-primary fill-primary" />
+                  ))}
+                </div>
+                <p className="mb-4 text-muted-foreground">"{t.content}"</p>
+                <p className="font-semibold text-foreground">{t.name}</p>
+                <p className="text-sm text-muted-foreground">{t.role}</p>
               </div>
-              <p className="mb-4 text-muted-foreground">"{t.content}"</p>
-              <p className="font-semibold text-foreground">{t.name}</p>
-              <p className="text-sm text-muted-foreground">{t.role}</p>
+            ))}
+            <div className="mt-8 flex justify-center">
+              <a
+                href="https://www.google.com/search?sca_esv=6d4ade7bd26771c9&sxsrf=ANbL-n7rNNGGxlophHe5mgwnUpPaPNyc5g:1776873115736&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOedzeUsZkiUg7IQ1MVOAtkZIA4FVPXWrkC_fzCCR3p-1aTHtMFM_TBrUc4rpPzlALR0S6ZVCfLLN-TLBmyXAqTSHmUpyNqTRvy4hMpVLW53AQBd9pw%3D%3D&q=ATREVIDO+WOMEN%E2%80%99S+FITNESS+Recenzije&sa=X&ved=2ahUKEwi1if-W6IGUAxWSXvEDHSGpI14Q0bkNegQILxAF&biw=1536&bih=730&dpr=1.25"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-base font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+              >
+                Pogledajte Više Recenzija
+              </a>
             </div>
-          ))}
+          </div>
         </div>
       </section>
  

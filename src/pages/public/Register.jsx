@@ -1,10 +1,27 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo2.png'
- 
+
+const programs = [
+  { id: 'group', title: 'Grupni Treninzi' },
+  { id: 'individual', title: 'Individualni Treninzi' },
+  { id: 'individual-nutrition', title: 'Individualni Trening + Ishrana' },
+]
+
 export default function Register() {
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '', terms: false })
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '', trainingProgram: '', terms: false })
+  const [showModal, setShowModal] = useState(false)
   const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
+  const handleSelectProgram = (e) => setForm({ ...form, trainingProgram: e.target.value })
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setShowModal(true)
+  }
+  const handleCloseModal = () => {
+    setShowModal(false)
+    navigate('/')
+  }
  
   const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors'
   const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
@@ -50,6 +67,20 @@ export default function Register() {
             <label htmlFor="confirmPassword" className={labelClass}>Potvrdite Šifru</label>
             <input id="confirmPassword" type="password" className={inputClass} placeholder="Potvrdite šifru" value={form.confirmPassword} onChange={handleChange} />
           </div>
+          <div>
+            <label htmlFor="trainingProgram" className={labelClass}>Odaberite Trening Program</label>
+            <select id="trainingProgram" value={form.trainingProgram} onChange={handleSelectProgram}
+              className={`w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring transition-colors
+                          ${form.trainingProgram === '' ? 'text-muted-foreground' : 'text-foreground'}`}
+            >
+              <option value="" disabled>
+                -- Odaberite program --
+              </option>
+              {programs.map((program) => (
+                <option key={program.id} value={program.id}>{program.title}</option>
+              ))}
+            </select>
+          </div>
           <div className="flex items-start gap-2">
             <input
               id="terms"
@@ -65,7 +96,7 @@ export default function Register() {
               <Link to="/privacy" className="text-primary hover:underline">Politikom privatnosti</Link>
             </label>
           </div>
-          <button className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
+          <button onClick={handleSubmit} className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
             Napravite Profil
           </button>
         </div>
@@ -78,6 +109,26 @@ export default function Register() {
           </p>
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
+          <div className="rounded-lg border border-border bg-card shadow-lg p-8 max-w-md w-full mx-4">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-foreground mb-4">Prijava Poslana</h2>
+              <p className="text-muted-foreground mb-6">
+                Vaša prijava je poslana Adminu za odobrenje profila. Profil će biti odobren nakon plačanja uživo.
+              </p>
+              <button
+                onClick={handleCloseModal}
+                className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
