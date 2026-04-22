@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, Dumbbell } from 'lucide-react'
+import logo from '../assets/logo2.png'
  
 const navLinks = [
   { href: '/',         label: 'Home' },
-  { href: '/about',    label: 'About' },
-  { href: '/programs', label: 'Programs' },
+  { href: '/about',    label: 'O Nama' },
+  { href: '/programs', label: 'Programi' },
   { href: '/blog',     label: 'Blog' },
-  { href: '/contact',  label: 'Contact' },
+  { href: '/contact',  label: 'Kontakt' },
 ]
  
 export default function PublicNavbar() {
@@ -20,12 +21,10 @@ export default function PublicNavbar() {
  
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <Dumbbell size={20} className="text-primary-foreground" />
-          </div>
+          <img src={logo} alt="Atrevido Fitness Logo" className="h-10 w-auto"/>
           <div>
-            <span className="text-lg font-bold text-foreground">Atrevido</span>
-            <span className="ml-1 text-sm text-muted-foreground">Fitness</span>
+            <span className="text-lg font-bold text-foreground">Atrevido </span>
+            <span className="text-lg font-bold text-foreground">Fitness</span>
           </div>
         </Link>
  
@@ -51,13 +50,13 @@ export default function PublicNavbar() {
             to="/login"
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-4 py-2 rounded-lg hover:bg-muted"
           >
-            Sign In
+            Log In
           </Link>
           <Link
             to="/register"
             className="text-sm font-semibold bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
           >
-            Get Started
+            Započni
           </Link>
         </div>
  
@@ -91,14 +90,14 @@ export default function PublicNavbar() {
                 className="text-sm font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-lg hover:bg-muted transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Sign In
+                Log In
               </Link>
               <Link
                 to="/register"
                 className="text-sm font-semibold text-center bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Get Started
+                Započni
               </Link>
             </div>
           </div>

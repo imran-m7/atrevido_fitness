@@ -21,12 +21,12 @@ const blogPosts = [
   { id: 7, title: 'Meal Prep 101: Save Time and Eat Healthy',                       excerpt: 'Simple meal prep strategies that will help you maintain a healthy diet even on your busiest days.',                                                             category: 'Nutrition',     author: 'Elena Rodriguez', date: 'February 22, 2024', readTime: '8 min read' },
 ]
  
-const categories = ['All', 'Fitness Tips', 'Nutrition', 'Motivation', 'Lifestyle']
+const categories = ['Sve', 'Fitness Savjeti', 'Ishrana', 'Motivacija', 'Lifestyle']
  
 export default function Blog() {
-  const [activeCategory, setActiveCategory] = useState('All')
+  const [activeCategory, setActiveCategory] = useState('Sve')
  
-  const filtered = activeCategory === 'All'
+  const filtered = activeCategory === 'Sve'
     ? blogPosts
     : blogPosts.filter((p) => p.category === activeCategory)
  
@@ -40,11 +40,10 @@ export default function Blog() {
             Blog
           </span>
           <h1 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">
-            Fitness Tips & Inspiration
+            Fitness Savjeti & Inspiracija
           </h1>
           <p className="text-lg text-muted-foreground">
-            Expert advice, workout tips, nutrition guidance, and motivation
-            to help you on your fitness journey.
+            Stručni savjeti, fitness preporuke, smjernice za ishranu i motivacija koji će vam pomoći na vašem fitness putu.
           </p>
         </div>
       </section>
@@ -98,7 +97,7 @@ export default function Blog() {
                 to={`/blog/${featuredPost.id}`}
                 className="inline-flex w-fit items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
               >
-                Read Article <ArrowRight size={16} />
+                Pročitaj Članak <ArrowRight size={16} />
               </Link>
             </div>
           </div>
@@ -107,7 +106,7 @@ export default function Blog() {
  
       {/* Blog Grid */}
       <section className="container mx-auto px-4 pb-16">
-        <h2 className="mb-8 text-2xl font-bold text-foreground">Latest Articles</h2>
+        <h2 className="mb-8 text-2xl font-bold text-foreground">Najnoviji Članci</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((post) => (
             <div key={post.id} className="flex flex-col rounded-lg border border-border bg-card shadow-sm overflow-hidden">
@@ -140,7 +139,7 @@ export default function Blog() {
  
         <div className="mt-8 text-center">
           <button className="rounded-lg border border-border px-6 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors">
-            Load More Articles
+            Učitaj Više Članaka
           </button>
         </div>
       </section>

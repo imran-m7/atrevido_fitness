@@ -1,5 +1,6 @@
 import React from 'react'
 import { Award, GraduationCap, Heart, Users, Calendar, Star } from 'lucide-react'
+import trenerica from '../../assets/trenerica_dika.jpg'
  
 const certifications = [
   'NASM Certified Personal Trainer',
@@ -11,17 +12,17 @@ const certifications = [
 ]
  
 const achievements = [
-  { icon: Calendar, value: '10+', label: 'Years Experience' },
-  { icon: Users,    value: '500+', label: 'Clients Trained' },
-  { icon: Star,     value: '4.9',  label: 'Average Rating' },
-  { icon: Award,    value: '15+',  label: 'Certifications' },
+  { icon: Calendar, value: '10+', label: 'Godine Iskustva' },
+  { icon: Users,    value: '500+', label: 'Klijenti' },
+  { icon: Star,     value: '5.0',  label: 'Prosječna Ocjena' },
+  { icon: Award,    value: '15+',  label: 'Certifikati' },
 ]
  
 const expertise = [
-  { icon: Heart,  title: "Women's Health & Fitness",  description: "Specialized training programs designed specifically for women's unique physiological needs, including hormonal considerations and life stage adaptations." },
-  { icon: Users,  title: 'Adaptive Training',          description: 'Experience working with clients who have physical challenges or limitations, creating modified programs that are both safe and effective.' },
-  { icon: Award,  title: 'Nutrition Coaching',         description: 'Comprehensive nutrition guidance that complements your training, helping you fuel your body for optimal performance and results.' },
-  { icon: Star,   title: 'Group Fitness',              description: 'Dynamic group classes that build community while delivering results, from high-intensity workouts to mindful movement sessions.' },
+  { icon: Heart,  title: "Trening za žene i zdrav način života",          description: "Specijalizovani grupni i individualni programi za žene, usmjereni na pravilno kretanje, dugoročno zdravlje i izgradnju pozitivnog odnosa prema tijelu." },
+  { icon: Users,  title: 'Inkluzivna fizička aktivnost',                  description: 'Rad s osobama s poteškoćama kroz prilagođene programe vježbanja s ciljem poboljšanja motoričkih sposobnosti, funkcionalnosti i kvaliteta života.' },
+  { icon: Star,  title: 'Rad s djecom i mladima',                         description: 'Iskustvo u vođenju treninga i sportskih aktivnosti za mlađe uzraste te doprinos razvoju zdravih navika od ranog doba.' },
+  { icon: Award,   title: 'Organizacija sportskih programa i izazova',    description: 'Dizajn i realizacija mjesečnih fitness izazova, praćenje napretka klijentica te promocija zdravih navika kroz motivaciju, zajedništvo i nagrađivanje.' },
 ]
  
 export default function About() {
@@ -32,11 +33,11 @@ export default function About() {
       <section className="bg-linear-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-4xl text-center">
           <span className="inline-block mb-4 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground">
-            About Us
+            O Nama
           </span>
-          <h1 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">Meet Your Trainer</h1>
+          <h1 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">Upoznajte Trenericu</h1>
           <p className="text-lg text-muted-foreground">
-            Dedicated to empowering women through fitness, health, and wellness.
+            Kroz svoj rad nastoji pomoći ženama da razviju snagu, stabilnost i samopouzdanje.
           </p>
         </div>
       </section>
@@ -46,39 +47,32 @@ export default function About() {
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           {/* Image Placeholder */}
           <div className="relative">
-            <div className="aspect-4/5 overflow-hidden rounded-2xl bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-              <div className="text-center">
-                <div className="mx-auto mb-4 flex h-32 w-32 items-center justify-center rounded-full bg-primary/20">
-                  <Users size={64} className="text-primary" />
-                </div>
-                <p className="text-muted-foreground">Trainer Photo</p>
-              </div>
-            </div>
-            <div className="absolute -bottom-6 -right-6 rounded-2xl bg-card border border-border p-4 shadow-lg">
-              <p className="text-3xl font-bold text-primary">10+</p>
-              <p className="text-sm text-muted-foreground">Years of Experience</p>
-            </div>
+              <img 
+                src={trenerica} alt="Dika Hodžić-Afaneh" className="h-110 w-auto object-cover rounded-2xl mx-auto"
+              />
           </div>
  
           {/* Bio */}
           <div>
-            <h2 className="mb-2 text-3xl font-bold text-foreground">Elena Rodriguez</h2>
-            <p className="mb-6 text-lg text-primary">Founder & Head Trainer</p>
-            <div className="space-y-4 text-muted-foreground">
+            <h2 className="mb-2 text-3xl font-bold text-foreground">Dika Hodžić-Afaneh</h2>
+            <p className="mb-6 text-lg text-primary">Vlasnica & Trenerica</p>
+            <div className="space-y-4 text-muted-foreground text-justify pr-6">
               <p>
-                With over a decade of experience in women's fitness, I founded Atrevido Fitness
-                with a simple mission: to create a space where every woman feels empowered to
-                pursue her health and fitness goals without judgment.
+                Ja sam Dika Hodžić-Afaneh, magistrantica Fakulteta sporta i tjelesnog odgoja Univerziteta u Sarajevu, 
+                s višegodišnjim iskustvom u fitnessu, sportskom treningu i promociji zdravog načina života. 
+                Kroz svoj rad specijalizirala sam se za planiranje i vođenje funkcionalnih i kondicionih treninga, 
+                radeći s različitim uzrasnim i rekreativnim grupama.
               </p>
               <p>
-                My journey began after my own transformation taught me that fitness is not just
-                about physical strength — it's about building confidence, resilience, and a
-                positive relationship with your body.
+                Osnivačica sam i vlasnica studija Atrevido Women’s Fitness, gdje vodim grupne i individualne treninge 
+                za žene, s fokusom na pravilno kretanje, razvoj snage, stabilnosti i dugoročno očuvanje zdravlja. 
+                Također sam certificirana za rad s osobama s poteškoćama i zalažem se za inkluzivan pristup 
+                fizičkoj aktivnosti, uz iskustvo rada s djecom, mladima i organizacijom sportskih projekata.
               </p>
               <p>
-                I specialize in working with women of all fitness levels, including those with
-                physical challenges or limitations. Every body is different, and I believe in
-                creating personalized programs that meet you where you are.
+                U okviru svog centra organizujem mjesečne izazove s ciljem motivacije klijentica da razvijaju zdrave navike,
+                unaprijede fizičku spremu i ostanu dosljedne svojim ciljevima. Kroz praćenje napretka i simbolične nagrade 
+                nastojim potaknuti dugoročne pozitivne promjene i izgradnju snažne, podržavajuće zajednice.
               </p>
             </div>
           </div>
@@ -112,8 +106,8 @@ export default function About() {
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
               <GraduationCap size={28} className="text-primary" />
             </div>
-            <h2 className="mb-2 text-2xl font-bold text-foreground">Certifications & Qualifications</h2>
-            <p className="text-muted-foreground">Continuously learning to provide the best training experience.</p>
+            <h2 className="mb-2 text-2xl font-bold text-foreground">Certifikati i Kvalifikacije</h2>
+            <p className="text-muted-foreground">Kroz svoj profesionalni angažman nastojim omogućiti inkluzivnu fizičku aktivnost i unaprijediti motoričke sposobnosti, funkcionalnost i kvalitet života kroz prilagođene programe.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {certifications.map((cert) => (
@@ -132,7 +126,7 @@ export default function About() {
       <section className="bg-muted/50 px-4 py-16">
         <div className="container mx-auto max-w-4xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-2xl font-bold text-foreground">Areas of Expertise</h2>
+            <h2 className="mb-4 text-2xl font-bold text-foreground">Stručna Područja</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
             {expertise.map((e) => {

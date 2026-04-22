@@ -5,45 +5,45 @@ import { Users, User, Clock, CheckCircle2, Dumbbell, Salad, ArrowRight } from 'l
 const programs = [
   {
     id: 'group',
-    title: 'Group Training',
-    subtitle: 'Train Together, Grow Together',
-    description: "Join our energizing group sessions where you'll work out alongside other motivated women. Our group classes are designed to challenge you while keeping things fun and social.",
+    title: 'Grupni Treninzi',
+    subtitle: 'Trenirajmo zajedno, rastimo zajedno',
+    description: "Pridružite se našim energičnim grupnim treninzima gdje vježbate zajedno s drugim motivisanim ženama. Naši grupni časovi su osmišljeni da vas izazovu, a istovremeno budu zabavni i društveni.",
     icon: Users,
-    duration: '1 hour sessions',
-    price: '$79',
-    period: '/month',
-    features: ['Access to all group training sessions', 'Weekly class booking', 'Challenge participation', 'Progress tracking', 'Basic nutrition guidelines', 'Community support'],
-    notIncluded: ['Individual training sessions', 'Personalized nutrition plan'],
+    duration: '1 sat',
+    price: '60 KM',
+    period: '/mjesec',
+    features: ['Pristup svim grupnim treninzima', 'Sedmična prijava na treninge', 'Učešće u izazovima', 'Praćenje napretka', 'Osnovne smjernice za ishranu', 'Podrška zajednice'],
+    notIncluded: ['Individualni treninzi', 'Personalizovani plan ishrane'],
     popular: false,
-    buttonText: 'Join Group Training',
+    buttonText: 'Pridruži se Grupnim Treninzima',
   },
   {
     id: 'individual',
-    title: 'Individual Training',
-    subtitle: 'Personalized Attention',
-    description: 'Get one-on-one attention with customized workout plans tailored to your specific goals, fitness level, and schedule. Perfect for those who want focused, personalized guidance.',
+    title: 'Individualni Treninzi',
+    subtitle: 'Personalizovana pažnja',
+    description: 'Dobijte individualnu pažnju uz prilagođene planove treninga koji su usklađeni s vašim specifičnim ciljevima, nivoom fizičke spremnosti i rasporedom. Idealno za one koji žele fokusirano i personalizovano vođenje.',
     icon: User,
-    duration: '1 hour sessions',
-    price: '$149',
-    period: '/month',
-    features: ['Personal training sessions', 'Flexible scheduling with trainer', 'Customized workout plans', 'Progress tracking', 'Challenge participation', 'Priority booking'],
-    notIncluded: ['Personalized nutrition plan'],
+    duration: '1 sat',
+    price: '300 KM',
+    period: '/mjesec',
+    features: ['Individualni treninzi', 'Fleksibilno zakazivanje termina sa trenericom', 'Prilagođeni planovi treninga', 'Praćenje napretka', 'Učešće u izazovima', 'Prioritetna rezervacija termina'],
+    notIncluded: ['Personalizovani plan ishrane'],
     popular: true,
-    buttonText: 'Request Individual Training',
+    buttonText: 'Zatraži Individualni Trening',
   },
   {
     id: 'individual-nutrition',
-    title: 'Individual + Nutrition',
-    subtitle: 'The Complete Package',
-    description: 'Our most comprehensive program combines personalized training with a full nutrition plan. Get the complete fitness experience with meal plans, recipes, and dietary guidance.',
+    title: 'Individualni Trening + Ishrana',
+    subtitle: 'Puni Paket',
+    description: 'Naš najobuhvatniji program kombinuje personalizovane treninge sa kompletnim planom ishrane. Dobijte potpuno fitness iskustvo uz planove obroka, recepte i smjernice za ishranu.',
     icon: Salad,
-    duration: '1 hour sessions',
+    duration: '1 sat',
     price: '$199',
-    period: '/month',
-    features: ['Everything in Individual Training', 'Personalized nutrition plan', 'Custom meal suggestions', 'Recipe library access', 'Nutritional guidance', 'Weekly check-ins'],
+    period: '/mjesec',
+    features: ['Sve što je uključeno u individualne treninge', 'Personalizovani plan ishrane', 'Prilagođeni prijedlozi obroka', 'Pristup bazi recepata', 'Smjernice za ishranu', 'Sedmične provjere napretka'],
     notIncluded: [],
     popular: false,
-    buttonText: 'Get Complete Package',
+    buttonText: 'Uzmi Kompletan Paket',
   },
 ]
  
@@ -55,14 +55,14 @@ export default function Programs() {
       <section className="bg-linear-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-4xl text-center">
           <span className="inline-block mb-4 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground">
-            Training Programs
+            Trening Programi
           </span>
           <h1 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">
-            Choose Your Path to Fitness
+            Izaberi Svoj Put
           </h1>
           <p className="text-lg text-muted-foreground">
-            Whether you thrive in a group setting or prefer personalized attention,
-            we have a program that fits your needs and goals.
+            Bez obzira da li vam više odgovara grupno okruženje ili individualni pristup, 
+            imamo program koji je prilagođen vašim potrebama i ciljevima.
           </p>
         </div>
       </section>
@@ -76,14 +76,14 @@ export default function Programs() {
               <div
                 key={program.id}
                 className={[
-                  'relative flex flex-col rounded-lg border bg-card shadow-sm',
+                  'relative flex flex-col rounded-lg border bg-card shadow-sm text-justify',
                   program.popular ? 'border-primary shadow-lg' : 'border-border',
                 ].join(' ')}
               >
                 {program.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="rounded-full bg-primary px-4 py-1 text-sm font-medium text-primary-foreground">
-                      Most Popular
+                      Najpopularniji
                     </span>
                   </div>
                 )}
@@ -112,7 +112,7 @@ export default function Programs() {
                   </div>
  
                   <div className="space-y-3">
-                    <p className="text-sm font-medium text-foreground">What's included:</p>
+                    <p className="text-sm font-medium text-foreground">Šta je uključeno:</p>
                     {program.features.map((f) => (
                       <div key={f} className="flex items-start gap-2">
                         <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-primary" />
@@ -121,7 +121,7 @@ export default function Programs() {
                     ))}
                     {program.notIncluded.length > 0 && (
                       <>
-                        <p className="pt-2 text-sm font-medium text-muted-foreground">Not included:</p>
+                        <p className="pt-2 text-sm font-medium text-foreground">Šta nije uključeno:</p>
                         {program.notIncluded.map((item) => (
                           <div key={item} className="flex items-start gap-2 text-muted-foreground/60">
                             <Dumbbell size={16} className="mt-0.5 shrink-0" />
@@ -153,24 +153,7 @@ export default function Programs() {
           })}
         </div>
       </section>
- 
-      {/* CTA */}
-      <section className="bg-muted/50 px-4 py-16">
-        <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="mb-4 text-2xl font-bold text-foreground">Not Sure Which Program Is Right for You?</h2>
-          <p className="mb-8 text-muted-foreground">
-            Schedule a free consultation and we'll help you find the perfect fit for your
-            fitness goals, schedule, and preferences.
-          </p>
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-base font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
-          >
-            Schedule Free Consultation <ArrowRight size={18} />
-          </Link>
-        </div>
-      </section>
- 
+      
     </div>
   )
 }

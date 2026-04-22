@@ -6,19 +6,12 @@ import {
 } from 'lucide-react'
  
 const features = [
-  { icon: Dumbbell, title: 'State-of-the-Art Equipment',  description: "Premium fitness equipment designed specifically for women's training needs and goals." },
-  { icon: Users,   title: 'Expert Female Trainers',       description: "Our certified trainers understand the unique needs of women's fitness journeys." },
-  { icon: Heart,   title: 'Supportive Community',         description: 'Join a welcoming community of women who motivate and inspire each other.' },
-  { icon: Target,  title: 'Personalized Programs',        description: 'Custom workout and nutrition plans tailored to your specific goals.' },
+  { icon: Dumbbell, title: 'Snaga i Balans',                      description: "Kroz treninge nastojimo pomoći ženama da razviju snagu, izdržljivost i stabilnost, ali i da izgrade zdrav odnos prema vlastitom tijelu i kretanju." },
+  { icon: Users,    title: 'Zdravlje Na Prvom Mjestu',            description: "Poseban naglasak stavljamo na zdrav način života, pravilno kretanje, jačanje tijela i dugoročno očuvanje zdravlja, a ne samo na estetske rezultate. " },
+  { icon: Heart,    title: 'Krug Podrške',                        description: 'U protekle dvije i po godine Atrevido je postao mjesto zajednice, podrške i motivacije, gdje žene zajedno rade na svom fizičkom i mentalnom stanju.' },
+  { icon: Target,   title: 'Treninzi Prilagođeni Svakoj Ženi',    description: 'Naš program obuhvata grupne i individualne treninge, koji su prilagođeni različitim nivoima fizičke spremnosti – od početnica do žena koje već imaju iskustvo u treningu.' },
 ]
  
-const classes = [
-  { name: 'HIIT Training',           time: 'Mon, Wed, Fri – 6:00 AM',  spots: 8 },
-  { name: 'Yoga Flow',               time: 'Tue, Thu – 7:00 AM',       spots: 12 },
-  { name: 'Strength & Conditioning', time: 'Mon, Wed – 5:30 PM',       spots: 6 },
-  { name: 'Spin Class',              time: 'Tue, Thu, Sat – 6:30 PM',  spots: 15 },
-  { name: 'Pilates',                 time: 'Wed, Fri – 12:00 PM',      spots: 10 },
-]
  
 const testimonials = [
   { name: 'Maria Santos',    role: 'Member for 2 years',  rating: 5, content: 'Atrevido Fitness changed my life. The trainers genuinely care about your progress, and the community feels like family.' },
@@ -27,10 +20,9 @@ const testimonials = [
 ]
  
 const stats = [
-  { value: '500+', label: 'Active Members' },
-  { value: '15+',  label: 'Expert Trainers' },
-  { value: '50+',  label: 'Weekly Classes' },
-  { value: '98%',  label: 'Satisfaction Rate' },
+  { value: '500+', label: 'Aktivnih Članova' },
+  { value: '1',  label: 'Profesionalna Trenerica' },
+  { value: '50+',  label: 'Sedmičnih Treninga' },
 ]
  
 export default function Home() {
@@ -47,27 +39,27 @@ export default function Home() {
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm text-white">
               <Zap size={16} />
-              Women-Only Fitness Center
+              Funkcionalni Fitness Studio za Žene
             </div>
             <h1 className="mb-6 text-4xl font-bold tracking-tight text-white lg:text-6xl">
-              Welcome to Atrevido Fitness
+              Dobrodošli u Atrevido Fitness
             </h1>
             <p className="mb-8 text-lg text-white/90 lg:text-xl">
-              Empowering women to achieve their fitness goals in a supportive,
-              judgment-free environment. Your transformation journey starts here.
+              Grupni i individualni programi za žene koje jačaju snagu, zdravlje i samopouzdanje. <br />
+              Vaša transformacija počinje ovdje.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 to="/register"
                 className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-base font-semibold text-primary hover:bg-white/90 transition-opacity"
               >
-                Start Your Journey <ChevronRight size={18} />
+                Započni Svoju Avanturu <ChevronRight size={18} />
               </Link>
               <Link
                 to="/programs"
-                className="inline-flex items-center gap-2 rounded-lg border border-white/30 px-6 py-3 text-base font-semibold text-white hover:bg-white/10 transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/20 px-6 py-3 text-base font-semibold text-white hover:bg-white/40 transition-colors"
               >
-                View Programs
+                Pregled Programa
               </Link>
             </div>
           </div>
@@ -77,7 +69,7 @@ export default function Home() {
       {/* Stats Bar */}
       <section className="border-b border-border bg-card">
         <div className="container mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3">
             {stats.map((stat, i) => (
               <div
                 key={stat.label}
@@ -98,10 +90,10 @@ export default function Home() {
       {/* Features */}
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-foreground">Why Choose Atrevido Fitness?</h2>
+          <h2 className="mb-4 text-3xl font-bold text-foreground">Zašto Birati Atrevido Fitness?</h2>
           <p className="mx-auto max-w-2xl text-muted-foreground">
-            We provide everything you need to succeed in your fitness journey,
-            from top-tier equipment to personalized coaching.
+            U Atrevidu se fokusiramo na funkcionalni način treninga, koji podrazumijeva pokrete 
+            i vježbe prilagođene svakodnevnim aktivnostima i potrebama ženskog tijela.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -119,58 +111,13 @@ export default function Home() {
           })}
         </div>
       </section>
- 
-      {/* Classes */}
-      <section className="bg-muted/50 px-4 py-16 lg:py-24">
-        <div className="container mx-auto">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-foreground">Popular Classes</h2>
-            <p className="mx-auto max-w-2xl text-muted-foreground">
-              From high-intensity training to relaxing yoga sessions,
-              we offer a variety of classes to fit every fitness level.
-            </p>
-          </div>
-          <div className="mx-auto max-w-3xl rounded-lg border border-border bg-card shadow-sm overflow-hidden">
-            {classes.map((cls, i) => (
-              <div
-                key={cls.name}
-                className={[
-                  'flex items-center justify-between p-4 flex-wrap gap-4',
-                  i < classes.length - 1 ? 'border-b border-border' : '',
-                ].join(' ')}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
-                    <Dumbbell size={20} className="text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground">{cls.name}</p>
-                    <p className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Clock size={12} /> {cls.time}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-muted-foreground mb-1">{cls.spots} spots left</p>
-                  <Link
-                    to="/login"
-                    className="inline-block rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
-                  >
-                    Book Now
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
- 
+
       {/* Testimonials */}
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-foreground">What Our Members Say</h2>
+          <h2 className="mb-4 text-3xl font-bold text-foreground">Iskustva Naših Članova u Atrevido Fitnessu</h2>
           <p className="mx-auto max-w-2xl text-muted-foreground">
-            Hear from real members about their experience at Atrevido Fitness.
+            Otkrijte iskustva naših članova i njihov put u Atrevido Fitnessu.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
@@ -194,14 +141,14 @@ export default function Home() {
         <div className="container mx-auto max-w-4xl">
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="border-b border-border p-6 text-center">
-              <h2 className="text-2xl font-bold text-foreground">Visit Us Today</h2>
+              <h2 className="text-2xl font-bold text-foreground">Posjetite Nas Danas</h2>
             </div>
             <div className="p-6">
               <div className="grid gap-6 md:grid-cols-3 mb-8">
                 {[
-                  { Icon: MapPin, label: 'Location', value: '123 Fitness Street, Downtown' },
-                  { Icon: Phone,  label: 'Phone',    value: '(555) 123-4567' },
-                  { Icon: Mail,   label: 'Email',    value: 'hello@atrevidofitness.com' },
+                  { Icon: MapPin, label: 'Lokacija',  value: 'Azize Šaćirbegović 80c, Sarajevo 71000' },
+                  { Icon: Phone,  label: 'Telefon',   value: '061 618 259' },
+                  { Icon: Mail,   label: 'Email',     value: 'dika181001@gmail.com' },
                 ].map(({ Icon, label, value }) => (
                   <div key={label} className="flex items-center gap-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10">
@@ -215,10 +162,10 @@ export default function Home() {
                 ))}
               </div>
               <div className="rounded-lg bg-muted p-6 text-center">
-                <h3 className="mb-2 font-semibold text-foreground">Operating Hours</h3>
-                <p className="text-muted-foreground">Monday – Friday: 5:00 AM – 10:00 PM</p>
-                <p className="text-muted-foreground">Saturday: 6:00 AM – 8:00 PM</p>
-                <p className="text-muted-foreground">Sunday: 7:00 AM – 6:00 PM</p>
+                <h3 className="mb-2 font-semibold text-foreground">Radno Vrijeme</h3>
+                <p className="text-muted-foreground">Ponedjeljak, Srijeda i Petak: <br /> 07:00 – 09:00 <br /> 16:30 – 20:15</p> <br />
+                <p className="text-muted-foreground">Utorak i Četvrtak: <br /> 08:00 – 09:00 <br /> 17:00 – 19:00</p> <br />
+                <p className="text-muted-foreground">Subota i Nedjelja: <strong>Zatvoreno</strong></p>
               </div>
             </div>
           </div>
@@ -228,16 +175,15 @@ export default function Home() {
       {/* CTA */}
       <section className="bg-linear-to-r from-primary to-accent px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="mb-4 text-3xl font-bold text-white">Ready to Transform Your Life?</h2>
+          <h2 className="mb-4 text-3xl font-bold text-white">Spremni Za Svoju Transformaciju?</h2>
           <p className="mb-8 text-white/90">
-            Join Atrevido Fitness today and become part of our empowering community.
-            Your first week is on us!
+            Pridružite se Atrevido Fitnessu i zakoračite u zajednicu podrške i snage.
           </p>
           <Link
             to="/register"
             className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-base font-semibold text-primary hover:bg-white/90 transition-opacity"
           >
-            Claim Your Free Trial <ChevronRight size={18} />
+            Započni <ChevronRight size={18} />
           </Link>
         </div>
       </section>

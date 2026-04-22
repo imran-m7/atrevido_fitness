@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Dumbbell } from 'lucide-react'
- 
+import logo from '../../assets/logo2.png'
+
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '', remember: false })
   const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
@@ -15,25 +15,25 @@ export default function Login() {
  
         {/* Header */}
         <div className="border-b border-border p-6 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
-            <Dumbbell size={24} className="text-primary-foreground" />
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
+            <img src={logo} alt="Atrevido Fitness Logo" className="h-12 w-auto"/>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Welcome Back</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Sign in to your Atrevido Fitness account</p>
+          <h1 className="text-2xl font-bold text-foreground">Dobrodošli Nazad</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Prijavite se na Vaš Atrevido Fitness račun</p>
         </div>
  
         {/* Form */}
         <div className="p-6 space-y-4">
           <div>
-            <label htmlFor="email" className={labelClass}>Email</label>
-            <input id="email" type="email" className={inputClass} placeholder="Enter your email" value={form.email} onChange={handleChange} />
+            <label htmlFor="email" className={labelClass}>Korisničko Ime</label>
+            <input id="email" type="email" className={inputClass} placeholder="Unesite korisničko ime" value={form.email} onChange={handleChange} />
           </div>
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label htmlFor="password" className="text-sm font-medium text-foreground">Password</label>
-              <Link to="/forgot-password" className="text-sm text-primary hover:underline">Forgot password?</Link>
+              <label htmlFor="password" className="text-sm font-medium text-foreground">Šifra</label>
+              <Link to="/forgot-password" className="text-sm text-primary hover:underline">Zaboravili ste šifru?</Link>
             </div>
-            <input id="password" type="password" className={inputClass} placeholder="Enter your password" value={form.password} onChange={handleChange} />
+            <input id="password" type="password" className={inputClass} placeholder="Unesite šifru" value={form.password} onChange={handleChange} />
           </div>
           <div className="flex items-center gap-2">
             <input
@@ -43,10 +43,10 @@ export default function Login() {
               checked={form.remember}
               onChange={(e) => setForm({ ...form, remember: e.target.checked })}
             />
-            <label htmlFor="remember" className="text-sm text-muted-foreground">Remember me</label>
+            <label htmlFor="remember" className="text-sm text-muted-foreground">Zapamti me</label>
           </div>
           <button className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-            Sign In
+            Log In
           </button>
  
           {/* Demo access */}
@@ -77,8 +77,8 @@ export default function Login() {
         {/* Footer */}
         <div className="border-t border-border p-4 text-center">
           <p className="text-sm text-muted-foreground">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-primary hover:underline font-medium">Sign up</Link>
+            Nemate račun?{' '}
+            <Link to="/register" className="text-primary hover:underline font-medium">Prijavite se</Link>
           </p>
         </div>
       </div>

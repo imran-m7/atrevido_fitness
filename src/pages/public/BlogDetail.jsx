@@ -55,7 +55,7 @@ export default function BlogDetail() {
             to="/blog"
             className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            <ArrowLeft size={16} /> Back to Blog
+            <ArrowLeft size={16} /> Nazad na Blog
           </Link>
           <span className="inline-block mb-4 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground">
             {post.category}
@@ -94,9 +94,9 @@ export default function BlogDetail() {
  
           {/* Share */}
           <div className="mt-12 flex items-center justify-between border-t border-border pt-8">
-            <p className="text-sm text-muted-foreground">Share this article:</p>
+            <p className="text-sm text-muted-foreground">Podijeli ovaj članak:</p>
             <button className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
-              <Share2 size={16} /> Share
+              <Share2 size={16} /> Podijeli
             </button>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function BlogDetail() {
       {/* Related Articles */}
       <section className="bg-muted/50 px-4 py-12">
         <div className="container mx-auto max-w-3xl">
-          <h2 className="mb-6 text-xl font-bold text-foreground">Continue Reading</h2>
+          <h2 className="mb-6 text-xl font-bold text-foreground">Nastavi Sa Čitanjem</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {relatedPosts.map((rp) => (
               <div key={rp.id} className="rounded-lg border border-border bg-card p-4 shadow-sm">
@@ -117,7 +117,7 @@ export default function BlogDetail() {
                   to={`/blog/${rp.id}`}
                   className="text-sm font-medium text-primary hover:underline"
                 >
-                  Read Article
+                  Pročitaj Članak
                 </Link>
               </div>
             ))}
