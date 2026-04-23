@@ -16,6 +16,28 @@ export default function Register() {
   const handleSelectProgram = (e) => setForm({ ...form, trainingProgram: e.target.value })
   const handleSubmit = (e) => {
     e.preventDefault()
+    
+    // Save registration to localStorage for admin approval
+    const existingRegistrations = localStorage.getItem('pendingRegistrations')
+    let registrations = []
+    if (existingRegistrations) {
+      try {
+        registrations = JSON.parse(existingRegistrations)
+      } catch (e) {
+        registrations = []
+      }
+    }
+    
+    registrations.push({
+      firstName: form.firstName,
+      lastName: form.lastName,
+      email: form.email,
+      phone: form.phone,
+      trainingProgram: form.trainingProgram,
+      signupDate: new Date().toISOString()
+    })
+    
+    localStorage.setItem('pendingRegistrations', JSON.stringify(registrations))
     setShowModal(true)
   }
   const handleCloseModal = () => {

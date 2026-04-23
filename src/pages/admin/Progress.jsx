@@ -10,12 +10,12 @@ const membersData = [
 ]
 
 const progressHistory = [
-  { date: 'March 20, 2024', memberId: 1, weight: 65, waist: 71, hips: 96, chest: 86 },
-  { date: 'March 13, 2024', memberId: 1, weight: 66, waist: 72, hips: 97, chest: 86 },
-  { date: 'March 6, 2024', memberId: 1, weight: 67, waist: 73, hips: 99, chest: 87 },
-  { date: 'February 28, 2024', memberId: 2, weight: 58, waist: 68, hips: 92, chest: 84 },
-  { date: 'February 21, 2024', memberId: 2, weight: 59, waist: 69, hips: 94, chest: 85 },
-  { date: 'February 14, 2024', memberId: 3, weight: 72, waist: 76, hips: 102, chest: 89 },
+  { date: 'March 20, 2024', memberId: 1, height: 165, weight: 65, ruka: 28, t1: 85, t2: 78, t3: 82, bokovi: 96, noga: 55 },
+  { date: 'March 13, 2024', memberId: 1, height: 165, weight: 66, ruka: 28.5, t1: 86, t2: 79, t3: 83, bokovi: 97, noga: 56 },
+  { date: 'March 6, 2024', memberId: 1, height: 165, weight: 67, ruka: 29, t1: 87, t2: 80, t3: 84, bokovi: 99, noga: 57 },
+  { date: 'February 28, 2024', memberId: 2, height: 172, weight: 58, ruka: 26, t1: 80, t2: 74, t3: 78, bokovi: 92, noga: 52 },
+  { date: 'February 21, 2024', memberId: 2, height: 172, weight: 59, ruka: 26.5, t1: 81, t2: 75, t3: 79, bokovi: 94, noga: 53 },
+  { date: 'February 14, 2024', memberId: 3, height: 158, weight: 72, ruka: 32, t1: 92, t2: 84, t3: 89, bokovi: 102, noga: 60 },
 ]
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors'
@@ -24,7 +24,7 @@ const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
 export default function AdminProgress() {
   const [selectedMember, setSelectedMember] = useState(membersData[0])
   const [memberSearch, setMemberSearch] = useState('')
-  const [form, setForm] = useState({ date: '', weight: '', waist: '', hips: '', chest: '' })
+  const [form, setForm] = useState({ date: '', height: '', weight: '', ruka: '', t1: '', t2: '', t3: '', bokovi: '', noga: '' })
 
   const filteredMembers = membersData.filter(m =>
     m.name.toLowerCase().includes(memberSearch.toLowerCase()) ||
@@ -38,7 +38,7 @@ export default function AdminProgress() {
   const handleSubmit = (e) => {
     e.preventDefault()
     alert(`Progress saved for ${selectedMember.name}!`)
-    setForm({ date: '', weight: '', waist: '', hips: '', chest: '' })
+    setForm({ date: '', height: '', weight: '', ruka: '', t1: '', t2: '', t3: '', bokovi: '', noga: '' })
   }
 
   return (
@@ -100,23 +100,39 @@ export default function AdminProgress() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label htmlFor="date" className={labelClass}>Date</label>
-                  <input id="date" type="date" className={inputClass} value={form.date} onChange={handleChange} />
+                  <input id="date" type="date" className={inputClass} value={form.date} onChange={handleChange} required />
+                </div>
+                <div>
+                  <label htmlFor="height" className={labelClass}>Height (cm)</label>
+                  <input id="height" type="number" step="0.1" className={inputClass} placeholder="Enter height" value={form.height} onChange={handleChange} required />
                 </div>
                 <div>
                   <label htmlFor="weight" className={labelClass}>Weight (kg)</label>
-                  <input id="weight" type="number" step="0.1" className={inputClass} placeholder="Enter weight" value={form.weight} onChange={handleChange} />
+                  <input id="weight" type="number" step="0.1" className={inputClass} placeholder="Enter weight" value={form.weight} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="waist" className={labelClass}>Waist (cm)</label>
-                  <input id="waist" type="number" step="0.1" className={inputClass} placeholder="Enter measurement" value={form.waist} onChange={handleChange} />
+                  <label htmlFor="ruka" className={labelClass}>Ruka (cm)</label>
+                  <input id="ruka" type="number" step="0.1" className={inputClass} placeholder="Arm measurement" value={form.ruka} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="hips" className={labelClass}>Hips (cm)</label>
-                  <input id="hips" type="number" step="0.1" className={inputClass} placeholder="Enter measurement" value={form.hips} onChange={handleChange} />
+                  <label htmlFor="t1" className={labelClass}>T1 (cm)</label>
+                  <input id="t1" type="number" step="0.1" className={inputClass} placeholder="Enter measurement" value={form.t1} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="chest" className={labelClass}>Chest (cm)</label>
-                  <input id="chest" type="number" step="0.1" className={inputClass} placeholder="Enter measurement" value={form.chest} onChange={handleChange} />
+                  <label htmlFor="t2" className={labelClass}>T2 (cm)</label>
+                  <input id="t2" type="number" step="0.1" className={inputClass} placeholder="Enter measurement" value={form.t2} onChange={handleChange} required />
+                </div>
+                <div>
+                  <label htmlFor="t3" className={labelClass}>T3 (cm)</label>
+                  <input id="t3" type="number" step="0.1" className={inputClass} placeholder="Enter measurement" value={form.t3} onChange={handleChange} required />
+                </div>
+                <div>
+                  <label htmlFor="bokovi" className={labelClass}>Bokovi (cm)</label>
+                  <input id="bokovi" type="number" step="0.1" className={inputClass} placeholder="Hips measurement" value={form.bokovi} onChange={handleChange} required />
+                </div>
+                <div>
+                  <label htmlFor="noga" className={labelClass}>Noga (cm)</label>
+                  <input id="noga" type="number" step="0.1" className={inputClass} placeholder="Leg measurement" value={form.noga} onChange={handleChange} required />
                 </div>
                 <button type="submit" className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
                   Save Progress
@@ -129,12 +145,13 @@ export default function AdminProgress() {
         {/* Stats + Chart + Table */}
         <div className="space-y-4 lg:col-span-2">
           {/* Summary Cards */}
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-5">
             {[
-              { icon: Scale, label: 'Current Weight', value: latestEntry ? `${latestEntry.weight} kg` : 'N/A', trend: latestEntry ? '-5 kg total' : 'No data' },
-              { icon: Ruler, label: 'Waist', value: latestEntry ? `${latestEntry.waist} cm` : 'N/A', trend: latestEntry ? '-2 cm total' : 'No data' },
-              { icon: Ruler, label: 'Hips', value: latestEntry ? `${latestEntry.hips} cm` : 'N/A', trend: latestEntry ? '-2 cm total' : 'No data' },
-              { icon: Ruler, label: 'Chest', value: latestEntry ? `${latestEntry.chest} cm` : 'N/A', trend: latestEntry ? '-1 cm total' : 'No data' },
+              { icon: Ruler, label: 'Height', value: latestEntry ? `${latestEntry.height} cm` : 'N/A', trend: 'constant' },
+              { icon: Scale, label: 'Weight', value: latestEntry ? `${latestEntry.weight} kg` : 'N/A', trend: latestEntry ? '-2 kg' : 'No data' },
+              { icon: Ruler, label: 'Ruka', value: latestEntry ? `${latestEntry.ruka} cm` : 'N/A', trend: 'arm' },
+              { icon: Ruler, label: 'Bokovi', value: latestEntry ? `${latestEntry.bokovi} cm` : 'N/A', trend: latestEntry ? '-3 cm' : 'No data' },
+              { icon: Ruler, label: 'Noga', value: latestEntry ? `${latestEntry.noga} cm` : 'N/A', trend: 'leg' },
             ].map(({ icon: Icon, label, value, trend, neutral }) => (
               <div key={label} className="rounded-lg border border-border bg-card p-4 shadow-sm">
                 <div className="flex items-center gap-3">
@@ -174,11 +191,11 @@ export default function AdminProgress() {
               <h3 className="font-semibold text-foreground">Progress History - {selectedMember.name}</h3>
             </div>
             <div className="p-5 overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    {['Date', 'Weight', 'Waist', 'Hips', 'Chest'].map(h => (
-                      <th key={h} className={`pb-3 text-sm font-medium text-muted-foreground ${h === 'Date' ? 'text-left' : 'text-right'}`}>{h}</th>
+                    {['Date', 'Height', 'Weight', 'Ruka', 'T1', 'T2', 'T3', 'Bokovi', 'Noga'].map(h => (
+                      <th key={h} className={`pb-3 text-xs font-medium text-muted-foreground ${h === 'Date' ? 'text-left' : 'text-right'}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -186,16 +203,20 @@ export default function AdminProgress() {
                   {memberHistory.length > 0 ? (
                     memberHistory.map((entry, i) => (
                       <tr key={`${entry.date}-${i}`} className={i < memberHistory.length - 1 ? 'border-b border-border' : ''}>
-                        <td className="py-3 text-sm text-foreground">{entry.date}</td>
-                        <td className="py-3 text-right text-sm text-foreground">{entry.weight} kg</td>
-                        <td className="py-3 text-right text-sm text-foreground">{entry.waist} cm</td>
-                        <td className="py-3 text-right text-sm text-foreground">{entry.hips} cm</td>
-                        <td className="py-3 text-right text-sm text-foreground">{entry.chest} cm</td>
+                        <td className="py-3 text-foreground">{entry.date}</td>
+                        <td className="py-3 text-right text-foreground">{entry.height} cm</td>
+                        <td className="py-3 text-right text-foreground">{entry.weight} kg</td>
+                        <td className="py-3 text-right text-foreground">{entry.ruka} cm</td>
+                        <td className="py-3 text-right text-foreground">{entry.t1} cm</td>
+                        <td className="py-3 text-right text-foreground">{entry.t2} cm</td>
+                        <td className="py-3 text-right text-foreground">{entry.t3} cm</td>
+                        <td className="py-3 text-right text-foreground">{entry.bokovi} cm</td>
+                        <td className="py-3 text-right text-foreground">{entry.noga} cm</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="py-6 text-center text-sm text-muted-foreground">
+                      <td colSpan="9" className="py-6 text-center text-sm text-muted-foreground">
                         No progress entries for this member yet
                       </td>
                     </tr>

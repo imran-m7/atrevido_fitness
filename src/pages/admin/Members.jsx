@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { Search, Users, UserPlus } from 'lucide-react'
 
 const initialMembers = [
-  { id: 1, name: 'Sarah Johnson',  email: 'sarah.johnson@email.com', subscription: 'Individual + Nutrition', status: 'Active',   joinDate: 'Jan 15, 2024', lastActive: 'Today' },
-  { id: 2, name: 'Amanda Wilson',  email: 'amanda@email.com',        subscription: 'Individual + Nutrition', status: 'Active',   joinDate: 'Mar 23, 2024', lastActive: 'Today' },
-  { id: 3, name: 'Michelle Chen',  email: 'michelle@email.com',      subscription: 'Group Training',         status: 'Active',   joinDate: 'Mar 22, 2024', lastActive: 'Yesterday' },
-  { id: 4, name: 'Rachel Adams',   email: 'rachel@email.com',        subscription: 'Individual',             status: 'Active',   joinDate: 'Mar 20, 2024', lastActive: '2 days ago' },
-  { id: 5, name: 'Jennifer Kim',   email: 'jennifer.kim@email.com',  subscription: 'Group Training',         status: 'Active',   joinDate: 'Feb 10, 2024', lastActive: 'Today' },
-  { id: 6, name: 'Lisa Martinez',  email: 'lisa.m@email.com',        subscription: 'Individual + Nutrition', status: 'Active',   joinDate: 'Jan 5, 2024',  lastActive: 'Today' },
-  { id: 7, name: 'Emily Davis',    email: 'emily.d@email.com',       subscription: 'Group Training',         status: 'Inactive', joinDate: 'Dec 1, 2023',  lastActive: '2 weeks ago' },
-  { id: 8, name: 'Nicole Brown',   email: 'nicole.b@email.com',      subscription: 'Individual',             status: 'Active',   joinDate: 'Feb 28, 2024', lastActive: '3 days ago' },
+  { id: 1, name: 'Sarah Johnson',  username: 'sarah.johnson', email: 'sarah.johnson@email.com', phone: '+1 555-0101', subscription: 'Individual + Nutrition', status: 'Active',   joinDate: 'Jan 15, 2024', lastActive: 'Today' },
+  { id: 2, name: 'Amanda Wilson',  username: 'amanda.wilson', email: 'amanda@email.com',        phone: '+1 555-0102', subscription: 'Individual + Nutrition', status: 'Active',   joinDate: 'Mar 23, 2024', lastActive: 'Today' },
+  { id: 3, name: 'Michelle Chen',  username: 'michelle.chen', email: 'michelle@email.com',      phone: '+1 555-0103', subscription: 'Group Training',         status: 'Active',   joinDate: 'Mar 22, 2024', lastActive: 'Yesterday' },
+  { id: 4, name: 'Rachel Adams',   username: 'rachel.adams',  email: 'rachel@email.com',        phone: '+1 555-0104', subscription: 'Individual',             status: 'Active',   joinDate: 'Mar 20, 2024', lastActive: '2 days ago' },
+  { id: 5, name: 'Jennifer Kim',   username: 'jennifer.kim',  email: 'jennifer.kim@email.com',  phone: '+1 555-0105', subscription: 'Group Training',         status: 'Active',   joinDate: 'Feb 10, 2024', lastActive: 'Today' },
+  { id: 6, name: 'Lisa Martinez',  username: 'lisa.martinez', email: 'lisa.m@email.com',        phone: '+1 555-0106', subscription: 'Individual + Nutrition', status: 'Active',   joinDate: 'Jan 5, 2024',  lastActive: 'Today' },
+  { id: 7, name: 'Emily Davis',    username: 'emily.davis',   email: 'emily.d@email.com',       phone: '+1 555-0107', subscription: 'Group Training',         status: 'Inactive', joinDate: 'Dec 1, 2023',  lastActive: '2 weeks ago' },
+  { id: 8, name: 'Nicole Brown',   username: 'nicole.brown',  email: 'nicole.b@email.com',      phone: '+1 555-0108', subscription: 'Individual',             status: 'Active',   joinDate: 'Feb 28, 2024', lastActive: '3 days ago' },
 ]
 
 const subColors = {
@@ -21,12 +21,35 @@ const subColors = {
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
 
 export default function AdminMembers() {
-  const [membersList, setMembersList] = useState(initialMembers)
+  // Load pending registrations from localStorage
+  const getPendingRegistrations = () => {
+    const pending = localStorage.getItem('pendingRegistrations')
+    if (!pending) return []
+    try {
+      const registrations = JSON.parse(pending)
+      return registrations.map((reg, idx) => ({
+        id: -1 - idx, // Negative IDs for pending members
+        name: `${reg.firstName} ${reg.lastName}`,
+        username: reg.email, // Using email as username since that's what was in the form
+        email: reg.email,
+        phone: reg.phone,
+        subscription: reg.trainingProgram === 'group' ? 'Group Training' : reg.trainingProgram === 'individual' ? 'Individual' : 'Individual + Nutrition',
+        status: 'Inactive',
+        joinDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+        lastActive: 'Never'
+      }))
+    } catch (e) {
+      return []
+    }
+  }
+
+  const [membersList, setMembersList] = useState([...initialMembers, ...getPendingRegistrations()])
   const [search, setSearch] = useState('')
   
   const filtered = membersList.filter(m =>
     m.name.toLowerCase().includes(search.toLowerCase()) ||
-    m.email.toLowerCase().includes(search.toLowerCase())
+    m.email.toLowerCase().includes(search.toLowerCase()) ||
+    m.username.toLowerCase().includes(search.toLowerCase())
   )
 
   const stats = [
@@ -39,10 +62,32 @@ export default function AdminMembers() {
     setMembersList(prev =>
       prev.map(m =>
         m.id === id
-          ? { ...m, status: m.status === 'Active' ? 'Inactive' : 'Active' }
+          ? { 
+              ...m, 
+              status: m.status === 'Active' ? 'Inactive' : 'Active',
+              lastActive: m.status === 'Inactive' ? 'Today' : m.lastActive
+            }
           : m
       )
     )
+    
+    // If activating a pending member, remove from localStorage
+    if (id < 0) {
+      const pending = localStorage.getItem('pendingRegistrations')
+      if (pending) {
+        try {
+          const registrations = JSON.parse(pending)
+          const updatedRegistrations = registrations.filter((_, idx) => -1 - idx !== id)
+          if (updatedRegistrations.length > 0) {
+            localStorage.setItem('pendingRegistrations', JSON.stringify(updatedRegistrations))
+          } else {
+            localStorage.removeItem('pendingRegistrations')
+          }
+        } catch (e) {
+          // Handle error silently
+        }
+      }
+    }
   }
 
   return (
@@ -91,8 +136,8 @@ export default function AdminMembers() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
-                {['Member','Subscription','Status','Last Active','Actions'].map((h, i) => (
-                  <th key={h} className={`pb-3 text-sm font-medium text-muted-foreground ${i === 4 ? 'text-right' : 'text-left'}`}>{h}</th>
+                {['Member','Username','Phone','Subscription','Status','Last Active','Actions'].map((h, i) => (
+                  <th key={h} className={`pb-3 text-sm font-medium text-muted-foreground ${i === 6 ? 'text-right' : 'text-left'}`}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -112,6 +157,8 @@ export default function AdminMembers() {
                       </div>
                     </div>
                   </td>
+                  <td className="py-4 text-sm text-foreground">{member.username}</td>
+                  <td className="py-4 text-sm text-foreground">{member.phone}</td>
                   <td className="py-4">
                     <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${subColors[member.subscription]}`}>
                       {member.subscription}

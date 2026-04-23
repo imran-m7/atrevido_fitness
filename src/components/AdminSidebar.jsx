@@ -4,6 +4,7 @@ import {
   LayoutDashboard, Calendar, Users, Trophy,
   Salad, BookOpen, LogOut, Menu, X, Dumbbell, Bell, Shield, TrendingUp,
 } from 'lucide-react'
+import logo2 from '../assets/logo2.png'
 
 const navItems = [
   { href: '/admin/dashboard',  label: 'Dashboard',         icon: LayoutDashboard },
@@ -57,9 +58,7 @@ export default function AdminSidebar() {
 
         {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-sidebar-border px-4 shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <Dumbbell size={20} className="text-primary-foreground" />
-          </div>
+          <img src={logo2} alt="Atrevido Logo" className="h-9 w-9 object-cover rounded-lg" />
           <div>
             <h1 className="text-lg font-bold text-sidebar-foreground">Atrevido</h1>
             <p className="text-xs text-sidebar-foreground/70">Admin Panel</p>

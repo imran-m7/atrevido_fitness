@@ -23,6 +23,7 @@ const recentMembers = [
 const quickActions = [
   { label: 'Manage Trainings',  href: '/admin/trainings',  icon: Calendar },
   { label: 'Manage Members',    href: '/admin/members',    icon: Users },
+  { label: 'Manage Progress',   href: '/admin/progress',   icon: TrendingUp },
   { label: 'Manage Challenges', href: '/admin/challenges', icon: Trophy },
   { label: 'Add Blog Post',     href: '/admin/blog',       icon: BookOpen },
   { label: 'Manage Nutrition',  href: '/admin/nutrition',  icon: Salad },
