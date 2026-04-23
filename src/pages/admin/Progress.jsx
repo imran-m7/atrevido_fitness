@@ -99,39 +99,39 @@ export default function AdminProgress() {
             <div className="p-5">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="date" className={labelClass}>Date</label>
+                  <label htmlFor="date" className={labelClass}>Datum</label>
                   <input id="date" type="date" className={inputClass} value={form.date} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="height" className={labelClass}>Height (cm)</label>
+                  <label htmlFor="height" className={labelClass}>Visina (cm)</label>
                   <input id="height" type="number" step="0.1" className={inputClass} placeholder="Unesite visinu" value={form.height} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="weight" className={labelClass}>Weight (kg)</label>
+                  <label htmlFor="weight" className={labelClass}>Težina (kg)</label>
                   <input id="weight" type="number" step="0.1" className={inputClass} placeholder="Unesite težinu" value={form.weight} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="ruka" className={labelClass}>Ruka (cm)</label>
+                  <label htmlFor="ruka" className={labelClass}>Ruka- sredina nadlaktice (cm)</label>
                   <input id="ruka" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.ruka} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="t1" className={labelClass}>T1 (cm)</label>
+                  <label htmlFor="t1" className={labelClass}>T1- najuži dio-struk (cm)</label>
                   <input id="t1" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.t1} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="t2" className={labelClass}>T2 (cm)</label>
+                  <label htmlFor="t2" className={labelClass}>T2- oko pupka (cm)</label>
                   <input id="t2" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.t2} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="t3" className={labelClass}>T3 (cm)</label>
+                  <label htmlFor="t3" className={labelClass}>T3- najširi dio (cm)</label>
                   <input id="t3" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.t3} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="bokovi" className={labelClass}>Bokovi (cm)</label>
+                  <label htmlFor="bokovi" className={labelClass}>Bokovi- najširi dio (cm)</label>
                   <input id="bokovi" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.bokovi} onChange={handleChange} required />
                 </div>
                 <div>
-                  <label htmlFor="noga" className={labelClass}>Noga (cm)</label>
+                  <label htmlFor="noga" className={labelClass}>Noga- najširi dio natkoljenice (cm)</label>
                   <input id="noga" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.noga} onChange={handleChange} required />
                 </div>
                 <button type="submit" className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">

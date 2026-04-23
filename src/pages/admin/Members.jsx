@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Search, Users, UserPlus } from 'lucide-react'
+import { Search, Users, UserPlus, X } from 'lucide-react'
 
 const initialMembers = [
   { id: 1, name: 'Sarah Johnson',  username: 'sarah.johnson', email: 'sarah.johnson@email.com', phone: '+1 555-0101', subscription: 'Individualni trening + Ishrana', status: 'Aktivan',   joinDate: 'Jan 15, 2024', lastActive: 'Danas' },
@@ -19,6 +19,13 @@ const subColors = {
 }
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
+const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
+
+const programs = [
+  { id: 'group', title: 'Grupni Treninzi' },
+  { id: 'individual', title: 'Individualni Treninzi' },
+  { id: 'individual-nutrition', title: 'Individualni Trening + Ishrana' },
+]
 
 export default function AdminMembers() {
   // Load pending registrations from localStorage
@@ -45,7 +52,45 @@ export default function AdminMembers() {
 
   const [membersList, setMembersList] = useState([...initialMembers, ...getPendingRegistrations()])
   const [search, setSearch] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '', trainingProgram: '' })
   
+  const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
+  const handleSelectProgram = (e) => setForm({ ...form, trainingProgram: e.target.value })
+
+  const handleAddMember = (e) => {
+    e.preventDefault()
+    if (!form.firstName || !form.lastName || !form.email || !form.phone || !form.password || !form.confirmPassword || !form.trainingProgram) {
+      alert('Molimo popunite sva polja')
+      return
+    }
+    if (form.password !== form.confirmPassword) {
+      alert('Šifre se ne poklapaju')
+      return
+    }
+    if (form.password.length < 6) {
+      alert('Šifra mora biti najmanje 6 karaktera')
+      return
+    }
+
+    const newMember = {
+      id: Math.max(...membersList.map(m => m.id), 0) + 1,
+      name: `${form.firstName} ${form.lastName}`,
+      username: form.email,
+      email: form.email,
+      phone: form.phone,
+      password: form.password,
+      subscription: form.trainingProgram === 'group' ? 'Grupni trening' : form.trainingProgram === 'individual' ? 'Individualni trening' : 'Individualni trening + Ishrana',
+      status: 'Aktivan',
+      joinDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+      lastActive: 'Danas'
+    }
+
+    setMembersList([newMember, ...membersList])
+    setShowModal(false)
+    setForm({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '', trainingProgram: '' })
+  }
+
   const filtered = membersList.filter(m =>
     m.name.toLowerCase().includes(search.toLowerCase()) ||
     m.email.toLowerCase().includes(search.toLowerCase()) ||
@@ -97,10 +142,82 @@ export default function AdminMembers() {
           <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Članovima</h1>
           <p className="text-muted-foreground">Pregled i upravljanje članovima</p>
         </div>
-        <button className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
+        <button onClick={() => setShowModal(true)} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
           <UserPlus size={16} /> Dodaj Člana
         </button>
       </div>
+
+      {/* Add Member Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
+          <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-foreground">Dodaj Člana</h2>
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
+                <X size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddMember} className="space-y-5">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label htmlFor="firstName" className={labelClass}>Ime</label>
+                  <input id="firstName" className={inputClass} placeholder="Unesite ime" value={form.firstName} onChange={handleChange} required />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className={labelClass}>Prezime</label>
+                  <input id="lastName" className={inputClass} placeholder="Unesite prezime" value={form.lastName} onChange={handleChange} required />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="email" className={labelClass}>Korisničko Ime</label>
+                <input id="email" type="text" className={inputClass} placeholder="Unesite korisničko ime" value={form.email} onChange={handleChange} required />
+              </div>
+
+              <div>
+                <label htmlFor="phone" className={labelClass}>Broj Telefona</label>
+                <input id="phone" type="tel" className={inputClass} placeholder="Unesite broj telefona" value={form.phone} onChange={handleChange} required />
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label htmlFor="password" className={labelClass}>Šifra</label>
+                  <input id="password" type="password" className={inputClass} placeholder="Unesite šifru" value={form.password} onChange={handleChange} required />
+                </div>
+                <div>
+                  <label htmlFor="confirmPassword" className={labelClass}>Potvrdite Šifru</label>
+                  <input id="confirmPassword" type="password" className={inputClass} placeholder="Potvrdite šifru" value={form.confirmPassword} onChange={handleChange} required />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="trainingProgram" className={labelClass}>Odaberite Trening Program</label>
+                <select id="trainingProgram" value={form.trainingProgram} onChange={handleSelectProgram} className={`${inputClass} ${form.trainingProgram === '' ? 'text-muted-foreground' : 'text-foreground'}`} required>
+                  <option value="" disabled>
+                    -- Odaberite program --
+                  </option>
+                  {programs.map(program => (
+                    <option key={program.id} value={program.id}>
+                      {program.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex gap-3 pt-6">
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+                  Otkaži
+                </button>
+                <button type="submit" className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
+                  Dodaj Člana
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="mb-6 grid gap-4 md:grid-cols-3 w-fit mx-auto">

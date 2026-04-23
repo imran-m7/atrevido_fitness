@@ -68,7 +68,7 @@ export default function MemberSidebar() {
 </div>
           <div>
             <h1 className="text-lg font-bold text-sidebar-foreground">Atrevido</h1>
-            <p className="text-xs text-sidebar-foreground/70">Portal za članice</p>
+            <p className="text-xs text-sidebar-foreground/70">Portal za Članice</p>
           </div>
         </div>
 

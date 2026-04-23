@@ -19,12 +19,12 @@ export default function AdminBlog() {
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
     title: '',
-    category: 'Fitnes Savjeti',
+    category: 'Fitness Savjeti',
     content: '',
     image: null
   })
 
-  const categories = ['Fitnes Savjeti', 'Ishrana', 'Motivacija', 'Lifestyle', 'Oporavak']
+  const categories = ['Fitness Savjeti', 'Ishrana', 'Motivacija', 'Lifestyle', 'Oporavak']
 
   const filtered = blogPosts.filter(p =>
     p.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -54,7 +54,7 @@ export default function AdminBlog() {
 
   const handleOpenAddModal = () => {
     setEditingId(null)
-    setFormData({ title: '', category: 'Fitnes Savjeti', content: '', image: null })
+    setFormData({ title: '', category: 'Fitness Savjeti', content: '', image: null })
     setShowModal(true)
   }
 
@@ -90,7 +90,7 @@ export default function AdminBlog() {
       setBlogPosts(prev => [newPost, ...prev])
     }
     setShowModal(false)
-    setFormData({ title: '', category: 'Fitnes Savjeti', content: '', image: null })
+    setFormData({ title: '', category: 'Fitness Savjeti', content: '', image: null })
   }
 
   const handleDelete = (id) => {
