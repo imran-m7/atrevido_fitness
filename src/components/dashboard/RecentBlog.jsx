@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { BookOpen, ArrowRight } from 'lucide-react'
 
 const posts = [
-  { title: '5 Morning Stretches to Start Your Day Right',          category: 'Wellness',   readTime: '4 min read' },
-  { title: 'High-Protein Breakfast Ideas for Busy Women',          category: 'Nutrition',  readTime: '6 min read' },
-  { title: 'How to Stay Motivated During Your Fitness Journey',    category: 'Mindset',    readTime: '5 min read' },
+  { title: '5 jutarnjih vježbi da započneš svoj dan',          category: 'Wellness',   readTime: '4 min čitanja' },
+  { title: 'Visoko-proteinske doručak ideje za zauzete žene',          category: 'Ishrana',  readTime: '6 min čitanja' },
+  { title: 'Kako ostati motivisan tokom svog fitnes putovanja?',    category: 'Mindset',    readTime: '5 min čitanja' },
 ]
 
 export default function RecentBlog() {
@@ -14,13 +14,13 @@ export default function RecentBlog() {
       <div className="flex items-center justify-between p-5 border-b border-border">
         <div className="flex items-center gap-2">
           <BookOpen size={20} className="text-primary" />
-          <h3 className="font-semibold text-foreground">Latest Articles</h3>
+          <h3 className="font-semibold text-foreground">Najnoviji članci</h3>
         </div>
         <Link
           to="/member/blog"
           className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
         >
-          View All <ArrowRight size={16} />
+          Pogledaj sve <ArrowRight size={16} />
         </Link>
       </div>
       <div className="p-5 space-y-3">

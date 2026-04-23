@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import logo from '../assets/logo2.png'
 import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Calendar, CalendarPlus, Trophy,
@@ -7,14 +8,14 @@ import {
 } from 'lucide-react'
 
 const navItems = [
-  { href: '/member/dashboard', label: 'Dashboard',    icon: LayoutDashboard },
-  { href: '/member/schedule',  label: 'Schedule',     icon: Calendar },
-  { href: '/member/book',      label: 'Book Training',icon: CalendarPlus },
-  { href: '/member/challenges',label: 'Challenges',   icon: Trophy },
-  { href: '/member/progress',  label: 'Progress',     icon: TrendingUp },
-  { href: '/member/nutrition', label: 'Nutrition',    icon: Salad },
+  { href: '/member/dashboard', label: 'Početna',    icon: LayoutDashboard },
+  { href: '/member/schedule',  label: 'Raspored',     icon: Calendar },
+  { href: '/member/book',      label: 'Rezervacija treninga',icon: CalendarPlus },
+  { href: '/member/challenges',label: 'Izazovi',   icon: Trophy },
+  { href: '/member/progress',  label: 'Napredak',     icon: TrendingUp },
+  { href: '/member/nutrition', label: 'Ishrana',    icon: Salad },
   { href: '/member/blog',      label: 'Blog',         icon: BookOpen },
-  { href: '/member/profile',   label: 'Profile',      icon: User },
+  { href: '/member/profile',   label: 'Profil',      icon: User },
 ]
 
 export default function MemberSidebar() {
@@ -26,9 +27,9 @@ export default function MemberSidebar() {
       {/* Mobile Header */}
       <header className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-border bg-background px-4 lg:hidden">
         <Link to="/member/dashboard" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Dumbbell size={16} className="text-primary-foreground" />
-          </div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden">
+  <img src={logo} alt="Atrevido Logo" className="h-full w-full object-contain" />
+</div>
           <span className="font-bold text-foreground">Atrevido</span>
         </Link>
         <div className="flex items-center gap-2">
@@ -62,12 +63,12 @@ export default function MemberSidebar() {
 
         {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-sidebar-border px-4 shrink-0">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <Dumbbell size={20} className="text-primary-foreground" />
-          </div>
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg overflow-hidden">
+  <img src={logo} alt="Atrevido Logo" className="h-full w-full object-contain" />
+</div>
           <div>
             <h1 className="text-lg font-bold text-sidebar-foreground">Atrevido</h1>
-            <p className="text-xs text-sidebar-foreground/70">Member Portal</p>
+            <p className="text-xs text-sidebar-foreground/70">Portal za članice</p>
           </div>
         </div>
 
@@ -80,7 +81,7 @@ export default function MemberSidebar() {
             <div className="min-w-0">
               <p className="truncate font-medium text-sidebar-foreground">Sarah Johnson</p>
               <span className="inline-block rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">
-                Individual + Nutrition
+                Individualni trening + Ishrana
               </span>
             </div>
           </div>
@@ -120,7 +121,7 @@ export default function MemberSidebar() {
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           >
             <LogOut size={20} />
-            Sign Out
+            Odjavi se
           </Link>
         </div>
       </aside>

@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom'
 import { Calendar, Clock, ArrowRight } from 'lucide-react'
 
 const blogPosts = [
-  { id: 1, title: '10 Essential Tips for Building a Sustainable Fitness Routine', excerpt: 'Discover the key strategies that will help you create a fitness routine you can stick to for life.',                   category: 'Fitness Tips', date: 'March 15, 2024',    readTime: '8 min read',  featured: true  },
-  { id: 2, title: 'Nutrition Myths Debunked: What Really Works',                  excerpt: 'Separating fact from fiction in the world of nutrition. Learn what science actually says about popular diet trends.',  category: 'Nutrition',    date: 'March 12, 2024',    readTime: '6 min read',  featured: false },
-  { id: 3, title: 'The Power of Group Fitness: Why Working Out Together Works',   excerpt: 'Research shows that exercising in groups can significantly boost motivation and results.',                              category: 'Motivation',   date: 'March 8, 2024',     readTime: '5 min read',  featured: false },
-  { id: 4, title: "Beginner's Guide to Strength Training for Women",              excerpt: 'Everything you need to know to start your strength training journey with confidence and safety.',                        category: 'Fitness Tips', date: 'March 5, 2024',     readTime: '10 min read', featured: false },
-  { id: 5, title: 'How to Stay Motivated When Progress Feels Slow',               excerpt: "Plateaus happen to everyone. Learn strategies to stay committed even when results aren't immediately visible.",         category: 'Motivation',   date: 'March 1, 2024',     readTime: '7 min read',  featured: false },
-  { id: 6, title: 'The Importance of Rest Days in Your Fitness Journey',          excerpt: 'Recovery is just as important as training. Understand why rest days are essential for progress.',                       category: 'Lifestyle',    date: 'February 26, 2024', readTime: '5 min read',  featured: false },
+  { id: 1, title: '10 Essential Tips for Building a Sustainable Fitness Routine', excerpt: 'Discover the key strategies that will help you create a fitness routine you can stick to for life.',                   category: 'Fitnes savjeti', date: '15. mart 2024.',    readTime: '8 min čitanja',  featured: true  },
+  { id: 2, title: 'Nutrition Myths Debunked: What Really Works',                  excerpt: 'Separating fact from fiction in the world of nutrition. Learn what science actually says about popular diet trends.',  category: 'Ishrana',    date: '12. mart 2024.',    readTime: '6 min čitanja',  featured: false },
+  { id: 3, title: 'The Power of Group Fitness: Why Working Out Together Works',   excerpt: 'Research shows that exercising in groups can significantly boost motivation and results.',                              category: 'Motivacija',   date: '8. mart 2024.',     readTime: '5 min čitanja',  featured: false },
+  { id: 4, title: "Beginner's Guide to Strength Training for Women",              excerpt: 'Everything you need to know to start your strength training journey with confidence and safety.',                        category: 'Fitnes savjeti', date: '5. mart 2024.',     readTime: '10 min čitanja', featured: false },
+  { id: 5, title: 'How to Stay Motivated When Progress Feels Slow',               excerpt: "Plateaus happen to everyone. Learn strategies to stay committed even when results aren't immediately visible.",         category: 'Motivacija',   date: '1. mart 2024.',     readTime: '7 min čitanja',  featured: false },
+  { id: 6, title: 'The Importance of Rest Days in Your Fitness Journey',          excerpt: 'Recovery is just as important as training. Understand why rest days are essential for progress.',                       category: 'Lifestyle',    date: '26. februar 2024.', readTime: '5 min čitanja',  featured: false },
 ]
 
 export default function MemberBlog() {
@@ -19,7 +19,7 @@ export default function MemberBlog() {
     <div className="p-4 lg:p-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Blog</h1>
-        <p className="text-muted-foreground">Fitness tips, nutrition advice, and motivation</p>
+        <p className="text-muted-foreground">Savjeti za trening, ishranu i motivaciju</p>
       </div>
 
       {/* Featured */}
@@ -43,7 +43,7 @@ export default function MemberBlog() {
                 to={`/member/blog/${featured.id}`}
                 className="inline-flex w-fit items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
               >
-                Read Article <ArrowRight size={16} />
+                Pročitaj članak <ArrowRight size={16} />
               </Link>
             </div>
           </div>
@@ -51,7 +51,7 @@ export default function MemberBlog() {
       )}
 
       {/* Grid */}
-      <h2 className="mb-4 text-xl font-semibold text-foreground">Latest Articles</h2>
+      <h2 className="mb-4 text-xl font-semibold text-foreground">Najnoviji članci</h2>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {others.map((post) => (
           <div key={post.id} className="flex flex-col rounded-lg border border-border bg-card shadow-sm overflow-hidden">
@@ -75,7 +75,7 @@ export default function MemberBlog() {
                 to={`/member/blog/${post.id}`}
                 className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
               >
-                Read <ArrowRight size={12} />
+                Pročitaj <ArrowRight size={12} />
               </Link>
             </div>
           </div>

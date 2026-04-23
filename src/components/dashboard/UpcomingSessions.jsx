@@ -2,9 +2,9 @@ import React from 'react'
 import { Calendar, Clock, Users } from 'lucide-react'
 
 const sessions = [
-  { title: 'HIIT Training',    date: 'Today',        time: '6:00 PM',  trainer: 'Coach Sarah', spots: '3 spots left', type: 'Group' },
-  { title: 'Yoga Flow',        date: 'Tomorrow',     time: '7:00 AM',  trainer: 'Coach Maya',  spots: '5 spots left', type: 'Group' },
-  { title: 'Strength Training',date: 'Wed, Mar 19',  time: '5:30 PM',  trainer: 'Coach Sarah', spots: '2 spots left', type: 'Group' },
+  { title: 'HIIT Training',    date: 'Danas',        time: '18:00',  trainer: 'Trenerica Dika', spots: '3 preostala mjesta', type: 'Grupni' },
+  { title: 'Yoga Flow',        date: 'Sutra',     time: '7:00',  trainer: 'Trenerica Dika',  spots: '5 preostalih mjesta', type: 'Grupni' },
+  { title: 'Strength Training',date: 'Srijeda, 19. mart',  time: '17:30',  trainer: 'Trenerica Dika', spots: '2 preostala mjesta', type: 'Grupni' },
 ]
 
 export default function UpcomingSessions() {
@@ -12,7 +12,7 @@ export default function UpcomingSessions() {
     <div className="rounded-lg border border-border bg-card shadow-sm">
       <div className="flex items-center gap-2 p-5 border-b border-border">
         <Calendar size={20} className="text-primary" />
-        <h3 className="font-semibold text-foreground">Upcoming Sessions</h3>
+        <h3 className="font-semibold text-foreground">Sljedeći treninzi</h3>
       </div>
       <div className="p-5 space-y-4">
         {sessions.map((session, i) => (

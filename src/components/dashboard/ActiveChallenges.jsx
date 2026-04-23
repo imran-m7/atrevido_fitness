@@ -12,7 +12,7 @@ export default function ActiveChallenges() {
     <div className="rounded-lg border border-border bg-card shadow-sm">
       <div className="flex items-center gap-2 p-5 border-b border-border">
         <Trophy size={20} className="text-primary" />
-        <h3 className="font-semibold text-foreground">Active Challenges</h3>
+        <h3 className="font-semibold text-foreground">Aktivni izazovi</h3>
       </div>
       <div className="p-5 space-y-4">
         {challenges.map((challenge, i) => {
@@ -24,7 +24,7 @@ export default function ActiveChallenges() {
                   <Icon size={16} className={challenge.color} />
                   <span className="text-sm font-medium text-foreground">{challenge.title}</span>
                 </div>
-                <span className="text-xs text-muted-foreground">{challenge.daysLeft} days left</span>
+                <span className="text-xs text-muted-foreground">{challenge.daysLeft} dana preostalo</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
