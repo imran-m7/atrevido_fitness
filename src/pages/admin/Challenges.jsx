@@ -2,20 +2,20 @@ import React, { useState } from 'react'
 import { Plus, Edit, Trash2, Users, Calendar, Trophy, Eye, X } from 'lucide-react'
 
 const initialChallenges = [
-  { id: 1, title: '30-Day Fitness Challenge',  status: 'Active',    startDate: 'March 1, 2024',   endDate: 'March 30, 2024',  participants: 45, progress: 65,  type: 'Consistency', description: 'Challenge yourself to stay consistent for 30 days' },
-  { id: 2, title: 'Spring Strength Challenge', status: 'Active',    startDate: 'March 15, 2024',  endDate: 'April 26, 2024',  participants: 28, progress: 25,  type: 'Strength', description: 'Build strength with this spring challenge' },
-  { id: 3, title: 'Team Cardio Blitz',         status: 'Active',    startDate: 'April 1, 2024',   endDate: 'April 30, 2024',  participants: 60, progress: 0,   type: 'Team Cardio', description: 'Team up for an intense cardio challenge' },
-  { id: 4, title: 'New Year Challenge',        status: 'Completed', startDate: 'January 1, 2024', endDate: 'January 31, 2024',participants: 52, progress: 100, type: 'Consistency', description: 'New year, new you challenge' },
+  { id: 1, title: '30-Day Fitness Challenge',  status: 'Aktivan',    startDate: 'March 1, 2024',   endDate: 'March 30, 2024',  participants: 45, progress: 65,  type: 'Consistency', description: 'Challenge yourself to stay consistent for 30 days' },
+  { id: 2, title: 'Spring Strength Challenge', status: 'Aktivan',    startDate: 'March 15, 2024',  endDate: 'April 26, 2024',  participants: 28, progress: 25,  type: 'Strength', description: 'Build strength with this spring challenge' },
+  { id: 3, title: 'Team Cardio Blitz',         status: 'Aktivan',    startDate: 'April 1, 2024',   endDate: 'April 30, 2024',  participants: 60, progress: 0,   type: 'Team Cardio', description: 'Team up for an intense cardio challenge' },
+  { id: 4, title: 'New Year Challenge',        status: 'Završen', startDate: 'January 1, 2024', endDate: 'January 31, 2024',participants: 52, progress: 100, type: 'Consistency', description: 'New year, new you challenge' },
 ]
 
 const statusColors = {
-  Active:    'bg-green-100 text-green-700',
-  Upcoming:  'bg-blue-100 text-blue-700',
-  Completed: 'bg-gray-100 text-gray-700',
+  Aktivan:    'bg-green-100 text-green-700',
+  Nadolazi:  'bg-blue-100 text-blue-700',
+  Završen: 'bg-gray-100 text-gray-700',
 }
 
-const challengeTypes = ['Consistency', 'Strength', 'Cardio', 'Flexibility', 'Team Cardio', 'Endurance']
-const challengeStatuses = ['Active', 'Upcoming', 'Completed']
+const challengeTypes = ['Konstantnost', 'Snaga', 'Kardio', 'Fleksibilnost', 'Timski Kardio', 'Izdržljivost']
+const challengeStatuses = ['Aktivan', 'Nadolazi', 'Završen']
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
 const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
@@ -28,17 +28,17 @@ export default function AdminChallenges() {
   const [selectedChallenge, setSelectedChallenge] = useState(null)
   const [formData, setFormData] = useState({
     title: '',
-    type: 'Consistency',
+    type: 'Konstantnost',
     description: '',
     startDate: '',
     endDate: '',
-    status: 'Active'
+    status: 'Aktivan'
   })
 
   const stats = [
-    { label: 'Total Challenges', value: challengesList.length, bg: 'bg-primary/10', color: 'text-primary', icon: Trophy },
-    { label: 'Active', value: challengesList.filter(c => c.status === 'Active').length, bg: 'bg-green-100', color: 'text-green-600', icon: Trophy },
-    { label: 'Total Participants', value: challengesList.reduce((sum, c) => sum + c.participants, 0), bg: 'bg-purple-100', color: 'text-purple-600', icon: Users },
+    { label: 'Ukupno Izazova', value: challengesList.length, bg: 'bg-primary/10', color: 'text-primary', icon: Trophy },
+    { label: 'Aktivni Izazovi', value: challengesList.filter(c => c.status === 'Aktivan').length, bg: 'bg-green-100', color: 'text-green-600', icon: Trophy },
+    { label: 'Ukupno Učesnika', value: challengesList.reduce((sum, c) => sum + c.participants, 0), bg: 'bg-purple-100', color: 'text-purple-600', icon: Users },
   ]
 
   const handleInputChange = (e) => {
@@ -48,7 +48,7 @@ export default function AdminChallenges() {
 
   const handleOpenAddModal = () => {
     setEditingId(null)
-    setFormData({ title: '', type: 'Consistency', description: '', startDate: '', endDate: '', status: 'Active' })
+    setFormData({ title: '', type: 'Konstantnost', description: '', startDate: '', endDate: '', status: 'Aktivan' })
     setShowModal(true)
   }
 
@@ -90,7 +90,7 @@ export default function AdminChallenges() {
       setChallengesList(prev => [newChallenge, ...prev])
     }
     setShowModal(false)
-    setFormData({ title: '', type: 'Consistency', description: '', startDate: '', endDate: '', status: 'Active' })
+    setFormData({ title: '', type: 'Konstantnost', description: '', startDate: '', endDate: '', status: 'Aktivan' })
   }
 
   const handleDelete = (id) => {
@@ -101,11 +101,11 @@ export default function AdminChallenges() {
     <div className="p-4 lg:p-8">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Manage Challenges</h1>
-          <p className="text-muted-foreground">Create and manage fitness challenges</p>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Izazovima</h1>
+          <p className="text-muted-foreground">Napravi i upravljaj izazovima</p>
         </div>
         <button onClick={handleOpenAddModal} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-          <Plus size={16} /> Create Challenge
+          <Plus size={16} /> Napravi Izazov
         </button>
       </div>
 
@@ -115,7 +115,7 @@ export default function AdminChallenges() {
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">{editingId ? 'Edit Challenge' : 'Create New Challenge'}</h2>
+              <h2 className="text-2xl font-bold text-foreground">{editingId ? 'Uredi Izazov' : 'Napravi Novi Izazov'}</h2>
               <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
                 <X size={24} />
               </button>
@@ -124,13 +124,13 @@ export default function AdminChallenges() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Challenge Name */}
               <div>
-                <label htmlFor="title" className={labelClass}>Challenge Name</label>
+                <label htmlFor="title" className={labelClass}>Naziv Izazova</label>
                 <input
                   id="title"
                   name="title"
                   type="text"
                   className={inputClass}
-                  placeholder="Enter challenge name"
+                  placeholder="Unesite naziv izazova"
                   value={formData.title}
                   onChange={handleInputChange}
                   required
@@ -140,7 +140,7 @@ export default function AdminChallenges() {
               {/* Type and Status */}
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label htmlFor="type" className={labelClass}>Challenge Type</label>
+                  <label htmlFor="type" className={labelClass}>Tip Izazova</label>
                   <select
                     id="type"
                     name="type"
@@ -154,7 +154,7 @@ export default function AdminChallenges() {
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="status" className={labelClass}>Status</label>
+                  <label htmlFor="status" className={labelClass}>Status Izazova</label>
                   <select
                     id="status"
                     name="status"
@@ -171,12 +171,12 @@ export default function AdminChallenges() {
 
               {/* Description */}
               <div>
-                <label htmlFor="description" className={labelClass}>Description</label>
+                <label htmlFor="description" className={labelClass}>Opis Izazova</label>
                 <textarea
                   id="description"
                   name="description"
                   className={`${inputClass} min-h-32 resize-none`}
-                  placeholder="Enter challenge description"
+                  placeholder="Unesite opis izazova"
                   value={formData.description}
                   onChange={handleInputChange}
                   required
@@ -186,7 +186,7 @@ export default function AdminChallenges() {
               {/* Start and End Date */}
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label htmlFor="startDate" className={labelClass}>Start Date</label>
+                  <label htmlFor="startDate" className={labelClass}>Datum Početka</label>
                   <input
                     id="startDate"
                     name="startDate"
@@ -198,7 +198,7 @@ export default function AdminChallenges() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="endDate" className={labelClass}>End Date</label>
+                  <label htmlFor="endDate" className={labelClass}>Datum Završetka</label>
                   <input
                     id="endDate"
                     name="endDate"
@@ -218,13 +218,13 @@ export default function AdminChallenges() {
                   onClick={() => setShowModal(false)}
                   className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
                 >
-                  Cancel
+                  Otkaži
                 </button>
                 <button
                   type="submit"
                   className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
                 >
-                  {editingId ? 'Update Challenge' : 'Create Challenge'}
+                  {editingId ? 'Ažuriraj Izazov' : 'Napravi Izazov'}
                 </button>
               </div>
             </form>
@@ -239,7 +239,7 @@ export default function AdminChallenges() {
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-foreground">Challenge Participants</h2>
+                <h2 className="text-2xl font-bold text-foreground">Učesnici Izazova</h2>
                 <p className="text-sm text-muted-foreground mt-1">{selectedChallenge.title}</p>
               </div>
               <button onClick={() => setShowParticipantsModal(false)} className="text-muted-foreground hover:text-foreground">
@@ -250,8 +250,8 @@ export default function AdminChallenges() {
             {/* Participants List - Empty for now */}
             <div className="rounded-lg border border-border bg-muted/50 p-8 text-center">
               <Users size={48} className="mx-auto mb-3 text-muted-foreground opacity-50" />
-              <p className="text-muted-foreground">Participants will appear here</p>
-              <p className="text-sm text-muted-foreground mt-1">Total participants: {selectedChallenge.participants}</p>
+              <p className="text-muted-foreground">Učesnici će se pojaviti ovdje</p>
+              <p className="text-sm text-muted-foreground mt-1">Ukupno učesnika: {selectedChallenge.participants}</p>
             </div>
           </div>
         </div>
@@ -309,13 +309,13 @@ export default function AdminChallenges() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <button onClick={() => handleOpenParticipantsModal(c)} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
-                  <Eye size={14} /> View Participants
+                  <Eye size={14} /> Vidi Učesnike
                 </button>
                 <button onClick={() => handleOpenEditModal(c)} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
-                  <Edit size={14} /> Edit
+                  <Edit size={14} /> Uredi
                 </button>
                 <button onClick={() => handleDelete(c.id)} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-destructive hover:bg-muted transition-colors">
-                  <Trash2 size={14} /> Delete
+                  <Trash2 size={14} /> Obriši
                 </button>
               </div>
             </div>

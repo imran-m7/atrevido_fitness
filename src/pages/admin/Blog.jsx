@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { Plus, Edit, Trash2, Search, Calendar, BookOpen, X } from 'lucide-react'
 
 const initialBlogPosts = [
-  { id: 1, title: '10 Essential Tips for Building a Sustainable Fitness Routine', category: 'Fitness Tips', status: 'Published', date: 'March 15, 2024', featured: true, image: null, content: 'Content here...' },
-  { id: 2, title: 'Nutrition Myths Debunked: What Really Works',                  category: 'Nutrition',    status: 'Published', date: 'March 12, 2024', featured: false, image: null, content: 'Content here...' },
-  { id: 3, title: 'The Power of Group Fitness: Why Working Out Together Works',   category: 'Motivation',   status: 'Published', date: 'March 8, 2024',  featured: false, image: null, content: 'Content here...' },
-  { id: 4, title: "Beginner's Guide to Strength Training for Women",              category: 'Fitness Tips', status: 'Published', date: 'March 5, 2024',  featured: false, image: null, content: 'Content here...' },
-  { id: 5, title: 'How to Stay Motivated When Progress Feels Slow',               category: 'Motivation',   status: 'Published', date: 'March 1, 2024',  featured: false, image: null, content: 'Content here...' },
+  { id: 1, title: '10 Essential Tips for Building a Sustainable Fitness Routine', category: 'Fitnes Savjeti', status: 'Objavljen', date: 'March 15, 2024', featured: true, image: null, content: 'Content here...' },
+  { id: 2, title: 'Nutrition Myths Debunked: What Really Works',                  category: 'Ishrana',    status: 'Objavljen', date: 'March 12, 2024', featured: false, image: null, content: 'Content here...' },
+  { id: 3, title: 'The Power of Group Fitness: Why Working Out Together Works',   category: 'Motivacija',   status: 'Objavljen', date: 'March 8, 2024',  featured: false, image: null, content: 'Content here...' },
+  { id: 4, title: "Beginner's Guide to Strength Training for Women",              category: 'Fitnes Savjeti', status: 'Objavljen', date: 'March 5, 2024',  featured: false, image: null, content: 'Content here...' },
+  { id: 5, title: 'How to Stay Motivated When Progress Feels Slow',               category: 'Motivacija',   status: 'Objavljen', date: 'March 1, 2024',  featured: false, image: null, content: 'Content here...' },
 ]
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
@@ -19,12 +19,12 @@ export default function AdminBlog() {
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
     title: '',
-    category: 'Fitness Tips',
+    category: 'Fitnes Savjeti',
     content: '',
     image: null
   })
 
-  const categories = ['Fitness Tips', 'Nutrition', 'Motivation', 'Lifestyle', 'Recovery']
+  const categories = ['Fitnes Savjeti', 'Ishrana', 'Motivacija', 'Lifestyle', 'Oporavak']
 
   const filtered = blogPosts.filter(p =>
     p.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -32,8 +32,8 @@ export default function AdminBlog() {
   )
 
   const stats = [
-    { label: 'Total Posts', value: blogPosts.length, bg: 'bg-primary/10', color: 'text-primary', icon: BookOpen },
-    { label: 'Published', value: blogPosts.filter(p => p.status === 'Published').length, bg: 'bg-green-100', color: 'text-green-600', icon: BookOpen },
+    { label: 'Ukupno Objava', value: blogPosts.length, bg: 'bg-primary/10', color: 'text-primary', icon: BookOpen },
+    { label: 'Objavljeni', value: blogPosts.filter(p => p.status === 'Objavljen').length, bg: 'bg-green-100', color: 'text-green-600', icon: BookOpen },
   ]
 
   const handleInputChange = (e) => {
@@ -54,7 +54,7 @@ export default function AdminBlog() {
 
   const handleOpenAddModal = () => {
     setEditingId(null)
-    setFormData({ title: '', category: 'Fitness Tips', content: '', image: null })
+    setFormData({ title: '', category: 'Fitnes Savjeti', content: '', image: null })
     setShowModal(true)
   }
 
@@ -83,14 +83,14 @@ export default function AdminBlog() {
       const newPost = {
         id: Math.max(...blogPosts.map(p => p.id), 0) + 1,
         ...formData,
-        status: 'Published',
+        status: 'Objavljen',
         date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
         featured: false
       }
       setBlogPosts(prev => [newPost, ...prev])
     }
     setShowModal(false)
-    setFormData({ title: '', category: 'Fitness Tips', content: '', image: null })
+    setFormData({ title: '', category: 'Fitnes Savjeti', content: '', image: null })
   }
 
   const handleDelete = (id) => {
@@ -101,11 +101,11 @@ export default function AdminBlog() {
     <div className="p-4 lg:p-8">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Manage Blog</h1>
-          <p className="text-muted-foreground">Create and manage blog posts</p>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljanje Blogom</h1>
+          <p className="text-muted-foreground">Napravi i upravljaj blog objavama</p>
         </div>
         <button onClick={handleOpenAddModal} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-          <Plus size={16} /> New Post
+          <Plus size={16} /> Nova Objava
         </button>
       </div>
 
@@ -115,7 +115,7 @@ export default function AdminBlog() {
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">{editingId ? 'Edit Blog Post' : 'Create New Blog Post'}</h2>
+              <h2 className="text-2xl font-bold text-foreground">{editingId ? 'Uredi Blog' : 'Kreiraj Novi Blog'}</h2>
               <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
                 <X size={24} />
               </button>
@@ -124,13 +124,13 @@ export default function AdminBlog() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Blog Title */}
               <div>
-                <label htmlFor="title" className={labelClass}>Blog Title</label>
+                <label htmlFor="title" className={labelClass}>Naslov Bloga</label>
                 <input
                   id="title"
                   name="title"
                   type="text"
                   className={inputClass}
-                  placeholder="Enter blog title"
+                  placeholder="Unesite naslov bloga"
                   value={formData.title}
                   onChange={handleInputChange}
                   required
@@ -139,7 +139,7 @@ export default function AdminBlog() {
 
               {/* Category */}
               <div>
-                <label htmlFor="category" className={labelClass}>Category</label>
+                <label htmlFor="category" className={labelClass}>Kategorija</label>
                 <select
                   id="category"
                   name="category"
@@ -155,12 +155,12 @@ export default function AdminBlog() {
 
               {/* Blog Content */}
               <div>
-                <label htmlFor="content" className={labelClass}>Blog Content</label>
+                <label htmlFor="content" className={labelClass}>Sadržaj Bloga</label>
                 <textarea
                   id="content"
                   name="content"
                   className={`${inputClass} min-h-40 resize-none`}
-                  placeholder="Write your blog content here..."
+                  placeholder="Unesite sadržaj bloga..."
                   value={formData.content}
                   onChange={handleInputChange}
                   required
@@ -169,7 +169,7 @@ export default function AdminBlog() {
 
               {/* Image Upload */}
               <div>
-                <label className={labelClass}>Featured Image</label>
+                <label className={labelClass}>Prikvačite Sliku</label>
                 <div className="flex items-center gap-4">
                   {formData.image && (
                     <div className="relative">
@@ -184,7 +184,7 @@ export default function AdminBlog() {
                     </div>
                   )}
                   <label className="flex items-center gap-2 rounded-lg border-2 border-dashed border-border px-4 py-3 cursor-pointer hover:border-primary transition-colors">
-                    <span className="text-sm font-medium text-foreground">Choose Image</span>
+                    <span className="text-sm font-medium text-foreground">Izaberi Sliku</span>
                     <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                   </label>
                 </div>
@@ -197,13 +197,13 @@ export default function AdminBlog() {
                   onClick={() => setShowModal(false)}
                   className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
                 >
-                  Cancel
+                  Otkaži
                 </button>
                 <button
                   type="submit"
                   className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
                 >
-                  {editingId ? 'Update Post' : 'Publish Post'}
+                  {editingId ? 'Ažuriraj Objavu' : 'Objavi Objavu'}
                 </button>
               </div>
             </form>
@@ -232,20 +232,20 @@ export default function AdminBlog() {
       <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
         <div className="relative flex-1">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input className={inputClass + ' pl-9'} placeholder="Search posts..." value={search} onChange={e => setSearch(e.target.value)} />
+          <input className={inputClass + ' pl-9'} placeholder="Istraži objave..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
       </div>
 
       {/* Table */}
       <div className="rounded-lg border border-border bg-card shadow-sm">
         <div className="p-5 border-b border-border">
-          <h3 className="font-semibold text-foreground">Blog Posts</h3>
+          <h3 className="font-semibold text-foreground">Blog Objave</h3>
         </div>
         <div className="p-5 overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
-                {['Post', 'Category', 'Status', 'Date', 'Actions'].map((h, i) => (
+                {['Objava', 'Kategorija', 'Status', 'Datum', 'Radnje'].map((h, i) => (
                   <th key={h} className={`pb-3 text-sm font-medium text-muted-foreground ${i === 4 ? 'text-right' : 'text-left'}`}>{h}</th>
                 ))}
               </tr>
@@ -259,7 +259,7 @@ export default function AdminBlog() {
                         <BookOpen size={20} className="text-primary" />
                       </div>
                       <div>
-                        <p className="font-medium text-foreground line-clamp-1 max-w-[220px]">{post.title}</p>
+                        <p className="font-medium text-foreground line-clamp-1 max-w-55">{post.title}</p>
                         {post.featured && (
                           <span className="inline-block mt-1 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground">Featured</span>
                         )}
@@ -270,7 +270,7 @@ export default function AdminBlog() {
                     <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground">{post.category}</span>
                   </td>
                   <td className="py-4">
-                    <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Published</span>
+                    <span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">Objavljeno</span>
                   </td>
                   <td className="py-4">
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">

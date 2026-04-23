@@ -10,7 +10,7 @@ import {
 const navItems = [
   { href: '/member/dashboard', label: 'Početna',    icon: LayoutDashboard },
   { href: '/member/schedule',  label: 'Raspored',     icon: Calendar },
-  { href: '/member/book',      label: 'Rezervacija treninga',icon: CalendarPlus },
+  { href: '/member/book',      label: 'Rezervacija Treninga',icon: CalendarPlus },
   { href: '/member/challenges',label: 'Izazovi',   icon: Trophy },
   { href: '/member/progress',  label: 'Napredak',     icon: TrendingUp },
   { href: '/member/nutrition', label: 'Ishrana',    icon: Salad },
@@ -121,7 +121,7 @@ export default function MemberSidebar() {
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           >
             <LogOut size={20} />
-            Odjavi se
+            Odjavi Se
           </Link>
         </div>
       </aside>

@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { Upload, Search, FileText, Trash2, Eye, Download, User, Calendar } from 'lucide-react'
 
 const initialMembers = [
-  { id: 1, name: 'Maria Garcia',        email: 'maria@email.com',      subscription: 'Individual + Nutrition', nutritionPlan: { fileName: 'maria_garcia_nutrition_plan.pdf',      uploadedAt: '2024-01-15', fileSize: '2.4 MB' } },
-  { id: 2, name: 'Sofia Rodriguez',     email: 'sofia@email.com',      subscription: 'Individual + Nutrition', nutritionPlan: { fileName: 'sofia_rodriguez_plan.pdf',              uploadedAt: '2024-01-10', fileSize: '1.8 MB' } },
-  { id: 3, name: 'Isabella Martinez',   email: 'isabella@email.com',   subscription: 'Individual + Nutrition', nutritionPlan: null },
-  { id: 4, name: 'Camila Lopez',        email: 'camila@email.com',     subscription: 'Individual Training',    nutritionPlan: null },
-  { id: 5, name: 'Valentina Hernandez', email: 'valentina@email.com',  subscription: 'Individual + Nutrition', nutritionPlan: { fileName: 'valentina_nutrition_jan2024.pdf',        uploadedAt: '2024-01-18', fileSize: '3.1 MB' } },
-  { id: 6, name: 'Ana Torres',          email: 'ana@email.com',        subscription: 'Group Training',         nutritionPlan: null },
+  { id: 1, name: 'Maria Garcia',        email: 'maria@email.com',      subscription: 'Individualni trening + Ishrana', nutritionPlan: { fileName: 'maria_garcia_nutrition_plan.pdf',      uploadedAt: '2024-01-15', fileSize: '2.4 MB' } },
+  { id: 2, name: 'Sofia Rodriguez',     email: 'sofia@email.com',      subscription: 'Individualni trening + Ishrana', nutritionPlan: { fileName: 'sofia_rodriguez_plan.pdf',              uploadedAt: '2024-01-10', fileSize: '1.8 MB' } },
+  { id: 3, name: 'Isabella Martinez',   email: 'isabella@email.com',   subscription: 'Individualni trening + Ishrana', nutritionPlan: null },
+  { id: 4, name: 'Camila Lopez',        email: 'camila@email.com',     subscription: 'Individualni trening',    nutritionPlan: null },
+  { id: 5, name: 'Valentina Hernandez', email: 'valentina@email.com',  subscription: 'Individualni trening + Ishrana', nutritionPlan: { fileName: 'valentina_nutrition_jan2024.pdf',        uploadedAt: '2024-01-18', fileSize: '3.1 MB' } },
+  { id: 6, name: 'Ana Torres',          email: 'ana@email.com',        subscription: 'Grupni trening',         nutritionPlan: null },
 ]
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
@@ -16,7 +16,7 @@ export default function AdminNutrition() {
   const [search, setSearch] = useState('')
   const [members] = useState(initialMembers)
 
-  const withAccess = members.filter(m => m.subscription.includes('Nutrition'))
+  const withAccess = members.filter(m => m.subscription.includes('Ishrana'))
   const filtered = withAccess.filter(m =>
     m.name.toLowerCase().includes(search.toLowerCase()) ||
     m.email.toLowerCase().includes(search.toLowerCase())
@@ -29,15 +29,15 @@ export default function AdminNutrition() {
   return (
     <div className="p-4 lg:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Manage Nutrition Plans</h1>
-        <p className="text-muted-foreground">Upload personalized PDF nutrition plans for each member</p>
+        <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Planom Ishrane</h1>
+        <p className="text-muted-foreground">Postavi personalizovan PDF plan za svakog člana</p>
       </div>
 
       {/* Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-2 w-fit mx-auto">
         {[
-          { label: 'Members with Nutrition Access', value: withAccess.length,                                   bg: 'bg-primary/10', color: 'text-primary',    icon: User },
-          { label: 'Plans Uploaded',                value: withAccess.filter(m => m.nutritionPlan).length,      bg: 'bg-green-100',  color: 'text-green-600',  icon: FileText },
+          { label: 'Članovi Sa Pristupom Ishrani', value: withAccess.length,                                   bg: 'bg-primary/10', color: 'text-primary',    icon: User },
+          { label: 'Postavljeni Planovi',                value: withAccess.filter(m => m.nutritionPlan).length,      bg: 'bg-green-100',  color: 'text-green-600',  icon: FileText },
         ].map(({ label, value, bg, color, icon: Icon }) => (
           <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-4">
@@ -59,7 +59,7 @@ export default function AdminNutrition() {
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             className={inputClass + ' pl-9'}
-            placeholder="Search members by name..."
+            placeholder="Istraži članove po imenu..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -69,11 +69,11 @@ export default function AdminNutrition() {
       {/* Members List */}
       <div className="rounded-lg border border-border bg-card shadow-sm">
         <div className="p-5 border-b border-border">
-          <h3 className="font-semibold text-foreground">Member Nutrition Plans</h3>
+          <h3 className="font-semibold text-foreground">Planovi Ishrane za Članove</h3>
         </div>
         <div className="p-5 space-y-4">
           {filtered.length === 0 ? (
-            <p className="py-8 text-center text-muted-foreground">No members with nutrition access found.</p>
+            <p className="py-8 text-center text-muted-foreground">Nema članova sa pristupom ishrani.</p>
           ) : (
             filtered.map((member) => (
               <div
@@ -107,9 +107,9 @@ export default function AdminNutrition() {
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {[
-                          { icon: Eye,      label: 'View' },
-                          { icon: Download, label: 'Download' },
-                          { icon: Upload,   label: 'Replace', onClick: () => handleUpload(member.id) },
+                          { icon: Eye,      label: 'Pregledaj' },
+                          { icon: Download, label: 'Preuzmi' },
+                          { icon: Upload,   label: 'Zamijeni', onClick: () => handleUpload(member.id) },
                         ].map(({ icon: Icon, label, onClick }) => (
                           <button
                             key={label}
@@ -127,13 +127,13 @@ export default function AdminNutrition() {
                   ) : (
                     <div className="flex flex-col items-end gap-2">
                       <span className="rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
-                        No plan uploaded
+                        Plan nije objavljen
                       </span>
                       <button
                         onClick={() => handleUpload(member.id)}
                         className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
                       >
-                        <Upload size={16} /> Upload PDF Plan
+                        <Upload size={16} /> Objavi PDF Plan
                       </button>
                     </div>
                   )}
@@ -148,16 +148,15 @@ export default function AdminNutrition() {
       <div className="mt-6 rounded-lg border border-border bg-card shadow-sm">
         <div className="flex items-center gap-2 p-5 border-b border-border">
           <Calendar size={20} />
-          <h3 className="font-semibold text-foreground">Upload Guidelines</h3>
+          <h3 className="font-semibold text-foreground">Smjernice za Objavljivanje</h3>
         </div>
         <div className="p-5">
           <ul className="space-y-2 text-sm text-muted-foreground">
             {[
-              'PDF files only, maximum size 10MB',
-              'Include member name and date in the file name for easy reference',
-              'Members with "Individual + Nutrition" subscription can view their uploaded plan',
-              'Replacing a plan will permanently delete the previous version',
-              'Members are automatically notified when a new plan is uploaded',
+              'PDF fajlovi samo, maksimalna veličina 10MB',
+              'Uključite ime člana i datum u naziv fajla za laku referencu',
+              'Članovi sa "Individualni trening + Ishrana" pretplatom mogu vidjeti svoj objavljeni plan',
+              'Zamjena plana će trajno obrisati prethodnu verziju',
             ].map((tip) => (
               <li key={tip}>– {tip}</li>
             ))}

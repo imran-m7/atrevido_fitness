@@ -7,13 +7,13 @@ import {
 import logo2 from '../assets/logo2.png'
 
 const navItems = [
-  { href: '/admin/dashboard',  label: 'Dashboard',         icon: LayoutDashboard },
-  { href: '/admin/trainings',  label: 'Manage Trainings',  icon: Calendar },
-  { href: '/admin/members',    label: 'Manage Members',    icon: Users },
-  { href: '/admin/progress',   label: 'Manage Progress',   icon: TrendingUp },
-  { href: '/admin/challenges', label: 'Manage Challenges', icon: Trophy },
-  { href: '/admin/nutrition',  label: 'Manage Nutrition',  icon: Salad },
-  { href: '/admin/blog',       label: 'Manage Blog',       icon: BookOpen },
+  { href: '/admin/dashboard',  label: 'Početna',         icon: LayoutDashboard },
+  { href: '/admin/trainings',  label: 'Upravljaj Treninzima',  icon: Calendar },
+  { href: '/admin/members',    label: 'Upravljaj Članovima',    icon: Users },
+  { href: '/admin/progress',   label: 'Upravljaj Napretkom',   icon: TrendingUp },
+  { href: '/admin/challenges', label: 'Upravljaj Izazovima', icon: Trophy },
+  { href: '/admin/nutrition',  label: 'Upravljaj Ishranom',  icon: Salad },
+  { href: '/admin/blog',       label: 'Upravljaj Blogovima',       icon: BookOpen },
 ]
 
 export default function AdminSidebar() {
@@ -61,7 +61,7 @@ export default function AdminSidebar() {
           <img src={logo2} alt="Atrevido Logo" className="h-9 w-9 object-cover rounded-lg" />
           <div>
             <h1 className="text-lg font-bold text-sidebar-foreground">Atrevido</h1>
-            <p className="text-xs text-sidebar-foreground/70">Admin Panel</p>
+            <p className="text-xs text-sidebar-foreground/70">Portal za Admina</p>
           </div>
         </div>
 
@@ -72,9 +72,9 @@ export default function AdminSidebar() {
               <Shield size={20} className="text-sidebar-accent-foreground" />
             </div>
             <div className="min-w-0">
-              <p className="truncate font-medium text-sidebar-foreground">Elena Rodriguez</p>
+              <p className="truncate font-medium text-sidebar-foreground">Dika Hodžić-Afaneh</p>
               <span className="inline-block rounded-full bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">
-                Trainer / Admin
+                Trenerica / Admin
               </span>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function AdminSidebar() {
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           >
             <LogOut size={20} />
-            Sign Out
+            Odjavi Se
           </Link>
         </div>
       </aside>

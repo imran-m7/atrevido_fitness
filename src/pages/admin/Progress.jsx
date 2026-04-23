@@ -37,15 +37,15 @@ export default function AdminProgress() {
   const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
   const handleSubmit = (e) => {
     e.preventDefault()
-    alert(`Progress saved for ${selectedMember.name}!`)
+    alert(`Napredak sačuvan za ${selectedMember.name}!`)
     setForm({ date: '', height: '', weight: '', ruka: '', t1: '', t2: '', t3: '', bokovi: '', noga: '' })
   }
 
   return (
     <div className="p-4 lg:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Manage Progress</h1>
-        <p className="text-muted-foreground">Track and manage member measurements</p>
+        <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljanje Napretkom</h1>
+        <p className="text-muted-foreground">Prati i upravljaj mjerama članova</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -55,7 +55,7 @@ export default function AdminProgress() {
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="flex items-center gap-2 p-5 border-b border-border">
               <Search size={20} />
-              <h3 className="font-semibold text-foreground">Select Member</h3>
+              <h3 className="font-semibold text-foreground">Izaberi Člana</h3>
             </div>
             <div className="p-4">
               <div className="relative mb-4">
@@ -63,7 +63,7 @@ export default function AdminProgress() {
                 <input
                   type="text"
                   className={inputClass + ' pl-9'}
-                  placeholder="Search member..."
+                  placeholder="Pretraži člana..."
                   value={memberSearch}
                   onChange={e => setMemberSearch(e.target.value)}
                 />
@@ -94,7 +94,7 @@ export default function AdminProgress() {
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="flex items-center gap-2 p-5 border-b border-border">
               <Plus size={20} />
-              <h3 className="font-semibold text-foreground">Add Progress Entry</h3>
+              <h3 className="font-semibold text-foreground">Dodaj Unos Napretka</h3>
             </div>
             <div className="p-5">
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -104,38 +104,38 @@ export default function AdminProgress() {
                 </div>
                 <div>
                   <label htmlFor="height" className={labelClass}>Height (cm)</label>
-                  <input id="height" type="number" step="0.1" className={inputClass} placeholder="Enter height" value={form.height} onChange={handleChange} required />
+                  <input id="height" type="number" step="0.1" className={inputClass} placeholder="Unesite visinu" value={form.height} onChange={handleChange} required />
                 </div>
                 <div>
                   <label htmlFor="weight" className={labelClass}>Weight (kg)</label>
-                  <input id="weight" type="number" step="0.1" className={inputClass} placeholder="Enter weight" value={form.weight} onChange={handleChange} required />
+                  <input id="weight" type="number" step="0.1" className={inputClass} placeholder="Unesite težinu" value={form.weight} onChange={handleChange} required />
                 </div>
                 <div>
                   <label htmlFor="ruka" className={labelClass}>Ruka (cm)</label>
-                  <input id="ruka" type="number" step="0.1" className={inputClass} placeholder="Arm measurement" value={form.ruka} onChange={handleChange} required />
+                  <input id="ruka" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.ruka} onChange={handleChange} required />
                 </div>
                 <div>
                   <label htmlFor="t1" className={labelClass}>T1 (cm)</label>
-                  <input id="t1" type="number" step="0.1" className={inputClass} placeholder="Enter measurement" value={form.t1} onChange={handleChange} required />
+                  <input id="t1" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.t1} onChange={handleChange} required />
                 </div>
                 <div>
                   <label htmlFor="t2" className={labelClass}>T2 (cm)</label>
-                  <input id="t2" type="number" step="0.1" className={inputClass} placeholder="Enter measurement" value={form.t2} onChange={handleChange} required />
+                  <input id="t2" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.t2} onChange={handleChange} required />
                 </div>
                 <div>
                   <label htmlFor="t3" className={labelClass}>T3 (cm)</label>
-                  <input id="t3" type="number" step="0.1" className={inputClass} placeholder="Enter measurement" value={form.t3} onChange={handleChange} required />
+                  <input id="t3" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.t3} onChange={handleChange} required />
                 </div>
                 <div>
                   <label htmlFor="bokovi" className={labelClass}>Bokovi (cm)</label>
-                  <input id="bokovi" type="number" step="0.1" className={inputClass} placeholder="Hips measurement" value={form.bokovi} onChange={handleChange} required />
+                  <input id="bokovi" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.bokovi} onChange={handleChange} required />
                 </div>
                 <div>
                   <label htmlFor="noga" className={labelClass}>Noga (cm)</label>
-                  <input id="noga" type="number" step="0.1" className={inputClass} placeholder="Leg measurement" value={form.noga} onChange={handleChange} required />
+                  <input id="noga" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.noga} onChange={handleChange} required />
                 </div>
                 <button type="submit" className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-                  Save Progress
+                  Sačuvaj Napredak
                 </button>
               </form>
             </div>
@@ -147,10 +147,10 @@ export default function AdminProgress() {
           {/* Summary Cards */}
           <div className="grid gap-4 md:grid-cols-5">
             {[
-              { icon: Ruler, label: 'Height', value: latestEntry ? `${latestEntry.height} cm` : 'N/A', trend: 'constant' },
-              { icon: Scale, label: 'Weight', value: latestEntry ? `${latestEntry.weight} kg` : 'N/A', trend: latestEntry ? '-2 kg' : 'No data' },
+              { icon: Ruler, label: 'Visina', value: latestEntry ? `${latestEntry.height} cm` : 'N/A', trend: 'constant' },
+              { icon: Scale, label: 'Težina', value: latestEntry ? `${latestEntry.weight} kg` : 'N/A', trend: latestEntry ? '-2 kg' : 'Nema podataka' },
               { icon: Ruler, label: 'Ruka', value: latestEntry ? `${latestEntry.ruka} cm` : 'N/A', trend: 'arm' },
-              { icon: Ruler, label: 'Bokovi', value: latestEntry ? `${latestEntry.bokovi} cm` : 'N/A', trend: latestEntry ? '-3 cm' : 'No data' },
+              { icon: Ruler, label: 'Bokovi', value: latestEntry ? `${latestEntry.bokovi} cm` : 'N/A', trend: latestEntry ? '-3 cm' : 'Nema podataka' },
               { icon: Ruler, label: 'Noga', value: latestEntry ? `${latestEntry.noga} cm` : 'N/A', trend: 'leg' },
             ].map(({ icon: Icon, label, value, trend, neutral }) => (
               <div key={label} className="rounded-lg border border-border bg-card p-4 shadow-sm">
@@ -172,14 +172,14 @@ export default function AdminProgress() {
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="flex items-center gap-2 p-5 border-b border-border">
               <TrendingUp size={20} className="text-primary" />
-              <h3 className="font-semibold text-foreground">Progress Chart</h3>
+              <h3 className="font-semibold text-foreground">Chart Napretka</h3>
             </div>
             <div className="p-5">
               <div className="flex h-64 items-center justify-center rounded-lg bg-muted/50">
                 <div className="text-center text-muted-foreground">
                   <TrendingUp size={48} className="mx-auto mb-2" />
-                  <p>Progress Chart Visualization</p>
-                  <p className="text-sm">Weight and measurements over time</p>
+                  <p>Visualizacija Chart Napretka</p>
+                  <p className="text-sm">Težina i mjere preko vremena</p>
                 </div>
               </div>
             </div>
@@ -188,13 +188,13 @@ export default function AdminProgress() {
           {/* History Table */}
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="p-5 border-b border-border">
-              <h3 className="font-semibold text-foreground">Progress History - {selectedMember.name}</h3>
+              <h3 className="font-semibold text-foreground">Historija Napretka- {selectedMember.name}</h3>
             </div>
             <div className="p-5 overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    {['Date', 'Height', 'Weight', 'Ruka', 'T1', 'T2', 'T3', 'Bokovi', 'Noga'].map(h => (
+                    {['Datum', 'Visina', 'Težina', 'Ruka (sredina nadlaktice)', 'T1 (najuži dio-struk)', 'T2 (oko pupka)', 'T3 (najširi dio)', 'Bokovi (najširi dio)', 'Noga (najširi dio natkoljenice)'].map(h => (
                       <th key={h} className={`pb-3 text-xs font-medium text-muted-foreground ${h === 'Date' ? 'text-left' : 'text-right'}`}>{h}</th>
                     ))}
                   </tr>
@@ -217,7 +217,7 @@ export default function AdminProgress() {
                   ) : (
                     <tr>
                       <td colSpan="9" className="py-6 text-center text-sm text-muted-foreground">
-                        No progress entries for this member yet
+                        Nema unosa o napretku za ovog člana još uvijek
                       </td>
                     </tr>
                   )}

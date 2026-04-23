@@ -104,17 +104,17 @@ export default function AdminTrainings() {
     setTrainingSessions(prev => prev.filter(s => s.id !== id))
   }
 
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  const days = ['Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja']
 
   return (
     <div className="p-4 lg:p-8">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Manage Trainings</h1>
-          <p className="text-muted-foreground">View and manage training sessions</p>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Treninzima</h1>
+          <p className="text-muted-foreground">Pregled i upravljanje treninzima</p>
         </div>
         <button onClick={handleOpenAddModal} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-          <Plus size={16} /> Add Training
+          <Plus size={16} /> Dodaj Trening
         </button>
       </div>
 
@@ -131,13 +131,13 @@ export default function AdminTrainings() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Training Name */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Training</label>
+                <label className="block text-sm font-medium text-foreground mb-2">Trening</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="e.g., HIIT Training"
+                  placeholder="npr. HIIT Training"
                   className={inputClass}
                   required
                 />
@@ -145,7 +145,7 @@ export default function AdminTrainings() {
 
               {/* Type Selection */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Type</label>
+                <label className="block text-sm font-medium text-foreground mb-2">Tip</label>
                 <div className="flex gap-3">
                   <button
                     type="button"
@@ -156,7 +156,7 @@ export default function AdminTrainings() {
                         : 'border border-border bg-background text-foreground hover:bg-muted'
                     }`}
                   >
-                    Group
+                    Grupni Trening
                   </button>
                   <button
                     type="button"
@@ -167,14 +167,14 @@ export default function AdminTrainings() {
                         : 'border border-border bg-background text-foreground hover:bg-muted'
                     }`}
                   >
-                    Individual
+                    Individualni Trening
                   </button>
                 </div>
               </div>
 
               {/* Day Selection */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Day</label>
+                <label className="block text-sm font-medium text-foreground mb-2">Dan</label>
                 <select
                   name="day"
                   value={formData.day}
@@ -189,7 +189,7 @@ export default function AdminTrainings() {
 
               {/* Time */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Time</label>
+                <label className="block text-sm font-medium text-foreground mb-2">Vrijeme</label>
                 <select
                   name="time"
                   value={formData.time}
@@ -212,13 +212,13 @@ export default function AdminTrainings() {
 
               {/* Capacity */}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Maximum Capacity</label>
+                <label className="block text-sm font-medium text-foreground mb-2">Max Kapacitet</label>
                 <input
                   type="number"
                   name="capacity"
                   value={formData.capacity}
                   onChange={handleInputChange}
-                  placeholder="e.g., 12"
+                  placeholder="npr. 12"
                   min="1"
                   className={inputClass}
                   required
@@ -232,13 +232,13 @@ export default function AdminTrainings() {
                   onClick={() => setShowModal(false)}
                   className="flex-1 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors"
                 >
-                  Cancel
+                  Otkaži
                 </button>
                 <button
                   type="submit"
                   className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
                 >
-                  {editingId ? 'Update Training' : 'Create Training'}
+                  {editingId ? 'Ažurirajte Trening' : 'Napravite Trening'}
                 </button>
               </div>
             </form>
@@ -252,7 +252,7 @@ export default function AdminTrainings() {
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             className={inputClass + ' pl-9'}
-            placeholder="Search trainings..."
+            placeholder="Istraži treninge..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -262,7 +262,7 @@ export default function AdminTrainings() {
       {/* Table */}
       <div className="rounded-lg border border-border bg-card shadow-sm">
         <div className="p-5 border-b border-border">
-          <h3 className="font-semibold text-foreground">Training Sessions</h3>
+          <h3 className="font-semibold text-foreground">Treninzi</h3>
         </div>
         <div className="p-5 overflow-x-auto">
           <table className="w-full">
