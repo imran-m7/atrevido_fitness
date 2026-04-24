@@ -97,6 +97,7 @@ namespace AtrevidoFitness.API.Controllers
         }
 
         // DELETE api/trainingsessions/{id} — samo Admin
+        // NOVO — hard delete
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
@@ -104,7 +105,7 @@ namespace AtrevidoFitness.API.Controllers
             var session = await _context.TrainingSessions.FindAsync(id);
             if (session == null) return NotFound();
 
-            session.IsActive = false; // soft delete
+            _context.TrainingSessions.Remove(session);
             await _context.SaveChangesAsync();
 
             return NoContent();
