@@ -8,6 +8,8 @@ namespace AtrevidoFitness.API.DTOs
         public DateOnly SessionDate { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime RegisteredAt { get; set; }
+        public string? UserFirstName { get; set; }
+        public string? UserLastName { get; set; }
     }
 
     public class TrainingRegistrationCreateDto

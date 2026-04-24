@@ -1,5 +1,4 @@
-﻿// Helpers/JwtHelper.cs
-using AtrevidoFitness.API.Models.Entities;
+﻿using AtrevidoFitness.API.Models.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

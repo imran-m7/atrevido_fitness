@@ -1,4 +1,4 @@
-using AtrevidoFitness.API.Data;
+﻿using AtrevidoFitness.API.Data;
 using AtrevidoFitness.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +51,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-//  Swagger sa JWT podr�kom 
+//  Swagger sa JWT podrškom 
 builder.Services.AddEndpointsApiExplorer();// omogucava swageru da prikupi sve api rute/endpointe koje sam napravio u controlleru
 builder.Services.AddSwaggerGen(c =>
 {
@@ -88,10 +88,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+
+app.UseCors("AllowReactApp"); 
 app.UseHttpsRedirection();
-app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();

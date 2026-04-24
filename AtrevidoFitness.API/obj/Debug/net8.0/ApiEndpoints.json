@@ -294,6 +294,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "AtrevidoFitness.API.Controllers.MembershipController",
+    "Method": "GetMine",
+    "RelativePath": "api/Membership/mine",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AtrevidoFitness.API.Controllers.MembershipController",
+    "Method": "RequestMembership",
+    "RelativePath": "api/Membership/request",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "AtrevidoFitness.API.DTOs.UserTrainingMembershipCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "AtrevidoFitness.API.Controllers.NutritionController",
     "Method": "GetMine",
     "RelativePath": "api/Nutrition",

@@ -1,6 +1,4 @@
-﻿// Models/Entities/TrainingRegistration.cs
-// Prijava clanice na konkretan termin u konkretnoj sedmici
-namespace AtrevidoFitness.API.Models.Entities
+﻿namespace AtrevidoFitness.API.Models.Entities
 {
     public class TrainingRegistration
     {
@@ -12,10 +10,8 @@ namespace AtrevidoFitness.API.Models.Entities
         public int TrainingSessionId { get; set; }
         public TrainingSession TrainingSession { get; set; } = null!;
 
-        // Datum konkretnog termina (jer su sesije sedmicne)
         public DateOnly SessionDate { get; set; }
 
-        // "Registered", "Cancelled", "Attended"
         public string Status { get; set; } = "Registered";
 
         public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;

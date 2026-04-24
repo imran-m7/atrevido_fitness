@@ -9,7 +9,6 @@ namespace AtrevidoFitness.API.Models.Entities
 
         public string Content { get; set; } = string.Empty;
 
-        // "Guidelines" (za grupne) ili "FullPlan" (za individualne)
         public string PlanType { get; set; } = string.Empty;
 
         public bool IsActive { get; set; } = true;

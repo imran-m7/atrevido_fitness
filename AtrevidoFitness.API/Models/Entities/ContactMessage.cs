@@ -1,5 +1,4 @@
 ﻿// Models/Entities/ContactMessage.cs
-// Poruke sa kontakt forme, vidljive i za goste
 using System.ComponentModel.DataAnnotations;
 
 namespace AtrevidoFitness.API.Models.Entities
@@ -19,7 +18,6 @@ namespace AtrevidoFitness.API.Models.Entities
         [Required]
         public string Message { get; set; } = string.Empty;
 
-        // "New", "Read", "Replied"
         public string Status { get; set; } = "New";
 
         public DateTime SentAt { get; set; } = DateTime.UtcNow;

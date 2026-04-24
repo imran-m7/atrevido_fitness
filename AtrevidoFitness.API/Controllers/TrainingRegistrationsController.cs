@@ -37,7 +37,9 @@ namespace AtrevidoFitness.API.Controllers
                     TrainingSessionId = r.TrainingSessionId,
                     SessionDate = r.SessionDate,
                     Status = r.Status,
-                    RegisteredAt = r.RegisteredAt
+                    RegisteredAt = r.RegisteredAt,
+                    UserFirstName = r.User.FirstName,
+                    UserLastName = r.User.LastName
                 })
                 .ToListAsync();
 

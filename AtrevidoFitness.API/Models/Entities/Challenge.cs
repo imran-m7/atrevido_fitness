@@ -15,7 +15,6 @@ namespace AtrevidoFitness.API.Models.Entities
 
         public DateTime EndDate { get; set; }
 
-        // "Active", "Upcoming", "Finished"
         public string Status { get; set; } = "Upcoming";
 
         public bool IsPublic { get; set; } = true;

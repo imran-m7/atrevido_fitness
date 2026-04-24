@@ -11,10 +11,8 @@ namespace AtrevidoFitness.API.Models.Entities
 
         public DateOnly EntryDate { get; set; }
         
-        // Tezina u kg
         public decimal? WeightKg { get; set; }
 
-        // Mjerenja u cm
         public decimal? WaistCm { get; set; }
         public decimal? HipsCm { get; set; }
         public decimal? ChestCm { get; set; }

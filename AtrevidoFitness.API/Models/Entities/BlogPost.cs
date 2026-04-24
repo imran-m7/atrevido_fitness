@@ -11,7 +11,6 @@ namespace AtrevidoFitness.API.Models.Entities
 
         public string? ImageUrl { get; set; }
 
-        // "Fitness", "Motivation", "Lifestyle", "Nutrition"
         public string Category { get; set; } = string.Empty;
 
         public bool IsPublished { get; set; } = false;
@@ -20,7 +19,6 @@ namespace AtrevidoFitness.API.Models.Entities
 
         public DateTime? PublishedAt { get; set; }
 
-        // Ko je autor (uvijek Dika, ali za buducnost)
         public int AuthorId { get; set; }
         public User Author { get; set; } = null!;
     }

@@ -28,7 +28,6 @@ namespace AtrevidoFitness.API.Models.Entities
 
         public bool IsActive { get; set; } = true;
 
-        // Navigation properties
         public UserTrainingMembership? TrainingMembership { get; set; }
         public ICollection<TrainingRegistration> TrainingRegistrations { get; set; } = new List<TrainingRegistration>();
         public ICollection<ChallengeParticipant> ChallengeParticipations { get; set; } = new List<ChallengeParticipant>();

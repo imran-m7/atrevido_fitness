@@ -44,6 +44,7 @@ namespace AtrevidoFitness.API.Controllers
 
             return Ok(new AuthResponseDto
             {
+                Id = user.Id,
                 Token = token,
                 Email = user.Email,
                 FirstName = user.FirstName,
@@ -68,6 +69,7 @@ namespace AtrevidoFitness.API.Controllers
 
             return Ok(new AuthResponseDto
             {
+                Id = user.Id,
                 Token = token,
                 Email = user.Email,
                 FirstName = user.FirstName,

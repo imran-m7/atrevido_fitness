@@ -4,6 +4,7 @@ using AtrevidoFitness.API.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AtrevidoFitness.API.Controllers
 {
@@ -27,7 +28,6 @@ namespace AtrevidoFitness.API.Controllers
             var weekStart = today.AddDays(-(int)DateTime.Today.DayOfWeek);
             var weekEnd = weekStart.AddDays(7);
 
-            // Izvuci dan kao string PRIJE upita, ne unutar LINQ-a
             var todayDayName = DateTime.Today.DayOfWeek.ToString();
 
             var totalMembers = await _context.Users
@@ -59,7 +59,6 @@ namespace AtrevidoFitness.API.Controllers
             });
         }
 
-        // GET api/admin/members
         [HttpGet("members")]
         public async Task<IActionResult> GetMembers()
         {
@@ -100,7 +99,6 @@ namespace AtrevidoFitness.API.Controllers
             var membership = await _context.UserTrainingMemberships
                 .FirstOrDefaultAsync(m => m.UserId == id);
 
-            // Ako ne postoji, kreiraj novi
             if (membership == null)
             {
                 membership = new UserTrainingMembership
@@ -134,5 +132,8 @@ namespace AtrevidoFitness.API.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "Membership updated." });
         }
+
+        
+        
     }
 }

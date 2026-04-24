@@ -24,19 +24,19 @@ namespace AtrevidoFitness.API.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // ── User ──────────────────────────────────────────────
+            //  User 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
-            // ── UserTrainingMembership ────────────────────────────
+            //  UserTrainingMembership 
             modelBuilder.Entity<UserTrainingMembership>()
                 .HasOne(m => m.User)
                 .WithOne(u => u.TrainingMembership)
                 .HasForeignKey<UserTrainingMembership>(m => m.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ── TrainingRegistration ──────────────────────────────
+            //  TrainingRegistration 
             // Clanica ne moze dva puta isti dan isti termin
             modelBuilder.Entity<TrainingRegistration>()
                 .HasIndex(r => new { r.UserId, r.TrainingSessionId, r.SessionDate })
@@ -54,13 +54,13 @@ namespace AtrevidoFitness.API.Data
                 .HasForeignKey(r => r.TrainingSessionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ── ChallengeParticipant ──────────────────────────────
+            //  ChallengeParticipant 
             // Clanica ne moze dvaput uci u isti challenge
             modelBuilder.Entity<ChallengeParticipant>()
                 .HasIndex(cp => new { cp.UserId, cp.ChallengeId })
                 .IsUnique();
 
-            // ── ProgressEntry ─────────────────────────────────────
+            //  ProgressEntry 
             modelBuilder.Entity<ProgressEntry>()
                 .Property(p => p.WeightKg)
                 .HasPrecision(5, 2);
@@ -85,14 +85,14 @@ namespace AtrevidoFitness.API.Data
                 .Property(p => p.ThighCm)
                 .HasPrecision(5, 2);
 
-            // ── NutritionPlan ─────────────────────────────────────
+            //  NutritionPlan 
             modelBuilder.Entity<NutritionPlan>()
                 .HasOne(n => n.AssignedToUser)
                 .WithMany()
                 .HasForeignKey(n => n.AssignedToUserId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            // ── BlogPost ──────────────────────────────────────────
+            //  BlogPost 
             modelBuilder.Entity<BlogPost>()
                 .HasOne(b => b.Author)
                 .WithMany()
