@@ -41,6 +41,27 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "AtrevidoFitness.API.Controllers.AdminController",
+    "Method": "UpdateUserStatus",
+    "RelativePath": "api/Admin/members/{id}/status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "AtrevidoFitness.API.DTOs.UserStatusUpdateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "AtrevidoFitness.API.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/login",
@@ -489,6 +510,22 @@
   },
   {
     "ContainingType": "AtrevidoFitness.API.Controllers.TrainingRegistrationsController",
+    "Method": "Cancel",
+    "RelativePath": "api/TrainingRegistrations/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "AtrevidoFitness.API.Controllers.TrainingRegistrationsController",
     "Method": "Update",
     "RelativePath": "api/TrainingRegistrations/{id}",
     "HttpMethod": "PUT",
@@ -503,22 +540,6 @@
       {
         "Name": "dto",
         "Type": "AtrevidoFitness.API.DTOs.TrainingRegistrationUpdateDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "AtrevidoFitness.API.Controllers.TrainingRegistrationsController",
-    "Method": "Cancel",
-    "RelativePath": "api/TrainingRegistrations/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

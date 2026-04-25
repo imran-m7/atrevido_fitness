@@ -1,5 +1,15 @@
 namespace AtrevidoFitness.API.DTOs
 {
+    // Uba?en u response dto da admin vidi ko je prijavljen
+    public class SessionRegistrationDto
+    {
+        public int UserId { get; set; }
+        public string UserFirstName { get; set; } = string.Empty;
+        public string UserLastName { get; set; } = string.Empty;
+        public DateOnly SessionDate { get; set; }
+        public string Status { get; set; } = string.Empty;
+    }
+
     public class TrainingSessionResponseDto
     {
         public int Id { get; set; }
@@ -13,6 +23,7 @@ namespace AtrevidoFitness.API.DTOs
         public bool IsActive { get; set; }
         public string? Location { get; set; }
         public string? Notes { get; set; }
+        public List<SessionRegistrationDto> Registrations { get; set; } = new();
     }
 
     public class TrainingSessionCreateDto

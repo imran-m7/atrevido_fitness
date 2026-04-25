@@ -4,7 +4,6 @@ using AtrevidoFitness.API.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace AtrevidoFitness.API.Controllers
 {
@@ -19,13 +18,14 @@ namespace AtrevidoFitness.API.Controllers
             _context = context;
         }
 
-        // GET api/trainingsessions — javno
+        // GET api/trainingsessions
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var sessions = await _context.TrainingSessions
                 .Where(s => s.IsActive)
                 .Include(s => s.Registrations)
+                    .ThenInclude(r => r.User)
                 .ToListAsync();
 
             var result = sessions.Select(s => new TrainingSessionResponseDto
@@ -40,17 +40,27 @@ namespace AtrevidoFitness.API.Controllers
                 MinCapacity = s.MinCapacity,
                 IsActive = s.IsActive,
                 Location = s.Location,
-                Notes = s.Notes
+                Notes = s.Notes,
+                Registrations = s.Registrations
+                    .Where(r => r.Status == "Registered")
+                    .Select(r => new SessionRegistrationDto
+                    {
+                        UserId = r.UserId,
+                        UserFirstName = r.User.FirstName,
+                        UserLastName = r.User.LastName,
+                        SessionDate = r.SessionDate,
+                        Status = r.Status
+                    })
+                    .ToList()
             });
 
             return Ok(result);
         }
 
-        // POST api/trainingsessions — samo Admin
+        // POST api/trainingsessions
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(
-            [FromBody] TrainingSessionCreateDto dto)
+        public async Task<IActionResult> Create([FromBody] TrainingSessionCreateDto dto)
         {
             var session = new TrainingSession
             {
@@ -72,15 +82,25 @@ namespace AtrevidoFitness.API.Controllers
             return CreatedAtAction(nameof(GetAll), new { id = session.Id }, session);
         }
 
-        // PUT api/trainingsessions/{id} — samo Admin
+        // PUT api/trainingsessions/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(int id,
-            [FromBody] TrainingSessionUpdateDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] TrainingSessionUpdateDto dto)
         {
-            var session = await _context.TrainingSessions.FindAsync(id);
+            var session = await _context.TrainingSessions
+                .Include(s => s.Registrations)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             if (session == null) return NotFound();
 
+            // Provjeri da li se mijenja dan, vrijeme ili tip treninga
+            bool scheduleChanged =
+                (dto.DayOfWeek != null && dto.DayOfWeek != session.DayOfWeek) ||
+                (dto.StartTime.HasValue && dto.StartTime.Value != session.StartTime) ||
+                (dto.EndTime.HasValue && dto.EndTime.Value != session.EndTime) ||
+                (dto.Type != null && dto.Type != session.Type);
+
+            // Primijeni sve izmjene na sesiju
             if (dto.Type != null) session.Type = dto.Type;
             if (dto.DayOfWeek != null) session.DayOfWeek = dto.DayOfWeek;
             if (dto.StartTime.HasValue) session.StartTime = dto.StartTime.Value;
@@ -92,23 +112,42 @@ namespace AtrevidoFitness.API.Controllers
             if (dto.Location != null) session.Location = dto.Location;
             if (dto.Notes != null) session.Notes = dto.Notes;
 
+            int deletedCount = 0;
+
+            // Ako se promijenio raspored — obriši SVE rezervacije za ovaj trening
+            if (scheduleChanged && session.Registrations.Any())
+            {
+                deletedCount = session.Registrations.Count;
+                _context.TrainingRegistrations.RemoveRange(session.Registrations);
+            }
+
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Session updated." });
+
+            return Ok(new
+            {
+                message = scheduleChanged && deletedCount > 0
+                    ? $"Trening ažuriran. Obrisano {deletedCount} rezervacija zbog promjene rasporeda."
+                    : "Trening ažuriran.",
+                deletedRegistrations = deletedCount
+            });
         }
 
-        // DELETE api/trainingsessions/{id} — samo Admin
-        // NOVO — hard delete
+        // DELETE api/trainingsessions/{id}
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var session = await _context.TrainingSessions.FindAsync(id);
+            var session = await _context.TrainingSessions
+                .Include(s => s.Registrations)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             if (session == null) return NotFound();
 
+            _context.TrainingRegistrations.RemoveRange(session.Registrations);
             _context.TrainingSessions.Remove(session);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(new { message = $"Trening '{session.GroupName}' i {session.Registrations.Count} rezervacija obrisano." });
         }
     }
 }

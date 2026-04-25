@@ -12,9 +12,14 @@ namespace AtrevidoFitness.API.Models.Entities
         [Required, MaxLength(100)]
         public string LastName { get; set; } = string.Empty;
 
-        [Required, MaxLength(200)]
-        public string Email { get; set; } = string.Empty;
-        
+        // Username umjesto Email za login
+        [Required, MaxLength(100)]
+        public string Username { get; set; } = string.Empty;
+
+        // Email ostaje opcioni za kontakt
+        [MaxLength(200)]
+        public string? Email { get; set; }
+
         [Required]
         public string PasswordHash { get; set; } = string.Empty;
 
@@ -26,13 +31,11 @@ namespace AtrevidoFitness.API.Models.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = false;
 
         public UserTrainingMembership? TrainingMembership { get; set; }
         public ICollection<TrainingRegistration> TrainingRegistrations { get; set; } = new List<TrainingRegistration>();
         public ICollection<ChallengeParticipant> ChallengeParticipations { get; set; } = new List<ChallengeParticipant>();
         public ICollection<ProgressEntry> ProgressEntries { get; set; } = new List<ProgressEntry>();
-
-
     }
 }

@@ -26,7 +26,7 @@ namespace AtrevidoFitness.API.Data
 
             //  User 
             modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
+                .HasIndex(u => u.Username)
                 .IsUnique();
 
             //  UserTrainingMembership 
@@ -104,6 +104,7 @@ namespace AtrevidoFitness.API.Data
                 Id = 1,
                 FirstName = "Dika",
                 LastName = "Admin",
+                Username="dika.admin",
                 Email = "dika@atrevido.ba",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
                 Role = "Admin",

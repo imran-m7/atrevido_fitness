@@ -4,7 +4,6 @@ using AtrevidoFitness.API.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace AtrevidoFitness.API.Controllers
 {
@@ -27,7 +26,6 @@ namespace AtrevidoFitness.API.Controllers
             var today = DateOnly.FromDateTime(DateTime.Today);
             var weekStart = today.AddDays(-(int)DateTime.Today.DayOfWeek);
             var weekEnd = weekStart.AddDays(7);
-
             var todayDayName = DateTime.Today.DayOfWeek.ToString();
 
             var totalMembers = await _context.Users
@@ -43,11 +41,7 @@ namespace AtrevidoFitness.API.Controllers
 
             var activeChallenge = await _context.Challenges
                 .Where(c => c.Status == "Active")
-                .Select(c => new
-                {
-                    c.Title,
-                    Participants = c.Participants.Count
-                })
+                .Select(c => new { c.Title, Participants = c.Participants.Count })
                 .FirstOrDefaultAsync();
 
             return Ok(new
@@ -59,6 +53,7 @@ namespace AtrevidoFitness.API.Controllers
             });
         }
 
+        // GET api/admin/members
         [HttpGet("members")]
         public async Task<IActionResult> GetMembers()
         {
@@ -93,8 +88,7 @@ namespace AtrevidoFitness.API.Controllers
 
         // PUT api/admin/members/{id}/membership
         [HttpPut("members/{id}/membership")]
-        public async Task<IActionResult> UpdateMembership(int id,
-     [FromBody] UserTrainingMembershipUpdateDto dto)
+        public async Task<IActionResult> UpdateMembership(int id, [FromBody] UserTrainingMembershipUpdateDto dto)
         {
             var membership = await _context.UserTrainingMemberships
                 .FirstOrDefaultAsync(m => m.UserId == id);
@@ -133,7 +127,22 @@ namespace AtrevidoFitness.API.Controllers
             return Ok(new { message = "Membership updated." });
         }
 
-        
-        
+        // PUT api/admin/members/{id}/status — aktivacija/deaktivacija usera
+        [HttpPut("members/{id}/status")]
+        public async Task<IActionResult> UpdateUserStatus(int id, [FromBody] UserStatusUpdateDto dto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound(new { message = "User not found." });
+
+            user.IsActive = dto.IsActive;
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                message = dto.IsActive
+                    ? $"Korisnik {user.FirstName} {user.LastName} je aktiviran."
+                    : $"Korisnik {user.FirstName} {user.LastName} je deaktiviran."
+            });
+        }
     }
 }

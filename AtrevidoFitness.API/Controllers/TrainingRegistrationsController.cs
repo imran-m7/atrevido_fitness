@@ -20,15 +20,14 @@ namespace AtrevidoFitness.API.Controllers
             _context = context;
         }
 
-        // GET api/trainingregistrations/mine — clanica vidi svoje prijave
+        // GET api/trainingregistrations/mine
         [HttpGet("mine")]
         public async Task<IActionResult> GetMine()
         {
-            var userId = int.Parse(
-                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             var registrations = await _context.TrainingRegistrations
-                .Where(r => r.UserId == userId)
+                .Where(r => r.UserId == userId && r.Status == "Registered")
                 .OrderByDescending(r => r.SessionDate)
                 .Select(r => new TrainingRegistrationResponseDto
                 {
@@ -46,53 +45,60 @@ namespace AtrevidoFitness.API.Controllers
             return Ok(registrations);
         }
 
-        // POST api/trainingregistrations — clanica se prijavljuje
+        // POST api/trainingregistrations
         [HttpPost]
         [Authorize(Roles = "Member,Admin")]
-        public async Task<IActionResult> Register(
-            [FromBody] TrainingRegistrationCreateDto dto)
+        public async Task<IActionResult> Register([FromBody] TrainingRegistrationCreateDto dto)
         {
-            var userId = int.Parse(
-                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             // Provjeri aktivno clanstvo
             var membership = await _context.UserTrainingMemberships
-                .FirstOrDefaultAsync(m => m.UserId == userId
-                    && m.Status == "Active");
+                .FirstOrDefaultAsync(m => m.UserId == userId && m.Status == "Active");
 
             if (membership == null)
                 return Forbid();
 
-            // Provjeri kapacitet
+            // Provjeri da sesija postoji
             var session = await _context.TrainingSessions
                 .Include(s => s.Registrations)
                 .FirstOrDefaultAsync(s => s.Id == dto.TrainingSessionId);
 
             if (session == null) return NotFound();
 
+            // Provjeri kapacitet (samo aktivne rezervacije)
             var activeCount = session.Registrations
-                .Count(r => r.SessionDate == dto.SessionDate
-                    && r.Status == "Registered");
+                .Count(r => r.SessionDate == dto.SessionDate && r.Status == "Registered");
 
             if (activeCount >= session.MaxCapacity)
                 return BadRequest(new { message = "Session is full." });
 
-            // Provjeri duplikat za taj dan
-            var alreadyRegistered = await _context.TrainingRegistrations
-                .AnyAsync(r => r.UserId == userId
-                    && r.SessionDate == dto.SessionDate
-                    && r.Status == "Registered");
+            // Provjeri da li postoji BILO KAKVA registracija (uključujući Cancelled)
+            var existing = await _context.TrainingRegistrations
+                .FirstOrDefaultAsync(r =>
+                    r.UserId == userId &&
+                    r.TrainingSessionId == dto.TrainingSessionId &&
+                    r.SessionDate == dto.SessionDate);
 
-            if (alreadyRegistered)
-                return BadRequest(
-                    new { message = "Already registered for a session today." });
+            if (existing != null)
+            {
+                if (existing.Status == "Registered")
+                    return BadRequest(new { message = "Already registered for this session." });
 
+                // Ako je Cancelled — samo vrati na Registered umjesto novog INSERT-a
+                existing.Status = "Registered";
+                existing.RegisteredAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Successfully registered." });
+            }
+
+            // Novi red — prvi put se registruje
             var registration = new TrainingRegistration
             {
-                UserId = userId, // iz tokena, ne iz DTO
+                UserId = userId,
                 TrainingSessionId = dto.TrainingSessionId,
                 SessionDate = dto.SessionDate,
-                Status = "Registered" // uvijek Registered na pocetku
+                Status = "Registered"
             };
 
             _context.TrainingRegistrations.Add(registration);
@@ -101,30 +107,11 @@ namespace AtrevidoFitness.API.Controllers
             return Ok(new { message = "Successfully registered." });
         }
 
-        // PUT api/trainingregistrations/{id} — update statusa
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(int id,
-            [FromBody] TrainingRegistrationUpdateDto dto)
-        {
-            var registration = await _context.TrainingRegistrations.FindAsync(id);
-            if (registration == null) return NotFound();
-
-            if (dto.SessionDate.HasValue)
-                registration.SessionDate = dto.SessionDate.Value;
-            if (dto.Status != null)
-                registration.Status = dto.Status;
-
-            await _context.SaveChangesAsync();
-            return Ok(new { message = "Registration updated." });
-        }
-
-        // DELETE api/trainingregistrations/{id} — clanica otkazuje
+        // DELETE api/trainingregistrations/{id} — otkazivanje
         [HttpDelete("{id}")]
         public async Task<IActionResult> Cancel(int id)
         {
-            var userId = int.Parse(
-                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             var registration = await _context.TrainingRegistrations
                 .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
@@ -137,14 +124,28 @@ namespace AtrevidoFitness.API.Controllers
             return Ok(new { message = "Registration cancelled." });
         }
 
+        // PUT api/trainingregistrations/{id} — Admin update
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(int id, [FromBody] TrainingRegistrationUpdateDto dto)
+        {
+            var registration = await _context.TrainingRegistrations.FindAsync(id);
+            if (registration == null) return NotFound();
+
+            if (dto.SessionDate.HasValue) registration.SessionDate = dto.SessionDate.Value;
+            if (dto.Status != null) registration.Status = dto.Status;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Registration updated." });
+        }
+
         // GET api/trainingregistrations/session/{sessionId} — Admin vidi ko je prijavljen
         [HttpGet("session/{sessionId}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetBySession(int sessionId)
         {
             var registrations = await _context.TrainingRegistrations
-                .Where(r => r.TrainingSessionId == sessionId
-                    && r.Status == "Registered")
+                .Where(r => r.TrainingSessionId == sessionId && r.Status == "Registered")
                 .Include(r => r.User)
                 .Select(r => new TrainingRegistrationResponseDto
                 {
@@ -153,7 +154,9 @@ namespace AtrevidoFitness.API.Controllers
                     TrainingSessionId = r.TrainingSessionId,
                     SessionDate = r.SessionDate,
                     Status = r.Status,
-                    RegisteredAt = r.RegisteredAt
+                    RegisteredAt = r.RegisteredAt,
+                    UserFirstName = r.User.FirstName,
+                    UserLastName = r.User.LastName
                 })
                 .ToListAsync();
 

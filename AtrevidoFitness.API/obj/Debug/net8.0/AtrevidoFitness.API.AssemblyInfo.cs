@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AtrevidoFitness.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be8ae981ba7743fd4dbce0df3f3587d267bc0af8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dbf008101783a3d9920ad6ff8b333c7b853df0b3")]
 [assembly: System.Reflection.AssemblyProductAttribute("AtrevidoFitness.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AtrevidoFitness.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
