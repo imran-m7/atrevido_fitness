@@ -23,7 +23,6 @@ namespace AtrevidoFitness.API.Helpers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                // Username umjesto Email
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, user.Role)
             };

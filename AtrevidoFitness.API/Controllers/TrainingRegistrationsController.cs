@@ -71,9 +71,20 @@ namespace AtrevidoFitness.API.Controllers
                 .Count(r => r.SessionDate == dto.SessionDate && r.Status == "Registered");
 
             if (activeCount >= session.MaxCapacity)
-                return BadRequest(new { message = "Session is full." });
+                return BadRequest(new { message = "Termin je popunjen." });
 
-            // Provjeri da li postoji BILO KAKVA registracija (uključujući Cancelled)
+            // ── Provjeri da user nema već rezervisan DRUGI trening za taj datum ──
+            var alreadyBookedThatDay = await _context.TrainingRegistrations
+                .AnyAsync(r =>
+                    r.UserId == userId &&
+                    r.SessionDate == dto.SessionDate &&
+                    r.Status == "Registered" &&
+                    r.TrainingSessionId != dto.TrainingSessionId); // drugi termin, ne isti
+
+            if (alreadyBookedThatDay)
+                return BadRequest(new { message = "Već imate rezervisan trening za ovaj dan. Možete imati samo jedan trening dnevno." });
+
+            // Provjeri da li postoji BILO KAKVA registracija za isti termin i datum (uključujući Cancelled)
             var existing = await _context.TrainingRegistrations
                 .FirstOrDefaultAsync(r =>
                     r.UserId == userId &&
@@ -83,13 +94,13 @@ namespace AtrevidoFitness.API.Controllers
             if (existing != null)
             {
                 if (existing.Status == "Registered")
-                    return BadRequest(new { message = "Already registered for this session." });
+                    return BadRequest(new { message = "Već ste prijavljeni za ovaj termin." });
 
                 // Ako je Cancelled — samo vrati na Registered umjesto novog INSERT-a
                 existing.Status = "Registered";
                 existing.RegisteredAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
-                return Ok(new { message = "Successfully registered." });
+                return Ok(new { message = "Uspješno rezervisano." });
             }
 
             // Novi red — prvi put se registruje
@@ -104,7 +115,7 @@ namespace AtrevidoFitness.API.Controllers
             _context.TrainingRegistrations.Add(registration);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Successfully registered." });
+            return Ok(new { message = "Uspješno rezervisano." });
         }
 
         // DELETE api/trainingregistrations/{id} — otkazivanje
@@ -121,7 +132,7 @@ namespace AtrevidoFitness.API.Controllers
             registration.Status = "Cancelled";
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Registration cancelled." });
+            return Ok(new { message = "Rezervacija otkazana." });
         }
 
         // PUT api/trainingregistrations/{id} — Admin update
@@ -136,7 +147,7 @@ namespace AtrevidoFitness.API.Controllers
             if (dto.Status != null) registration.Status = dto.Status;
 
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Registration updated." });
+            return Ok(new { message = "Rezervacija ažurirana." });
         }
 
         // GET api/trainingregistrations/session/{sessionId} — Admin vidi ko je prijavljen

@@ -182,15 +182,23 @@ namespace AtrevidoFitness.API.Migrations
                     b.Property<int?>("AssignedToUserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PdfBase64")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PdfFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PdfFileSize")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PdfUploadedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PlanType")
                         .IsRequired()
@@ -205,45 +213,6 @@ namespace AtrevidoFitness.API.Migrations
                     b.HasIndex("AssignedToUserId");
 
                     b.ToTable("NutritionPlans");
-                });
-
-            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionRecipe", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CaloriesPerServing")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Ingredients")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Instructions")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("NutritionPlanId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NutritionPlanId");
-
-                    b.ToTable("NutritionRecipes");
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.ProgressEntry", b =>
@@ -438,12 +407,12 @@ namespace AtrevidoFitness.API.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 4, 25, 11, 18, 11, 830, DateTimeKind.Utc).AddTicks(2986),
+                            CreatedAt = new DateTime(2026, 4, 29, 18, 53, 52, 964, DateTimeKind.Utc).AddTicks(4636),
                             Email = "dika@atrevido.ba",
                             FirstName = "Dika",
                             IsActive = true,
                             LastName = "Admin",
-                            PasswordHash = "$2a$11$ZPu4RNcj4Oen7SBbpv6WLeIWmFz/0uW2eg2sHIZPIPRwC8pojGTT.",
+                            PasswordHash = "$2a$11$mYgL1jico8ZwbgE7vjjo1eqNIz7hKl.AzbS2ngSA7EU2h2CLKUr7m",
                             Role = "Admin",
                             Username = "dika.admin"
                         });
@@ -532,17 +501,6 @@ namespace AtrevidoFitness.API.Migrations
                     b.Navigation("AssignedToUser");
                 });
 
-            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionRecipe", b =>
-                {
-                    b.HasOne("AtrevidoFitness.API.Models.Entities.NutritionPlan", "NutritionPlan")
-                        .WithMany("Recipes")
-                        .HasForeignKey("NutritionPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("NutritionPlan");
-                });
-
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.ProgressEntry", b =>
                 {
                     b.HasOne("AtrevidoFitness.API.Models.Entities.Challenge", "Challenge")
@@ -593,11 +551,6 @@ namespace AtrevidoFitness.API.Migrations
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.Challenge", b =>
                 {
                     b.Navigation("Participants");
-                });
-
-            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionPlan", b =>
-                {
-                    b.Navigation("Recipes");
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.TrainingSession", b =>

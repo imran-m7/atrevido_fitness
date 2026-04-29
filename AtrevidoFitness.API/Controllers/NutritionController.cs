@@ -20,133 +20,153 @@ namespace AtrevidoFitness.API.Controllers
             _context = context;
         }
 
-        // GET api/nutrition — clanica vidi svoje planove
-        [HttpGet]
+        // GET api/nutrition/members — Admin vidi sve članice sa Individual+Ishrana
+        [HttpGet("members")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetMembers()
+        {
+            var members = await _context.Users
+                .Where(u => u.Role == "Member")
+                .Include(u => u.TrainingMembership)
+                .Where(u => u.TrainingMembership != null
+                    && u.TrainingMembership.NutritionEnabled
+                    && u.TrainingMembership.Status == "Active")
+                .Select(u => new
+                {
+                    u.Id,
+                    u.FirstName,
+                    u.LastName,
+                    u.Username,
+                    NutritionPlan = _context.NutritionPlans
+                        .Where(n => n.AssignedToUserId == u.Id && n.IsActive)
+                        .Select(n => new NutritionPlanResponseDto
+                        {
+                            Id = n.Id,
+                            Title = n.Title,
+                            PdfFileName = n.PdfFileName,
+                            PdfFileSize = n.PdfFileSize,
+                            PdfUploadedAt = n.PdfUploadedAt,
+                            AssignedToUserId = n.AssignedToUserId
+                        })
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+
+            return Ok(members);
+        }
+
+        // GET api/nutrition/mine — Clanica vidi info o svom planu (bez PDF-a)
+        [HttpGet("mine")]
         public async Task<IActionResult> GetMine()
         {
-            var userId = int.Parse(
-                User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            // Provjeri tip clanstva
             var membership = await _context.UserTrainingMemberships
-                .FirstOrDefaultAsync(m => m.UserId == userId
-                    && m.Status == "Active");
+                .FirstOrDefaultAsync(m => m.UserId == userId && m.Status == "Active");
 
-            if (membership == null)
+            if (membership == null || !membership.NutritionEnabled)
                 return Forbid();
 
-            // Grupne clanice vide samo Guidelines
-            // Individualne vide sve ako imaju NutritionEnabled
-            var planType = membership.TrainingType == "Individual"
-                && membership.NutritionEnabled
-                ? "FullPlan"
-                : "Guidelines";
-
-            var plans = await _context.NutritionPlans
-                .Where(n => n.IsActive
-                    && n.PlanType == planType
-                    && (n.AssignedToUserId == null
-                        || n.AssignedToUserId == userId))
-                .Include(n => n.Recipes)
+            var plan = await _context.NutritionPlans
+                .Where(n => n.AssignedToUserId == userId && n.IsActive)
                 .Select(n => new NutritionPlanResponseDto
                 {
                     Id = n.Id,
                     Title = n.Title,
-                    Content = n.Content,
-                    PlanType = n.PlanType,
-                    IsActive = n.IsActive,
-                    CreatedAt = n.CreatedAt,
+                    PdfFileName = n.PdfFileName,
+                    PdfFileSize = n.PdfFileSize,
+                    PdfUploadedAt = n.PdfUploadedAt,
                     AssignedToUserId = n.AssignedToUserId
                 })
-                .ToListAsync();
+                .FirstOrDefaultAsync();
 
-            return Ok(plans);
+            return Ok(plan); // null ako nema plan još
         }
 
-        // POST api/nutrition — samo Admin
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(
-            [FromBody] NutritionPlanCreateDto dto)
+        // GET api/nutrition/{id}/download — Clanica preuzima PDF
+        [HttpGet("{id}/download")]
+        public async Task<IActionResult> Download(int id)
         {
-            var plan = new NutritionPlan
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            var plan = await _context.NutritionPlans
+                .FirstOrDefaultAsync(n => n.Id == id
+                    && n.AssignedToUserId == userId
+                    && n.IsActive);
+
+            if (plan == null) return NotFound();
+            if (string.IsNullOrEmpty(plan.PdfBase64))
+                return NotFound(new { message = "PDF nije uploadovan." });
+
+            return Ok(new NutritionPlanPdfDto
             {
-                Title = dto.Title,
-                Content = dto.Content,
-                PlanType = dto.PlanType,
-                IsActive = dto.IsActive,
-                AssignedToUserId = dto.AssignedToUserId
-            };
-
-            _context.NutritionPlans.Add(plan);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Nutrition plan created.", id = plan.Id });
+                PdfFileName = plan.PdfFileName!,
+                PdfBase64 = plan.PdfBase64
+            });
         }
 
-        // PUT api/nutrition/{id} — samo Admin
-        [HttpPut("{id}")]
+        // POST api/nutrition/{userId}/upload — Admin uploaduje PDF za članicu
+        [HttpPost("{userId}/upload")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(int id,
-            [FromBody] NutritionPlanUpdateDto dto)
+        public async Task<IActionResult> UploadPdf(int userId,
+            [FromBody] NutritionPlanPdfUploadDto dto)
         {
-            var plan = await _context.NutritionPlans.FindAsync(id);
+            // Provjeri da li clanica ima nutrition enabled
+            var membership = await _context.UserTrainingMemberships
+                .FirstOrDefaultAsync(m => m.UserId == userId
+                    && m.NutritionEnabled
+                    && m.Status == "Active");
+
+            if (membership == null)
+                return BadRequest(new { message = "Clanica nema aktivan Individual+Ishrana plan." });
+
+            // Provjeri da li već postoji plan za tu članicu
+            var existing = await _context.NutritionPlans
+                .FirstOrDefaultAsync(n => n.AssignedToUserId == userId && n.IsActive);
+
+            if (existing != null)
+            {
+                // Ažuriraj postojeći
+                existing.PdfFileName = dto.PdfFileName;
+                existing.PdfBase64 = dto.PdfBase64;
+                existing.PdfFileSize = dto.PdfFileSize;
+                existing.PdfUploadedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                // Kreiraj novi
+                var plan = new NutritionPlan
+                {
+                    Title = $"Plan ishrane",
+                    PlanType = "FullPlan",
+                    IsActive = true,
+                    AssignedToUserId = userId,
+                    PdfFileName = dto.PdfFileName,
+                    PdfBase64 = dto.PdfBase64,
+                    PdfFileSize = dto.PdfFileSize,
+                    PdfUploadedAt = DateTime.UtcNow
+                };
+                _context.NutritionPlans.Add(plan);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "PDF uspješno uploadovan." });
+        }
+
+        // DELETE api/nutrition/{userId}/pdf — Admin briše plan ishrane iz baze
+        [HttpDelete("{userId}/pdf")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeletePdf(int userId)
+        {
+            var plan = await _context.NutritionPlans
+                .FirstOrDefaultAsync(n => n.AssignedToUserId == userId && n.IsActive);
+
             if (plan == null) return NotFound();
 
-            if (dto.Title != null) plan.Title = dto.Title;
-            if (dto.Content != null) plan.Content = dto.Content;
-            if (dto.PlanType != null) plan.PlanType = dto.PlanType;
-            if (dto.IsActive.HasValue) plan.IsActive = dto.IsActive.Value;
-            if (dto.AssignedToUserId.HasValue)
-                plan.AssignedToUserId = dto.AssignedToUserId;
-
+            // Hard delete — briše cijeli red iz baze
+            _context.NutritionPlans.Remove(plan);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Plan updated." });
-        }
-
-        // POST api/nutrition/{planId}/recipes — Admin dodaje recept
-        [HttpPost("{planId}/recipes")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddRecipe(int planId,
-            [FromBody] NutritionRecipeCreateDto dto)
-        {
-            var plan = await _context.NutritionPlans.FindAsync(planId);
-            if (plan == null) return NotFound();
-
-            var recipe = new NutritionRecipe
-            {
-                NutritionPlanId = planId,
-                Title = dto.Title,
-                Ingredients = dto.Ingredients,
-                Instructions = dto.Instructions,
-                ImageUrl = dto.ImageUrl,
-                CaloriesPerServing = dto.CaloriesPerServing
-            };
-
-            _context.NutritionRecipes.Add(recipe);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Recipe added.", id = recipe.Id });
-        }
-
-        // PUT api/nutrition/recipes/{id} — Admin
-        [HttpPut("recipes/{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateRecipe(int id,
-            [FromBody] NutritionRecipeUpdateDto dto)
-        {
-            var recipe = await _context.NutritionRecipes.FindAsync(id);
-            if (recipe == null) return NotFound();
-
-            if (dto.Title != null) recipe.Title = dto.Title;
-            if (dto.Ingredients != null) recipe.Ingredients = dto.Ingredients;
-            if (dto.Instructions != null) recipe.Instructions = dto.Instructions;
-            if (dto.ImageUrl != null) recipe.ImageUrl = dto.ImageUrl;
-            if (dto.CaloriesPerServing.HasValue)
-                recipe.CaloriesPerServing = dto.CaloriesPerServing;
-
-            await _context.SaveChangesAsync();
-            return Ok(new { message = "Recipe updated." });
+            return Ok(new { message = "Plan ishrane obrisan iz baze." });
         }
     }
 }
