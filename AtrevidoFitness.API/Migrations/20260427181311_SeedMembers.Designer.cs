@@ -4,6 +4,7 @@ using AtrevidoFitness.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AtrevidoFitness.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260427181311_SeedMembers")]
+    partial class SeedMembers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,72 +163,6 @@ namespace AtrevidoFitness.API.Migrations
                         .IsUnique();
 
                     b.ToTable("ChallengeParticipants");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ChallengeId = 1,
-                            JoinedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ChallengeId = 2,
-                            JoinedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ChallengeId = 1,
-                            JoinedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ChallengeId = 2,
-                            JoinedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ChallengeId = 1,
-                            JoinedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ChallengeId = 2,
-                            JoinedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 7,
-                            ChallengeId = 1,
-                            JoinedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 5
-                        },
-                        new
-                        {
-                            Id = 8,
-                            ChallengeId = 2,
-                            JoinedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 5
-                        });
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.ContactMessage", b =>
@@ -274,23 +211,15 @@ namespace AtrevidoFitness.API.Migrations
                     b.Property<int?>("AssignedToUserId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<string>("PdfBase64")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PdfFileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PdfFileSize")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("PdfUploadedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("PlanType")
                         .IsRequired()
@@ -305,6 +234,45 @@ namespace AtrevidoFitness.API.Migrations
                     b.HasIndex("AssignedToUserId");
 
                     b.ToTable("NutritionPlans");
+                });
+
+            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionRecipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CaloriesPerServing")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ingredients")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Instructions")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NutritionPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NutritionPlanId");
+
+                    b.ToTable("NutritionRecipes");
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.ProgressEntry", b =>
@@ -592,6 +560,7 @@ namespace AtrevidoFitness.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -620,14 +589,9 @@ namespace AtrevidoFitness.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("Username")
+                    b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("Users");
@@ -636,21 +600,12 @@ namespace AtrevidoFitness.API.Migrations
                         new
                         {
                             Id = 1,
-<<<<<<< HEAD
-                            CreatedAt = new DateTime(2026, 4, 29, 18, 53, 52, 964, DateTimeKind.Utc).AddTicks(4636),
-=======
                             CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
->>>>>>> 748f2d2 (Implement challenge and progress backend)
                             Email = "dika@atrevido.ba",
                             FirstName = "Dika",
                             IsActive = true,
                             LastName = "Admin",
-<<<<<<< HEAD
-                            PasswordHash = "$2a$11$mYgL1jico8ZwbgE7vjjo1eqNIz7hKl.AzbS2ngSA7EU2h2CLKUr7m",
-                            Role = "Admin",
-                            Username = "dika.admin"
-=======
-                            PasswordHash = "$2a$11$hYHUHmyZt4qKe2.gGFDNau9Ho2uHoLaEQE.oddlycRn4In1pV6WwC",
+                            PasswordHash = "$2a$11$bDe6Pr8.lTi8KmRl.jVWDe66n8QDSAHnpjH2y1buToVrgjVWEdLCy",
                             Role = "Admin"
                         },
                         new
@@ -661,7 +616,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Sarah",
                             IsActive = true,
                             LastName = "Johnson",
-                            PasswordHash = "$2a$11$eSLEcEK/fIQa2fbNq5.hzuPLdx2DQW2E6bTnyvOgI0K.1Eb/RH6hy",
+                            PasswordHash = "$2a$11$Lp7p6Dj0lZ/bu2rp2T2z6OtELLmDR59vuMCZPLwHBBS30P3GXMlmS",
                             Role = "Member"
                         },
                         new
@@ -672,7 +627,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Maria",
                             IsActive = true,
                             LastName = "Smith",
-                            PasswordHash = "$2a$11$8oymNmewEY7Xrk0bkSOjuOKFGFYvJMaIsj3ly9r.bfnaYaiej35YC",
+                            PasswordHash = "$2a$11$kB.sbvguSKkDUe2N6LNsCuEWtR1S9wc2SvWll57KdjC/gX50NJ.tm",
                             Role = "Member"
                         },
                         new
@@ -683,7 +638,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Jennifer",
                             IsActive = true,
                             LastName = "Kane",
-                            PasswordHash = "$2a$11$Yq/dNl8oUgcucr8390Upw.FCcDPkgVt8zdvleho0Q0K/MvWcJRTqq",
+                            PasswordHash = "$2a$11$YqIZ9ag05NJ556aCi/TpXexph4zWG7.TehfFGRMTtIMLy3Ebz0sc2",
                             Role = "Member"
                         },
                         new
@@ -694,9 +649,8 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Amanda",
                             IsActive = true,
                             LastName = "Ross",
-                            PasswordHash = "$2a$11$HKGYkNQMtvrbtA5QGc1rpuBPAajrdKh2fpiOwLBWVc08q2fCyi/b.",
+                            PasswordHash = "$2a$11$7q0vlztTI1cLpWLIzdpMzOTOzZJ9mMlnyf0JmY6LnZCCsQtghiohi",
                             Role = "Member"
->>>>>>> 748f2d2 (Implement challenge and progress backend)
                         });
                 });
 
@@ -783,6 +737,17 @@ namespace AtrevidoFitness.API.Migrations
                     b.Navigation("AssignedToUser");
                 });
 
+            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionRecipe", b =>
+                {
+                    b.HasOne("AtrevidoFitness.API.Models.Entities.NutritionPlan", "NutritionPlan")
+                        .WithMany("Recipes")
+                        .HasForeignKey("NutritionPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NutritionPlan");
+                });
+
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.ProgressEntry", b =>
                 {
                     b.HasOne("AtrevidoFitness.API.Models.Entities.Challenge", "Challenge")
@@ -833,6 +798,11 @@ namespace AtrevidoFitness.API.Migrations
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.Challenge", b =>
                 {
                     b.Navigation("Participants");
+                });
+
+            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionPlan", b =>
+                {
+                    b.Navigation("Recipes");
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.TrainingSession", b =>

@@ -4,6 +4,7 @@ using AtrevidoFitness.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AtrevidoFitness.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260427172101_SeedChallenges")]
+    partial class SeedChallenges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,24 +111,24 @@ namespace AtrevidoFitness.API.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 3, 25, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 4, 27, 17, 21, 0, 780, DateTimeKind.Utc).AddTicks(4140),
                             Description = "Who can lose the most weight in a month?",
-                            EndDate = new DateTime(2026, 4, 30, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateTime(2026, 5, 27, 17, 21, 0, 780, DateTimeKind.Utc).AddTicks(4132),
                             IsPublic = true,
                             Rules = "Have fun",
-                            StartDate = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            StartDate = new DateTime(2026, 4, 27, 17, 21, 0, 780, DateTimeKind.Utc).AddTicks(4131),
                             Status = "Active",
                             Title = "30-Day Fitness Challenge"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 4, 27, 17, 21, 0, 780, DateTimeKind.Utc).AddTicks(4144),
                             Description = "Who can lose the most weight in a week?",
-                            EndDate = new DateTime(2026, 5, 5, 0, 0, 0, 0, DateTimeKind.Utc),
+                            EndDate = new DateTime(2026, 5, 12, 17, 21, 0, 780, DateTimeKind.Utc).AddTicks(4143),
                             IsPublic = true,
                             Rules = "Have fun",
-                            StartDate = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            StartDate = new DateTime(2026, 4, 27, 17, 21, 0, 780, DateTimeKind.Utc).AddTicks(4143),
                             Status = "Active",
                             Title = "Weekly Fitness Challenge"
                         });
@@ -160,72 +163,6 @@ namespace AtrevidoFitness.API.Migrations
                         .IsUnique();
 
                     b.ToTable("ChallengeParticipants");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ChallengeId = 1,
-                            JoinedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ChallengeId = 2,
-                            JoinedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ChallengeId = 1,
-                            JoinedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ChallengeId = 2,
-                            JoinedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 3
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ChallengeId = 1,
-                            JoinedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ChallengeId = 2,
-                            JoinedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 4
-                        },
-                        new
-                        {
-                            Id = 7,
-                            ChallengeId = 1,
-                            JoinedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 5
-                        },
-                        new
-                        {
-                            Id = 8,
-                            ChallengeId = 2,
-                            JoinedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "Active",
-                            UserId = 5
-                        });
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.ContactMessage", b =>
@@ -274,23 +211,15 @@ namespace AtrevidoFitness.API.Migrations
                     b.Property<int?>("AssignedToUserId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<string>("PdfBase64")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PdfFileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PdfFileSize")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("PdfUploadedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("PlanType")
                         .IsRequired()
@@ -305,6 +234,45 @@ namespace AtrevidoFitness.API.Migrations
                     b.HasIndex("AssignedToUserId");
 
                     b.ToTable("NutritionPlans");
+                });
+
+            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionRecipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CaloriesPerServing")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ingredients")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Instructions")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NutritionPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NutritionPlanId");
+
+                    b.ToTable("NutritionRecipes");
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.ProgressEntry", b =>
@@ -361,143 +329,6 @@ namespace AtrevidoFitness.API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ProgressEntries");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ArmCm = 28.00m,
-                            ChallengeId = 1,
-                            ChestCm = 88.00m,
-                            CreatedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EntryDate = new DateOnly(2026, 4, 1),
-                            HipsCm = 96.00m,
-                            Notes = "Starting measurements",
-                            ThighCm = 54.00m,
-                            UserId = 2,
-                            WaistCm = 78.00m,
-                            WeightKg = 72.50m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ArmCm = 27.80m,
-                            ChallengeId = 1,
-                            ChestCm = 87.50m,
-                            CreatedAt = new DateTime(2026, 4, 10, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EntryDate = new DateOnly(2026, 4, 10),
-                            HipsCm = 95.00m,
-                            Notes = "Feeling great!",
-                            ThighCm = 53.50m,
-                            UserId = 2,
-                            WaistCm = 77.00m,
-                            WeightKg = 71.20m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ArmCm = 27.50m,
-                            ChallengeId = 1,
-                            ChestCm = 87.00m,
-                            CreatedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EntryDate = new DateOnly(2026, 4, 20),
-                            HipsCm = 94.50m,
-                            Notes = "Consistent progress",
-                            ThighCm = 53.00m,
-                            UserId = 2,
-                            WaistCm = 76.00m,
-                            WeightKg = 70.10m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ArmCm = 26.50m,
-                            ChallengeId = 1,
-                            ChestCm = 85.00m,
-                            CreatedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EntryDate = new DateOnly(2026, 4, 1),
-                            HipsCm = 92.00m,
-                            Notes = "Starting measurements",
-                            ThighCm = 51.00m,
-                            UserId = 3,
-                            WaistCm = 74.00m,
-                            WeightKg = 68.00m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ArmCm = 26.00m,
-                            ChallengeId = 1,
-                            ChestCm = 84.50m,
-                            CreatedAt = new DateTime(2026, 4, 15, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EntryDate = new DateOnly(2026, 4, 15),
-                            HipsCm = 91.00m,
-                            Notes = "Good progress",
-                            ThighCm = 50.50m,
-                            UserId = 3,
-                            WaistCm = 73.00m,
-                            WeightKg = 66.80m
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ArmCm = 29.00m,
-                            ChallengeId = 1,
-                            ChestCm = 90.00m,
-                            CreatedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EntryDate = new DateOnly(2026, 4, 1),
-                            HipsCm = 98.00m,
-                            Notes = "Starting measurements",
-                            ThighCm = 56.00m,
-                            UserId = 4,
-                            WaistCm = 80.00m,
-                            WeightKg = 75.00m
-                        },
-                        new
-                        {
-                            Id = 7,
-                            ArmCm = 28.70m,
-                            ChallengeId = 1,
-                            ChestCm = 89.50m,
-                            CreatedAt = new DateTime(2026, 4, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EntryDate = new DateOnly(2026, 4, 20),
-                            HipsCm = 97.00m,
-                            Notes = "Steady progress",
-                            ThighCm = 55.50m,
-                            UserId = 4,
-                            WaistCm = 79.00m,
-                            WeightKg = 73.50m
-                        },
-                        new
-                        {
-                            Id = 8,
-                            ArmCm = 25.00m,
-                            ChallengeId = 1,
-                            ChestCm = 83.00m,
-                            CreatedAt = new DateTime(2026, 4, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EntryDate = new DateOnly(2026, 4, 1),
-                            HipsCm = 89.00m,
-                            Notes = "Starting measurements",
-                            ThighCm = 49.00m,
-                            UserId = 5,
-                            WaistCm = 70.00m,
-                            WeightKg = 65.00m
-                        },
-                        new
-                        {
-                            Id = 9,
-                            ArmCm = 24.80m,
-                            ChallengeId = 1,
-                            ChestCm = 82.50m,
-                            CreatedAt = new DateTime(2026, 4, 18, 0, 0, 0, 0, DateTimeKind.Utc),
-                            EntryDate = new DateOnly(2026, 4, 18),
-                            HipsCm = 88.50m,
-                            Notes = "Feeling lighter",
-                            ThighCm = 48.50m,
-                            UserId = 5,
-                            WaistCm = 69.50m,
-                            WeightKg = 64.00m
-                        });
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.TrainingRegistration", b =>
@@ -592,6 +423,7 @@ namespace AtrevidoFitness.API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -620,14 +452,9 @@ namespace AtrevidoFitness.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("Username")
+                    b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("Users");
@@ -636,67 +463,13 @@ namespace AtrevidoFitness.API.Migrations
                         new
                         {
                             Id = 1,
-<<<<<<< HEAD
-                            CreatedAt = new DateTime(2026, 4, 29, 18, 53, 52, 964, DateTimeKind.Utc).AddTicks(4636),
-=======
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
->>>>>>> 748f2d2 (Implement challenge and progress backend)
+                            CreatedAt = new DateTime(2026, 4, 27, 17, 21, 0, 780, DateTimeKind.Utc).AddTicks(3456),
                             Email = "dika@atrevido.ba",
                             FirstName = "Dika",
                             IsActive = true,
                             LastName = "Admin",
-<<<<<<< HEAD
-                            PasswordHash = "$2a$11$mYgL1jico8ZwbgE7vjjo1eqNIz7hKl.AzbS2ngSA7EU2h2CLKUr7m",
-                            Role = "Admin",
-                            Username = "dika.admin"
-=======
-                            PasswordHash = "$2a$11$hYHUHmyZt4qKe2.gGFDNau9Ho2uHoLaEQE.oddlycRn4In1pV6WwC",
+                            PasswordHash = "$2a$11$uCDUrSmmuW7KL0HC.fqRt.yaMQlhOkM.up1tfAa.dtHQmU1BTECg6",
                             Role = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2026, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "sarah@atrevido.ba",
-                            FirstName = "Sarah",
-                            IsActive = true,
-                            LastName = "Johnson",
-                            PasswordHash = "$2a$11$eSLEcEK/fIQa2fbNq5.hzuPLdx2DQW2E6bTnyvOgI0K.1Eb/RH6hy",
-                            Role = "Member"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2026, 1, 20, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "maria@atrevido.ba",
-                            FirstName = "Maria",
-                            IsActive = true,
-                            LastName = "Smith",
-                            PasswordHash = "$2a$11$8oymNmewEY7Xrk0bkSOjuOKFGFYvJMaIsj3ly9r.bfnaYaiej35YC",
-                            Role = "Member"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2026, 2, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "jennifer@atrevido.ba",
-                            FirstName = "Jennifer",
-                            IsActive = true,
-                            LastName = "Kane",
-                            PasswordHash = "$2a$11$Yq/dNl8oUgcucr8390Upw.FCcDPkgVt8zdvleho0Q0K/MvWcJRTqq",
-                            Role = "Member"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(2026, 2, 10, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "amanda@atrevido.ba",
-                            FirstName = "Amanda",
-                            IsActive = true,
-                            LastName = "Ross",
-                            PasswordHash = "$2a$11$HKGYkNQMtvrbtA5QGc1rpuBPAajrdKh2fpiOwLBWVc08q2fCyi/b.",
-                            Role = "Member"
->>>>>>> 748f2d2 (Implement challenge and progress backend)
                         });
                 });
 
@@ -783,6 +556,17 @@ namespace AtrevidoFitness.API.Migrations
                     b.Navigation("AssignedToUser");
                 });
 
+            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionRecipe", b =>
+                {
+                    b.HasOne("AtrevidoFitness.API.Models.Entities.NutritionPlan", "NutritionPlan")
+                        .WithMany("Recipes")
+                        .HasForeignKey("NutritionPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NutritionPlan");
+                });
+
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.ProgressEntry", b =>
                 {
                     b.HasOne("AtrevidoFitness.API.Models.Entities.Challenge", "Challenge")
@@ -833,6 +617,11 @@ namespace AtrevidoFitness.API.Migrations
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.Challenge", b =>
                 {
                     b.Navigation("Participants");
+                });
+
+            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionPlan", b =>
+                {
+                    b.Navigation("Recipes");
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.TrainingSession", b =>

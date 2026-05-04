@@ -11,6 +11,9 @@ namespace AtrevidoFitness.API.DTOs
         public string Status { get; set; } = string.Empty;
         public bool IsPublic { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int ParticipantCount { get; set; }
+        public DateTime? JoinedAt { get; set; }
+        public string? ParticipationStatus { get; set; }
     }
 
     public class ChallengeCreateDto
