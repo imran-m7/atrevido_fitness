@@ -202,8 +202,8 @@ export default function AdminProgress() {
         const data = await response.json()
         const loadedMembers = Array.isArray(data)
           ? data
-              .map(normalizeMember)
-              .filter(member => member.id)
+            .map(normalizeMember)
+            .filter(member => member.id)
           : []
 
         console.log('loaded members', loadedMembers)
@@ -254,8 +254,8 @@ export default function AdminProgress() {
         const data = await response.json()
         const loadedEntries = Array.isArray(data)
           ? data
-              .map(normalizeProgressEntry)
-              .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
+            .map(normalizeProgressEntry)
+            .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
           : []
 
         console.log('loaded progress entries', loadedEntries)
@@ -284,6 +284,13 @@ export default function AdminProgress() {
 
   const latestEntry = progressEntries[0] ?? null
 
+  const filteredMembers = useMemo(() => {
+    const search = memberSearch.trim().toLowerCase()
+    if (!search) return members
+    return members.filter(m => `${formatMemberName(m)} ${m.email}`.toLowerCase().includes(search))
+  }, [memberSearch, members])
+
+  const latestEntry = progressEntries[0] ?? null
   const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
 
   const refreshSelectedMemberProgress = async (token) => {
@@ -298,8 +305,8 @@ export default function AdminProgress() {
     const data = await progressResponse.json()
     const loadedEntries = Array.isArray(data)
       ? data
-          .map(normalizeProgressEntry)
-          .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
+        .map(normalizeProgressEntry)
+        .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
       : []
 
     console.log('loaded progress entries', loadedEntries)
@@ -357,6 +364,8 @@ export default function AdminProgress() {
     }
   }
 
+  const tableHeaders = ['Datum', 'Visina', 'Težina', 'Ruka', 'Struk', 'Bokovi', 'Grudi', 'Noga', 'Bilješka']
+
   return (
     <div className="p-4 lg:p-8">
       <div className="mb-8">
@@ -371,9 +380,8 @@ export default function AdminProgress() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Member Selection & Form */}
+        {/* Lijeva kolona */}
         <div className="space-y-4">
-          {/* Member Selector */}
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="flex items-center gap-2 p-5 border-b border-border">
               <Search size={20} />
@@ -382,13 +390,8 @@ export default function AdminProgress() {
             <div className="p-4">
               <div className="relative mb-4">
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  className={inputClass + ' pl-9'}
-                  placeholder="Pretraži člana..."
-                  value={memberSearch}
-                  onChange={e => setMemberSearch(e.target.value)}
-                />
+                <input type="text" className={inputClass + ' pl-9'} placeholder="Pretraži člana..."
+                  value={memberSearch} onChange={e => setMemberSearch(e.target.value)} />
               </div>
               <div className="max-h-48 overflow-y-auto space-y-2">
                 {membersLoading ? (
@@ -401,11 +404,10 @@ export default function AdminProgress() {
                         setSelectedMember(member)
                         setMemberSearch('')
                       }}
-                      className={`w-full rounded-lg px-3 py-2.5 text-sm text-left transition-colors ${
-                        selectedMember?.id === member.id
+                      className={`w-full rounded-lg px-3 py-2.5 text-sm text-left transition-colors ${selectedMember?.id === member.id
                           ? 'bg-primary text-primary-foreground'
                           : 'hover:bg-muted text-foreground'
-                      }`}
+                        }`}
                     >
                       <p className="font-medium">{formatMemberName(member)}</p>
                       <p className="text-xs opacity-70">{member.email}</p>
@@ -418,7 +420,6 @@ export default function AdminProgress() {
             </div>
           </div>
 
-          {/* Form */}
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="flex items-center gap-2 p-5 border-b border-border">
               <Plus size={20} />
@@ -470,9 +471,8 @@ export default function AdminProgress() {
           </div>
         </div>
 
-        {/* Stats + Chart + Table */}
+        {/* Desna kolona */}
         <div className="space-y-4 lg:col-span-2">
-          {/* Summary Cards */}
           <div className="grid gap-4 md:grid-cols-5">
             {[
               { icon: Ruler, label: 'Visina', value: '-', trend: '', neutral: true },
@@ -483,20 +483,17 @@ export default function AdminProgress() {
             ].map(({ icon: Icon, label, value, trend, neutral }) => (
               <div key={label} className="rounded-lg border border-border bg-card p-4 shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
-                    <Icon size={18} className="text-primary" />
-                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 shrink-0"><Icon size={18} className="text-primary" /></div>
                   <div>
                     <p className="text-sm text-muted-foreground">{label}</p>
                     <p className="text-lg font-bold text-foreground">{value}</p>
-                    <p className={`text-xs ${neutral ? 'text-muted-foreground' : 'text-green-600'}`}>{trend}</p>
+                    <p className="text-xs text-muted-foreground">{latestEntry ? 'Zadnji unos' : ''}</p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Chart Placeholder */}
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="flex items-center gap-2 p-5 border-b border-border">
               <TrendingUp size={20} className="text-primary" />
@@ -505,9 +502,9 @@ export default function AdminProgress() {
             <div className="p-5">
               <ScoreProgressChart entries={progressEntries} />
             </div>
+            <div className="p-5"><ScoreProgressChart entries={progressEntries} /></div>
           </div>
 
-          {/* History Table */}
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="p-5 border-b border-border">
               <h3 className="font-semibold text-foreground">Historija napretka - {selectedMember ? formatMemberName(selectedMember) : 'nema odabranog člana'}</h3>
@@ -516,8 +513,8 @@ export default function AdminProgress() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    {['Datum', 'Visina', 'Težina', 'Ruka (sredina nadlaktice)', 'T1 (najuži dio-struk)', 'T2 (oko pupka)', 'T3 (najširi dio)', 'Bokovi (najširi dio)', 'Noga (najširi dio natkoljenice)'].map(h => (
-                      <th key={h} className={`pb-3 text-xs font-medium text-muted-foreground ${h === 'Date' ? 'text-left' : 'text-right'}`}>{h}</th>
+                    {tableHeaders.map(h => (
+                      <th key={h} className={`pb-3 px-1 text-xs font-medium text-muted-foreground whitespace-nowrap ${h === 'Datum' ? 'text-left' : 'text-right'}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>

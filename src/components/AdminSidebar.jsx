@@ -1,24 +1,32 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Calendar, Users, Trophy,
-  Salad, BookOpen, LogOut, Menu, X, Dumbbell, Bell, Shield, TrendingUp,
+  Salad, BookOpen, LogOut, Menu, X, Bell, Shield, TrendingUp,
 } from 'lucide-react'
 import logo2 from '../assets/logo2.png'
+import { useAuth } from '../context/AuthContext'
 
 const navItems = [
-  { href: '/admin/dashboard',  label: 'Početna',         icon: LayoutDashboard },
-  { href: '/admin/trainings',  label: 'Upravljaj Treninzima',  icon: Calendar },
-  { href: '/admin/members',    label: 'Upravljaj Članovima',    icon: Users },
-  { href: '/admin/progress',   label: 'Upravljaj Napretkom',   icon: TrendingUp },
+  { href: '/admin/dashboard', label: 'Početna', icon: LayoutDashboard },
+  { href: '/admin/trainings', label: 'Upravljaj Treninzima', icon: Calendar },
+  { href: '/admin/members', label: 'Upravljaj Članovima', icon: Users },
+  { href: '/admin/progress', label: 'Upravljaj Napretkom', icon: TrendingUp },
   { href: '/admin/challenges', label: 'Upravljaj Izazovima', icon: Trophy },
-  { href: '/admin/nutrition',  label: 'Upravljaj Ishranom',  icon: Salad },
-  { href: '/admin/blog',       label: 'Upravljaj Blogovima',       icon: BookOpen },
+  { href: '/admin/nutrition', label: 'Upravljaj Ishranom', icon: Salad },
+  { href: '/admin/blog', label: 'Upravljaj Blogovima', icon: BookOpen },
 ]
 
 export default function AdminSidebar() {
+  const { logout } = useAuth()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
 
   return (
     <>
@@ -31,10 +39,10 @@ export default function AdminSidebar() {
           <span className="font-bold text-foreground">Admin</span>
         </Link>
         <div className="flex items-center gap-2">
-          <button className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-muted transition-colors" aria-label="Notifications">
+          <button className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-muted transition-colors">
             <Bell size={20} className="text-foreground" />
           </button>
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen
               ? <X size={24} className="text-foreground" />
               : <Menu size={24} className="text-foreground" />
@@ -45,7 +53,8 @@ export default function AdminSidebar() {
 
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setMobileMenuOpen(false)} />
+        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)} />
       )}
 
       {/* Sidebar */}
@@ -107,15 +116,15 @@ export default function AdminSidebar() {
           </ul>
         </nav>
 
-        {/* Footer */}
+        {/* Footer — logout */}
         <div className="border-t border-sidebar-border p-4 shrink-0">
-          <Link
-            to="/"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
           >
             <LogOut size={20} />
-            Odjavi Se
-          </Link>
+            Odjava
+          </button>
         </div>
       </aside>
     </>

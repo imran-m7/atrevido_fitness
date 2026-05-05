@@ -184,6 +184,8 @@ export default function AdminChallenges() {
     })
   }
 
+  const resetForm = () => setFormData(emptyForm)
+
   const handleOpenAddModal = () => {
     setEditingId(null)
     resetForm()
@@ -194,7 +196,6 @@ export default function AdminChallenges() {
     setEditingId(challenge.id)
     setFormData({
       title: challenge.title,
-      type: challenge.type,
       description: challenge.description,
       startDate: toInputDate(challenge.startDate),
       endDate: toInputDate(challenge.endDate),
@@ -315,7 +316,8 @@ export default function AdminChallenges() {
           <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Izazovima</h1>
           <p className="text-muted-foreground">Napravi i upravljaj izazovima</p>
         </div>
-        <button onClick={handleOpenAddModal} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
+        <button onClick={handleOpenAddModal}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
           <Plus size={16} /> Napravi Izazov
         </button>
       </div>
@@ -332,24 +334,13 @@ export default function AdminChallenges() {
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-foreground">{editingId ? 'Uredi Izazov' : 'Napravi Novi Izazov'}</h2>
-              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
-                <X size={24} />
-              </button>
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground"><X size={24} /></button>
             </div>
-
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="title" className={labelClass}>Naziv Izazova</label>
-                <input
-                  id="title"
-                  name="title"
-                  type="text"
-                  className={inputClass}
-                  placeholder="Unesite naziv izazova"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  required
-                />
+                <input id="title" name="title" type="text" className={inputClass}
+                  placeholder="Unesite naziv izazova" value={formData.title} onChange={handleInputChange} required />
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -385,15 +376,13 @@ export default function AdminChallenges() {
 
               <div>
                 <label htmlFor="description" className={labelClass}>Opis Izazova</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  className={`${inputClass} min-h-32 resize-none`}
-                  placeholder="Unesite opis izazova"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  required
-                />
+                <textarea id="description" name="description" className={`${inputClass} min-h-32 resize-none`}
+                  placeholder="Unesite opis izazova" value={formData.description} onChange={handleInputChange} required />
+              </div>
+              <div>
+                <label htmlFor="rules" className={labelClass}>Pravila</label>
+                <textarea id="rules" name="rules" className={`${inputClass} min-h-20 resize-none`}
+                  placeholder="Unesite pravila izazova" value={formData.rules} onChange={handleInputChange} />
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -490,9 +479,7 @@ export default function AdminChallenges() {
         {stats.map(({ label, value, bg, color, icon: Icon }) => (
           <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-full ${bg}`}>
-                <Icon size={20} className={color} />
-              </div>
+              <div className={`flex h-10 w-10 items-center justify-center rounded-full ${bg}`}><Icon size={20} className={color} /></div>
               <div>
                 <p className="text-2xl font-bold text-foreground">{value}</p>
                 <p className="text-sm text-muted-foreground">{label}</p>

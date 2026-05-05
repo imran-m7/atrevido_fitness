@@ -1,22 +1,6 @@
-import React, { useState } from 'react'
-import { Search, Users, UserPlus, X } from 'lucide-react'
-
-const initialMembers = [
-  { id: 1, name: 'Sarah Johnson',  username: 'sarah.johnson', email: 'sarah.johnson@email.com', phone: '+1 555-0101', subscription: 'Individualni trening + Ishrana', status: 'Aktivan',   joinDate: 'Jan 15, 2024', lastActive: 'Danas' },
-  { id: 2, name: 'Amanda Wilson',  username: 'amanda.wilson', email: 'amanda@email.com',        phone: '+1 555-0102', subscription: 'Individualni trening + Ishrana', status: 'Aktivan',   joinDate: 'Mar 23, 2024', lastActive: 'Danas' },
-  { id: 3, name: 'Michelle Chen',  username: 'michelle.chen', email: 'michelle@email.com',      phone: '+1 555-0103', subscription: 'Grupni trening',         status: 'Aktivan',   joinDate: 'Mar 22, 2024', lastActive: 'Jučer' },
-  { id: 4, name: 'Rachel Adams',   username: 'rachel.adams',  email: 'rachel@email.com',        phone: '+1 555-0104', subscription: 'Individualni trening',             status: 'Aktivan',   joinDate: 'Mar 20, 2024', lastActive: 'prije 2 dana' },
-  { id: 5, name: 'Jennifer Kim',   username: 'jennifer.kim',  email: 'jennifer.kim@email.com',  phone: '+1 555-0105', subscription: 'Grupni trening',         status: 'Aktivan',   joinDate: 'Feb 10, 2024', lastActive: 'Danas' },
-  { id: 6, name: 'Lisa Martinez',  username: 'lisa.martinez', email: 'lisa.m@email.com',        phone: '+1 555-0106', subscription: 'Individualni trening + Ishrana', status: 'Aktivan',   joinDate: 'Jan 5, 2024',  lastActive: 'Danas' },
-  { id: 7, name: 'Emily Davis',    username: 'emily.davis',   email: 'emily.d@email.com',       phone: '+1 555-0107', subscription: 'Grupni trening',         status: 'Neaktivan', joinDate: 'Dec 1, 2023',  lastActive: 'prije 2 sedmice' },
-  { id: 8, name: 'Nicole Brown',   username: 'nicole.brown',  email: 'nicole.b@email.com',      phone: '+1 555-0108', subscription: 'Individualni trening',             status: 'Aktivan',   joinDate: 'Feb 28, 2024', lastActive: 'prije 3 dana' },
-]
-
-const subColors = {
-  'Individualni trening + Ishrana': 'bg-purple-100 text-purple-700',
-  'Individualni trening':             'bg-blue-100 text-blue-700',
-  'Grupni trening':         'bg-green-100 text-green-700',
-}
+import React, { useState, useEffect } from 'react'
+import { Search, Users, UserPlus, X, CheckCircle, XCircle } from 'lucide-react'
+import { adminApi, authApi } from '../../services/api'
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
 const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
@@ -27,113 +11,138 @@ const programs = [
   { id: 'individual-nutrition', title: 'Individualni Trening + Ishrana' },
 ]
 
+const getMembershipLabel = (membership) => {
+  if (!membership) return 'Bez plana'
+  if (membership.trainingType === 'Individual' && membership.nutritionEnabled)
+    return 'Individualni + Ishrana'
+  if (membership.trainingType === 'Individual') return 'Individualni'
+  return 'Grupni'
+}
+
+const subColors = {
+  'Individualni + Ishrana': 'bg-purple-100 text-purple-700',
+  'Individualni': 'bg-blue-100 text-blue-700',
+  'Grupni': 'bg-green-100 text-green-700',
+  'Bez plana': 'bg-gray-100 text-gray-600',
+}
+
 export default function AdminMembers() {
-  // Load pending registrations from localStorage
-  const getPendingRegistrations = () => {
-    const pending = localStorage.getItem('pendingRegistrations')
-    if (!pending) return []
+  const [membersList, setMembersList] = useState([])
+  const [search, setSearch] = useState('')
+  const [filter, setFilter] = useState('all')
+  const [showModal, setShowModal] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [form, setForm] = useState({
+    firstName: '', lastName: '', username: '', email: '', phone: '',
+    password: '', confirmPassword: '', trainingProgram: ''
+  })
+
+  const fetchMembers = async () => {
     try {
-      const registrations = JSON.parse(pending)
-      return registrations.map((reg, idx) => ({
-        id: -1 - idx, // Negative IDs for pending members
-        name: `${reg.firstName} ${reg.lastName}`,
-        username: reg.email, // Using email as username since that's what was in the form
-        email: reg.email,
-        phone: reg.phone,
-        subscription: reg.trainingProgram === 'group' ? 'Grupni trening' : reg.trainingProgram === 'individual' ? 'Individualni trening' : 'Individualni trening + Ishrana',
-        status: 'Neaktivan',
-        joinDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-        lastActive: 'Nikad'
-      }))
-    } catch (e) {
-      return []
+      const data = await adminApi.getMembers()
+      setMembersList(data)
+    } catch (err) {
+      console.error('Greška pri učitavanju članova.')
+    } finally {
+      setLoading(false)
     }
   }
 
-  const [membersList, setMembersList] = useState([...initialMembers, ...getPendingRegistrations()])
-  const [search, setSearch] = useState('')
-  const [showModal, setShowModal] = useState(false)
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '', trainingProgram: '' })
-  
-  const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
-  const handleSelectProgram = (e) => setForm({ ...form, trainingProgram: e.target.value })
+  useEffect(() => { fetchMembers() }, [])
 
-  const handleAddMember = (e) => {
+  const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
+
+  const handleAddMember = async (e) => {
     e.preventDefault()
-    if (!form.firstName || !form.lastName || !form.email || !form.phone || !form.password || !form.confirmPassword || !form.trainingProgram) {
-      alert('Molimo popunite sva polja')
-      return
-    }
     if (form.password !== form.confirmPassword) {
       alert('Šifre se ne poklapaju')
       return
     }
-    if (form.password.length < 6) {
-      alert('Šifra mora biti najmanje 6 karaktera')
-      return
-    }
+    try {
+      const registerData = await authApi.register({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        username: form.username,
+        email: form.email || null,
+        phoneNumber: form.phone || null,
+        password: form.password
+      })
 
-    const newMember = {
-      id: Math.max(...membersList.map(m => m.id), 0) + 1,
-      name: `${form.firstName} ${form.lastName}`,
-      username: form.email,
-      email: form.email,
-      phone: form.phone,
-      password: form.password,
-      subscription: form.trainingProgram === 'group' ? 'Grupni trening' : form.trainingProgram === 'individual' ? 'Individualni trening' : 'Individualni trening + Ishrana',
-      status: 'Aktivan',
-      joinDate: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-      lastActive: 'Danas'
-    }
+      await adminApi.updateMembership(registerData.id, {
+        trainingType: form.trainingProgram === 'group' ? 'Group' : 'Individual',
+        status: 'Active',
+        paymentStatus: 'Paid',
+        nutritionEnabled: form.trainingProgram === 'individual-nutrition',
+        adminNotes: 'Dodano od strane admina'
+      })
 
-    setMembersList([newMember, ...membersList])
-    setShowModal(false)
-    setForm({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '', trainingProgram: '' })
+      await fetchMembers()
+      setShowModal(false)
+      setForm({ firstName: '', lastName: '', username: '', email: '', phone: '', password: '', confirmPassword: '', trainingProgram: '' })
+    } catch (err) {
+      alert(err.message || 'Greška pri dodavanju člana.')
+    }
   }
 
-  const filtered = membersList.filter(m =>
-    m.name.toLowerCase().includes(search.toLowerCase()) ||
-    m.email.toLowerCase().includes(search.toLowerCase()) ||
-    m.username.toLowerCase().includes(search.toLowerCase())
-  )
+  // Approve membership — postavi na Active
+  const handleApprove = async (member) => {
+    try {
+      // Aktiviraj membership
+      await adminApi.updateMembership(member.id, {
+        status: 'Active',
+        paymentStatus: 'Paid',
+        activatedAt: new Date().toISOString()
+      })
+      // Aktiviraj i korisnički račun (IsActive = true u bazi)
+      await adminApi.updateUserStatus(member.id, true)
+      await fetchMembers()
+    } catch (err) {
+      alert('Greška pri odobravanju.')
+    }
+  }
 
-  const stats = [
-    { label: 'Ukupno Članova', value: membersList.length, icon: Users, bg: 'bg-primary/10', color: 'text-primary' },
-    { label: 'Aktivni', value: membersList.filter(m => m.status === 'Aktivan').length, icon: Users, bg: 'bg-green-100', color: 'text-green-600' },
-    { label: 'Neaktivni', value: membersList.filter(m => m.status === 'Neaktivan').length, icon: Users, bg: 'bg-yellow-100', color: 'text-yellow-600' },
-  ]
+  // Aktivacija/deaktivacija — mijenja I membership I IsActive u bazi
+  const toggleStatus = async (member) => {
+    const isCurrentlyActive = member.membership?.status === 'Active'
+    const newMembershipStatus = isCurrentlyActive ? 'Inactive' : 'Active'
+    const newIsActive = !isCurrentlyActive
 
-  const toggleMemberStatus = (id) => {
-    setMembersList(prev =>
-      prev.map(m =>
-        m.id === id
-          ? { 
-              ...m, 
-              status: m.status === 'Aktivan' ? 'Neaktivan' : 'Aktivan',
-              lastActive: m.status === 'Neaktivan' ? 'Danas' : m.lastActive
-            }
-          : m
-      )
+    try {
+      // 1. Promijeni membership status
+      await adminApi.updateMembership(member.id, {
+        status: newMembershipStatus,
+        paymentStatus: newMembershipStatus === 'Active' ? 'Paid' : 'Pending'
+      })
+
+      // 2. Promijeni IsActive na User tabeli u bazi
+      await adminApi.updateUserStatus(member.id, newIsActive)
+
+      await fetchMembers()
+    } catch (err) {
+      alert('Greška pri promjeni statusa: ' + err.message)
+    }
+  }
+
+  const filtered = membersList
+    .filter(m => {
+      if (filter === 'pending') return !m.membership || m.membership?.status === 'Pending'
+      if (filter === 'active') return m.membership?.status === 'Active'
+      if (filter === 'inactive') return m.membership?.status === 'Inactive'
+      return true
+    })
+    .filter(m =>
+      `${m.firstName} ${m.lastName}`.toLowerCase().includes(search.toLowerCase()) ||
+      m.email.toLowerCase().includes(search.toLowerCase())
     )
-    
-    // If activating a pending member, remove from localStorage
-    if (id < 0) {
-      const pending = localStorage.getItem('pendingRegistrations')
-      if (pending) {
-        try {
-          const registrations = JSON.parse(pending)
-          const updatedRegistrations = registrations.filter((_, idx) => -1 - idx !== id)
-          if (updatedRegistrations.length > 0) {
-            localStorage.setItem('pendingRegistrations', JSON.stringify(updatedRegistrations))
-          } else {
-            localStorage.removeItem('pendingRegistrations')
-          }
-        } catch (e) {
-          // Handle error silently
-        }
-      }
-    }
+
+  const counts = {
+    all: membersList.length,
+    pending: membersList.filter(m => !m.membership || m.membership?.status === 'Pending').length,
+    active: membersList.filter(m => m.membership?.status === 'Active').length,
+    inactive: membersList.filter(m => m.membership?.status === 'Inactive').length,
   }
+
+  if (loading) return <div className="p-8 text-center">Učitavanje...</div>
 
   return (
     <div className="p-4 lg:p-8">
@@ -142,7 +151,8 @@ export default function AdminMembers() {
           <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Članovima</h1>
           <p className="text-muted-foreground">Pregled i upravljanje članovima</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
+        <button onClick={() => setShowModal(true)}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
           <UserPlus size={16} /> Dodaj Člana
         </button>
       </div>
@@ -158,7 +168,6 @@ export default function AdminMembers() {
                 <X size={24} />
               </button>
             </div>
-
             <form onSubmit={handleAddMember} className="space-y-5">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
@@ -170,17 +179,18 @@ export default function AdminMembers() {
                   <input id="lastName" className={inputClass} placeholder="Unesite prezime" value={form.lastName} onChange={handleChange} required />
                 </div>
               </div>
-
               <div>
-                <label htmlFor="email" className={labelClass}>Korisničko Ime</label>
-                <input id="email" type="text" className={inputClass} placeholder="Unesite korisničko ime" value={form.email} onChange={handleChange} required />
+                <label htmlFor="username" className={labelClass}>Korisničko ime *</label>
+                <input id="username" type="text" className={inputClass} placeholder="npr. marija_fitness" value={form.username} onChange={handleChange} required />
               </div>
-
+              <div>
+                <label htmlFor="email" className={labelClass}>Email (opciono)</label>
+                <input id="email" type="email" className={inputClass} placeholder="Unesite email" value={form.email} onChange={handleChange} />
+              </div>
               <div>
                 <label htmlFor="phone" className={labelClass}>Broj Telefona</label>
-                <input id="phone" type="tel" className={inputClass} placeholder="Unesite broj telefona" value={form.phone} onChange={handleChange} required />
+                <input id="phone" type="tel" className={inputClass} placeholder="Unesite broj telefona" value={form.phone} onChange={handleChange} />
               </div>
-
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label htmlFor="password" className={labelClass}>Šifra</label>
@@ -191,26 +201,22 @@ export default function AdminMembers() {
                   <input id="confirmPassword" type="password" className={inputClass} placeholder="Potvrdite šifru" value={form.confirmPassword} onChange={handleChange} required />
                 </div>
               </div>
-
               <div>
-                <label htmlFor="trainingProgram" className={labelClass}>Odaberite Trening Program</label>
-                <select id="trainingProgram" value={form.trainingProgram} onChange={handleSelectProgram} className={`${inputClass} ${form.trainingProgram === '' ? 'text-muted-foreground' : 'text-foreground'}`} required>
-                  <option value="" disabled>
-                    -- Odaberite program --
-                  </option>
-                  {programs.map(program => (
-                    <option key={program.id} value={program.id}>
-                      {program.title}
-                    </option>
-                  ))}
+                <label htmlFor="trainingProgram" className={labelClass}>Trening Program</label>
+                <select id="trainingProgram" value={form.trainingProgram}
+                  onChange={(e) => setForm({ ...form, trainingProgram: e.target.value })}
+                  className={`${inputClass} ${!form.trainingProgram ? 'text-muted-foreground' : 'text-foreground'}`} required>
+                  <option value="" disabled>-- Odaberite program --</option>
+                  {programs.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
                 </select>
               </div>
-
               <div className="flex gap-3 pt-6">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+                <button type="button" onClick={() => setShowModal(false)}
+                  className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">
                   Otkaži
                 </button>
-                <button type="submit" className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
+                <button type="submit"
+                  className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
                   Dodaj Člana
                 </button>
               </div>
@@ -219,41 +225,56 @@ export default function AdminMembers() {
         </div>
       )}
 
-      {/* Stats */}
-      <div className="mb-6 grid gap-4 md:grid-cols-3 w-fit mx-auto">
-        {stats.map(({ label, value, icon: Icon, bg, color }) => (
-          <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-full ${bg}`}>
-                <Icon size={20} className={color} />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-foreground">{value}</p>
-                <p className="text-sm text-muted-foreground">{label}</p>
-              </div>
-            </div>
-          </div>
+      {/* Filter stats */}
+      <div className="mb-6 grid gap-4 grid-cols-2 lg:grid-cols-4">
+        {[
+          { key: 'all', label: 'Ukupno', color: 'text-primary' },
+          { key: 'active', label: 'Aktivni', color: 'text-green-600' },
+          { key: 'pending', label: 'Na čekanju', color: 'text-yellow-600' },
+          { key: 'inactive', label: 'Neaktivni', color: 'text-gray-600' },
+        ].map(({ key, label, color }) => (
+          <button key={key} onClick={() => setFilter(key)}
+            className={`rounded-lg border p-4 text-left transition-colors ${filter === key ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
+            <p className={`text-2xl font-bold ${color}`}>{counts[key]}</p>
+            <p className="text-sm text-muted-foreground">{label}</p>
+          </button>
         ))}
       </div>
 
+      {/* Pending banner */}
+      {counts.pending > 0 && (
+        <div className="mb-6 rounded-lg border border-yellow-200 bg-yellow-50 p-4 flex items-center gap-3">
+          <Users size={20} className="text-yellow-600 shrink-0" />
+          <p className="text-sm text-yellow-800">
+            <strong>{counts.pending}</strong> {counts.pending === 1 ? 'član čeka' : 'članova čeka'} odobrenje.
+            {filter !== 'pending' && (
+              <button onClick={() => setFilter('pending')} className="ml-2 text-yellow-700 underline font-medium">
+                Prikaži
+              </button>
+            )}
+          </p>
+        </div>
+      )}
+
       {/* Search */}
       <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
-        <div className="relative flex-1">
+        <div className="relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input className={inputClass + ' pl-9'} placeholder="Traži člana..." value={search} onChange={e => setSearch(e.target.value)} />
+          <input className={inputClass + ' pl-9'} placeholder="Traži člana..."
+            value={search} onChange={e => setSearch(e.target.value)} />
         </div>
       </div>
 
-      {/* Table */}
+      {/* Tabela */}
       <div className="rounded-lg border border-border bg-card shadow-sm">
         <div className="p-5 border-b border-border">
-          <h3 className="font-semibold text-foreground">Članovi</h3>
+          <h3 className="font-semibold text-foreground">Članovi ({filtered.length})</h3>
         </div>
         <div className="p-5 overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
-                {['Član','Korisničko ime','Telefon','Pretplata','Status','Posljednja Aktivnost','Radnje'].map((h, i) => (
+                {['Član', 'Telefon', 'Plan', 'Membership', 'Račun', 'Datum reg.', 'Radnje'].map((h, i) => (
                   <th key={h} className={`pb-3 text-sm font-medium text-muted-foreground ${i === 6 ? 'text-right' : 'text-left'}`}>{h}</th>
                 ))}
               </tr>
@@ -263,46 +284,76 @@ export default function AdminMembers() {
                 <tr key={member.id} className={i < filtered.length - 1 ? 'border-b border-border' : ''}>
                   <td className="py-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
-                        <span className="text-sm font-medium text-primary">
-                          {member.name.split(' ').map(n => n[0]).join('')}
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-full shrink-0 ${member.isActive ? 'bg-primary/10' : 'bg-gray-100'
+                        }`}>
+                        <span className={`text-sm font-medium ${member.isActive ? 'text-primary' : 'text-gray-400'}`}>
+                          {member.firstName[0]}{member.lastName[0]}
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium text-foreground">{member.name}</p>
-                        <p className="text-sm text-muted-foreground">{member.email}</p>
+                        <p className="font-medium text-foreground">{member.firstName} {member.lastName}</p>
+                        <p className="text-xs text-muted-foreground">{member.username || member.email}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="py-4 text-sm text-foreground">{member.username}</td>
-                  <td className="py-4 text-sm text-foreground">{member.phone}</td>
+                  <td className="py-4 text-sm text-foreground">{member.phoneNumber || '—'}</td>
                   <td className="py-4">
-                    <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${subColors[member.subscription]}`}>
-                      {member.subscription}
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${subColors[getMembershipLabel(member.membership)] || 'bg-gray-100 text-gray-600'}`}>
+                      {getMembershipLabel(member.membership)}
                     </span>
                   </td>
+                  {/* Membership status */}
                   <td className="py-4">
-                    <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${member.status === 'Aktivan' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'}`}>
-                      {member.status}
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${member.membership?.status === 'Active' ? 'bg-green-100 text-green-700' :
+                        member.membership?.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-gray-100 text-gray-600'
+                      }`}>
+                      {member.membership?.status === 'Active' ? 'Aktivan' :
+                        member.membership?.status === 'Pending' ? 'Na čekanju' :
+                          member.membership ? 'Neaktivan' : 'Bez plana'}
                     </span>
                   </td>
-                  <td className="py-4 text-sm text-muted-foreground">{member.lastActive}</td>
+                  {/* IsActive status */}
+                  <td className="py-4">
+                    <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${member.isActive ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-600'
+                      }`}>
+                      {member.isActive ? 'Aktivan' : 'Deaktiviran'}
+                    </span>
+                  </td>
+                  <td className="py-4 text-sm text-muted-foreground">
+                    {new Date(member.createdAt).toLocaleDateString('bs-BA')}
+                  </td>
                   <td className="py-4">
                     <div className="flex justify-end gap-2">
-                      <button
-                        onClick={() => toggleMemberStatus(member.id)}
-                        className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                          member.status === 'Aktivan'
-                            ? 'bg-primary/10 text-primary hover:bg-primary/20'
-                            : 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
-                        }`}
-                      >
-                        {member.status === 'Aktivan' ? 'Napravi Neaktivan' : 'Napravi Aktivan'}
-                      </button>
+                      {/* Pending → Approve */}
+                      {member.membership?.status === 'Pending' && (
+                        <button onClick={() => handleApprove(member)}
+                          className="inline-flex items-center gap-1 rounded-lg bg-green-100 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-200 transition-colors">
+                          <CheckCircle size={12} /> Odobri
+                        </button>
+                      )}
+                      {/* Active → Deactivate / Inactive → Activate */}
+                      {member.membership && member.membership.status !== 'Pending' && (
+                        <button onClick={() => toggleStatus(member)}
+                          className={`inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${member.membership.status === 'Active'
+                              ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                              : 'bg-green-100 text-green-700 hover:bg-green-200'
+                            }`}>
+                          {member.membership.status === 'Active'
+                            ? <><XCircle size={12} /> Deaktiviraj</>
+                            : <><CheckCircle size={12} /> Aktiviraj</>
+                          }
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
               ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-muted-foreground">Nema članova</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

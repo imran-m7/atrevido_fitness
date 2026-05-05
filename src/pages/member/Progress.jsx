@@ -177,8 +177,8 @@ export default function MemberProgress() {
         const data = await response.json()
         const entries = Array.isArray(data)
           ? data
-              .map(normalizeProgressEntry)
-              .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
+            .map(normalizeProgressEntry)
+            .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
           : []
 
         console.log('loaded progress entries', entries)
@@ -229,9 +229,62 @@ export default function MemberProgress() {
 
   return (
     <div className="p-4 lg:p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Pregled napretka</h1>
-        <p className="text-muted-foreground">Prati svoja mjerenja i vidi svoj napredak tokom vremena</p>
+
+      {/* Modal za dodavanje */}
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowForm(false)} />
+          <div className="relative z-10 w-full max-w-lg rounded-lg border border-border bg-card p-6 shadow-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-foreground">Dodaj nova mjerenja</h3>
+              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground"><X size={20} /></button>
+            </div>
+            {error && (
+              <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</div>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div><label htmlFor="entryDate" className={labelClass}>Datum</label>
+                <input id="entryDate" type="date" className={inputClass} value={form.entryDate} onChange={handleChange} required /></div>
+              <div><label htmlFor="visina" className={labelClass}>Visina (cm)</label>
+                <input id="visina" type="number" step="0.1" className={inputClass} placeholder="npr. 168" value={form.visina} onChange={handleChange} /></div>
+              <div><label htmlFor="weightKg" className={labelClass}>Težina (kg)</label>
+                <input id="weightKg" type="number" step="0.1" className={inputClass} placeholder="npr. 68.5" value={form.weightKg} onChange={handleChange} /></div>
+              <div><label htmlFor="armCm" className={labelClass}>Ruka — sredina nadlaktice (cm)</label>
+                <input id="armCm" type="number" step="0.1" className={inputClass} placeholder="npr. 28" value={form.armCm} onChange={handleChange} /></div>
+              <div><label htmlFor="waistCm" className={labelClass}>Struk — najuži dio (cm)</label>
+                <input id="waistCm" type="number" step="0.1" className={inputClass} placeholder="npr. 72" value={form.waistCm} onChange={handleChange} /></div>
+              <div><label htmlFor="hipsCm" className={labelClass}>Bokovi — najširi dio (cm)</label>
+                <input id="hipsCm" type="number" step="0.1" className={inputClass} placeholder="npr. 96" value={form.hipsCm} onChange={handleChange} /></div>
+              <div><label htmlFor="chestCm" className={labelClass}>Grudi (cm)</label>
+                <input id="chestCm" type="number" step="0.1" className={inputClass} placeholder="npr. 88" value={form.chestCm} onChange={handleChange} /></div>
+              <div><label htmlFor="thighCm" className={labelClass}>Noga — najširi dio natkoljenice (cm)</label>
+                <input id="thighCm" type="number" step="0.1" className={inputClass} placeholder="npr. 54" value={form.thighCm} onChange={handleChange} /></div>
+              <div><label htmlFor="notes" className={labelClass}>Bilješka (opcionalno)</label>
+                <textarea id="notes" className={`${inputClass} min-h-16 resize-none`} placeholder="npr. Početna mjerenja" value={form.notes} onChange={handleChange} /></div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowForm(false)}
+                  className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+                  Otkaži
+                </button>
+                <button type="submit" disabled={saving}
+                  className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50">
+                  {saving ? 'Čuvanje...' : 'Sačuvaj mjerenja'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Pregled napretka</h1>
+          <p className="text-muted-foreground">Prati svoja mjerenja i vidi napredak tokom vremena</p>
+        </div>
+        <button onClick={() => setShowForm(true)}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
+          <Plus size={16} /> Dodaj mjerenja
+        </button>
       </div>
 
       <div className="space-y-6">
@@ -264,6 +317,7 @@ export default function MemberProgress() {
             <div className="p-5">
               <ScoreProgressChart entries={progressEntries} />
             </div>
+
           </div>
 
           {/* History Table */}
@@ -282,7 +336,7 @@ export default function MemberProgress() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border">
-                      {['Datum','Težina','Struk','Kukovi','Prs'].map(h => (
+                      {['Datum', 'Težina', 'Struk', 'Kukovi', 'Prs'].map(h => (
                         <th key={h} className={`pb-3 text-sm font-medium text-muted-foreground ${h === 'Datum' ? 'text-left' : 'text-right'}`}>{h}</th>
                       ))}
                     </tr>

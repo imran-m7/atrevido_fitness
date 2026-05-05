@@ -462,7 +462,6 @@ export default function MemberChallenges() {
             </div>
           </div>
         </div>
-
         <div>
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="border-b border-border p-5">

@@ -1,0 +1,88 @@
+import React, { createContext, useContext, useState, useEffect } from 'react'
+
+const AuthContext = createContext(null)
+
+export function AuthProvider({ children }) {
+    const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        const role = localStorage.getItem('role')
+        const firstName = localStorage.getItem('firstName')
+        const userId = localStorage.getItem('userId')
+        const isActive = localStorage.getItem('isActive') === 'true'
+
+        if (token && role) {
+            setUser({ token, role, firstName, userId: userId ? parseInt(userId) : null, isActive })
+        }
+        setLoading(false)
+    }, [])
+
+    const login = (data) => {
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('role', data.role)
+        localStorage.setItem('firstName', data.firstName)
+        localStorage.setItem('userId', data.id)
+        localStorage.setItem('isActive', data.isActive ? 'true' : 'false')
+        setUser({
+            token: data.token,
+            role: data.role,
+            firstName: data.firstName,
+            userId: data.id,
+            isActive: data.isActive
+        })
+    }
+
+    // Osvježi isActive iz baze (admin je možda promijenio)
+    const refreshStatus = async () => {
+        const token = localStorage.getItem('token')
+        if (!token) return
+        try {
+            const res = await fetch('https://localhost:7087/api/membership/mine', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            // Ako je 401 — token više nije validan (user deaktiviran od admina)
+            if (res.status === 401) {
+                logout()
+                return
+            }
+        } catch (err) {
+            console.error('Greška pri provjeri statusa')
+        }
+    }
+
+    const updateIsActive = (isActive) => {
+        localStorage.setItem('isActive', isActive ? 'true' : 'false')
+        setUser(prev => prev ? { ...prev, isActive } : null)
+    }
+
+    const logout = () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('role')
+        localStorage.removeItem('firstName')
+        localStorage.removeItem('userId')
+        localStorage.removeItem('isActive')
+        setUser(null)
+    }
+
+    const isAdmin = () => user?.role === 'Admin'
+    const isMember = () => user?.role === 'Member'
+    const isLoggedIn = () => !!user
+    const isAccountActive = () => user?.isActive === true
+
+    return (
+        <AuthContext.Provider value={{
+            user, login, logout, isAdmin, isMember, isLoggedIn,
+            isAccountActive, updateIsActive, refreshStatus, loading
+        }}>
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export function useAuth() {
+    const ctx = useContext(AuthContext)
+    if (!ctx) throw new Error('useAuth mora biti unutar AuthProvider')
+    return ctx
+}
