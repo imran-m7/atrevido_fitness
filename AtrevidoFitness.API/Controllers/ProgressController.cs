@@ -32,6 +32,7 @@ namespace AtrevidoFitness.API.Controllers
                 Id = entry.Id,
                 UserId = entry.UserId,
                 EntryDate = entry.EntryDate,
+                HeightCm = entry.HeightCm, 
                 WeightKg = entry.WeightKg,
                 WaistCm = entry.WaistCm,
                 HipsCm = entry.HipsCm,
@@ -80,6 +81,7 @@ namespace AtrevidoFitness.API.Controllers
                 UserId = userId,
                 EntryDate = dto.EntryDate,
                 WeightKg = dto.WeightKg,
+                HeightCm = dto.HeightCm,
                 WaistCm = dto.WaistCm,
                 HipsCm = dto.HipsCm,
                 ChestCm = dto.ChestCm,
@@ -114,6 +116,7 @@ namespace AtrevidoFitness.API.Controllers
                 UserId = userId,
                 EntryDate = dto.EntryDate,
                 WeightKg = dto.WeightKg,
+                HeightCm = dto.HeightCm,
                 WaistCm = dto.WaistCm,
                 HipsCm = dto.HipsCm,
                 ChestCm = dto.ChestCm,
@@ -146,6 +149,7 @@ namespace AtrevidoFitness.API.Controllers
 
             if (dto.EntryDate.HasValue) entry.EntryDate = dto.EntryDate.Value;
             if (dto.WeightKg.HasValue) entry.WeightKg = dto.WeightKg;
+            if (dto.HeightCm.HasValue) entry.HeightCm = dto.HeightCm;
             if (dto.WaistCm.HasValue) entry.WaistCm = dto.WaistCm;
             if (dto.HipsCm.HasValue) entry.HipsCm = dto.HipsCm;
             if (dto.ChestCm.HasValue) entry.ChestCm = dto.ChestCm;
@@ -177,6 +181,7 @@ namespace AtrevidoFitness.API.Controllers
 
             if (dto.EntryDate.HasValue) entry.EntryDate = dto.EntryDate.Value;
             if (dto.WeightKg.HasValue) entry.WeightKg = dto.WeightKg;
+            if (dto.HeightCm.HasValue) entry.HeightCm = dto.HeightCm;
             if (dto.WaistCm.HasValue) entry.WaistCm = dto.WaistCm;
             if (dto.HipsCm.HasValue) entry.HipsCm = dto.HipsCm;
             if (dto.ChestCm.HasValue) entry.ChestCm = dto.ChestCm;

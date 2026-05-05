@@ -12,6 +12,7 @@ namespace AtrevidoFitness.API.Models.Entities
         public DateOnly EntryDate { get; set; }
         
         public decimal? WeightKg { get; set; }
+        public decimal? HeightCm { get; set; }
 
         public decimal? WaistCm { get; set; }
         public decimal? HipsCm { get; set; }

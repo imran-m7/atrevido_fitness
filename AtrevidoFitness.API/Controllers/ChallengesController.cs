@@ -34,7 +34,7 @@ namespace AtrevidoFitness.API.Controllers
                 Status = challenge.Status,
                 IsPublic = challenge.IsPublic,
                 CreatedAt = challenge.CreatedAt,
-                ParticipantCount = challenge.Participants.Count,
+                ParticipantCount = challenge.Participants.Count(p => p.Status == "Active"),
                 JoinedAt = participant?.JoinedAt,
                 ParticipationStatus = participant?.Status
             };
@@ -392,6 +392,24 @@ namespace AtrevidoFitness.API.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Participant status updated." });
+        }
+
+        // DELETE api/challenges/{id}
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var challenge = await _context.Challenges
+                .Include(c => c.Participants)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (challenge == null)
+                return NotFound();
+
+            _context.Challenges.Remove(challenge);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Challenge obrisan." });
         }
     }
 }

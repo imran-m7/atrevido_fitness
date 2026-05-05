@@ -63,6 +63,10 @@ namespace AtrevidoFitness.API.Data
                 .HasPrecision(5, 2);
 
             modelBuilder.Entity<ProgressEntry>()
+    .Property(p => p.HeightCm)
+    .HasPrecision(5, 2);
+
+            modelBuilder.Entity<ProgressEntry>()
                 .Property(p => p.WaistCm)
                 .HasPrecision(5, 2);
 

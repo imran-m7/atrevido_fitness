@@ -4,6 +4,7 @@ using AtrevidoFitness.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AtrevidoFitness.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260505080001_AddHeightCmToProgressEntry")]
+    partial class AddHeightCmToProgressEntry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -645,7 +648,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Dika",
                             IsActive = true,
                             LastName = "Admin",
-                            PasswordHash = "$2a$11$5.gnCp1pOsMNIctS4TGA6ebnpw09mWeLH.WgLrR0r3k/CiyJoS9S.",
+                            PasswordHash = "$2a$11$KefICmsWWA3i54S4DjnBoeKsu./G1CmkJhHQdRvic2N8rYO5LF6J.",
                             Role = "Admin",
                             Username = "dika.admin"
                         },
@@ -657,7 +660,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Sarah",
                             IsActive = true,
                             LastName = "Johnson",
-                            PasswordHash = "$2a$11$PTJbTKXxxe0hdGAuX4Tl6uYTOLF.kjDw1AZKl8KRNlP2RAZT0cUwC",
+                            PasswordHash = "$2a$11$9fX18v33rHsony3lv9xrBu3i3RQe2mPOKO5V873ggAn27g0L6jfVW",
                             Role = "Member",
                             Username = ""
                         },
@@ -669,7 +672,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Maria",
                             IsActive = true,
                             LastName = "Smith",
-                            PasswordHash = "$2a$11$NfZtgREJjjJa4ebcTuQbK.AXKimTCMybGgajKzr3dMFa7hSwfz.fG",
+                            PasswordHash = "$2a$11$Tyc43W6f/X0Vw9PQ.MipxOgsKriXiIQ9K3z0nzYy/QgQqLSngy0SG",
                             Role = "Member",
                             Username = ""
                         },
@@ -681,7 +684,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Jennifer",
                             IsActive = true,
                             LastName = "Kane",
-                            PasswordHash = "$2a$11$OHHZgKg.IIg/KWc1H.BbuOLtT81KMpqqVsgu6L7Xbdz7aYcwiGr8G",
+                            PasswordHash = "$2a$11$PQ0QXB0AYXsqBlnTR.ZOu.9eBEWUBSwGeYh.HNCNfkshPPkAjQ7SK",
                             Role = "Member",
                             Username = ""
                         },
@@ -693,7 +696,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Amanda",
                             IsActive = true,
                             LastName = "Ross",
-                            PasswordHash = "$2a$11$59mqvjV33hK5ZX4QTGFF7ek2Z8zZ6RE/doFClOo0/hKmug9WZrqge",
+                            PasswordHash = "$2a$11$4IDi7Msj/ZNdM6Jru85yhu5O5jJEo90ENDEybWwZjDOHy4FT9vYPe",
                             Role = "Member",
                             Username = ""
                         });
