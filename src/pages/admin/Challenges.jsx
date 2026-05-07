@@ -184,8 +184,6 @@ export default function AdminChallenges() {
     })
   }
 
-  const resetForm = () => setFormData(emptyForm)
-
   const handleOpenAddModal = () => {
     setEditingId(null)
     resetForm()

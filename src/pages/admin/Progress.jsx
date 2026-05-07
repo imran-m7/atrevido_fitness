@@ -283,14 +283,6 @@ export default function AdminProgress() {
   }, [memberSearch, members])
 
   const latestEntry = progressEntries[0] ?? null
-
-  const filteredMembers = useMemo(() => {
-    const search = memberSearch.trim().toLowerCase()
-    if (!search) return members
-    return members.filter(m => `${formatMemberName(m)} ${m.email}`.toLowerCase().includes(search))
-  }, [memberSearch, members])
-
-  const latestEntry = progressEntries[0] ?? null
   const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
 
   const refreshSelectedMemberProgress = async (token) => {
@@ -502,7 +494,6 @@ export default function AdminProgress() {
             <div className="p-5">
               <ScoreProgressChart entries={progressEntries} />
             </div>
-            <div className="p-5"><ScoreProgressChart entries={progressEntries} /></div>
           </div>
 
           <div className="rounded-lg border border-border bg-card shadow-sm">
