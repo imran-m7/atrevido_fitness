@@ -1,41 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { TrendingUp, Plus, Scale, Ruler, Search } from 'lucide-react'
-
-const API_URL = import.meta.env.VITE_API_URL
+import { progressApi, usersApi } from '../../services/api'
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors'
 const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
-const emptyForm = { date: '', height: '', weight: '', ruka: '', t1: '', t2: '', t3: '', bokovi: '', noga: '' }
+const emptyForm = { date: '', visina: '', weight: '', ruka: '', struk: '', bokovi: '', grudi: '', noga: '', notes: '' }
 
-function getToken() {
-  return localStorage.getItem('token') || ''
-}
-
-function authHeaders(token) {
-  return { Authorization: `Bearer ${token}` }
-}
-
-function jsonAuthHeaders(token) {
+function normalizeMember(m) {
   return {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  }
-}
-
-function getRequestErrorMessage(status, defaultMessage) {
-  if (status === 401) return 'Morate biti prijavljeni.'
-  if (status === 403) return 'Nemate dozvolu za pristup.'
-  if (status === 500) return 'Greška na serveru.'
-  return defaultMessage
-}
-
-function normalizeMember(member) {
-  return {
-    id: member.id ?? member.Id,
-    firstName: member.firstName ?? member.FirstName ?? '',
-    lastName: member.lastName ?? member.LastName ?? '',
-    email: member.email ?? member.Email ?? '',
-    role: member.role ?? member.Role ?? '',
+    id: m.id ?? m.Id,
+    firstName: m.firstName ?? m.FirstName ?? '',
+    lastName: m.lastName ?? m.LastName ?? '',
+    email: m.email ?? m.Email ?? '',
   }
 }
 
@@ -44,6 +21,7 @@ function normalizeProgressEntry(entry) {
     id: entry.id ?? entry.Id,
     userId: entry.userId ?? entry.UserId,
     entryDate: entry.entryDate ?? entry.EntryDate,
+    heightCm: entry.heightCm ?? entry.HeightCm ?? null,
     weightKg: entry.weightKg ?? entry.WeightKg ?? null,
     waistCm: entry.waistCm ?? entry.WaistCm ?? null,
     hipsCm: entry.hipsCm ?? entry.HipsCm ?? null,
@@ -54,10 +32,9 @@ function normalizeProgressEntry(entry) {
   }
 }
 
-function formatMemberName(member) {
-  if (!member) return ''
-  const name = `${member.firstName} ${member.lastName}`.trim()
-  return name || member.email || `Member #${member.id}`
+function formatMemberName(m) {
+  if (!m) return ''
+  return `${m.firstName} ${m.lastName}`.trim() || m.email || `Member #${m.id}`
 }
 
 function formatDate(value) {
@@ -75,91 +52,70 @@ function toNullableNumber(value) {
   return Number(value)
 }
 
-function measurementValue(value) {
-  return Number(value ?? 0)
-}
+function measurementValue(value) { return Number(value ?? 0) }
 
 function buildScoreChartData(entries) {
-  const sortedEntries = [...entries].sort((a, b) => new Date(a.entryDate) - new Date(b.entryDate))
-
-  if (sortedEntries.length === 0) return []
-
-  const first = sortedEntries[0]
-
-  return sortedEntries.map((entry) => {
+  const sorted = [...entries].sort((a, b) => new Date(a.entryDate) - new Date(b.entryDate))
+  if (sorted.length === 0) return []
+  const first = sorted[0]
+  return sorted.map(entry => {
     const weightLoss = measurementValue(first.weightKg) - measurementValue(entry.weightKg)
     const waistLoss = measurementValue(first.waistCm) - measurementValue(entry.waistCm)
     const armLoss = measurementValue(first.armCm) - measurementValue(entry.armCm)
     const thighLoss = measurementValue(first.thighCm) - measurementValue(entry.thighCm)
     const score = (weightLoss * 10) + (waistLoss * 3) + (armLoss * 2) + (thighLoss * 2)
-
-    return {
-      date: formatDate(entry.entryDate),
-      score: sortedEntries.length === 1 ? 0 : Number(score.toFixed(2)),
-    }
+    return { date: formatDate(entry.entryDate), score: sorted.length === 1 ? 0 : Number(score.toFixed(2)) }
   })
 }
 
+
 function ScoreProgressChart({ entries }) {
   const chartData = buildScoreChartData(entries)
-
   if (chartData.length < 2) {
     return (
       <div className="flex h-64 items-center justify-center rounded-lg bg-muted/50">
-        <p className="text-center text-sm text-muted-foreground">
-          Potrebna su najmanje dva unosa za prikaz grafa.
-        </p>
+        <p className="text-center text-sm text-muted-foreground">Potrebna su najmanje dva unosa za prikaz grafa.</p>
       </div>
     )
   }
-
-  const width = 640
-  const height = 220
-  const padding = 36
-  const scores = chartData.map(item => item.score)
-  const minScore = Math.min(0, ...scores)
-  const maxScore = Math.max(0, ...scores)
-  const scoreRange = maxScore - minScore || 1
-
-  const points = chartData.map((item, index) => {
-    const x = padding + (index / (chartData.length - 1)) * (width - padding * 2)
-    const y = height - padding - ((item.score - minScore) / scoreRange) * (height - padding * 2)
-    return { ...item, x, y }
-  })
-
-  const linePath = points
-    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-    .join(' ')
-
   return (
-    <div className="h-64 rounded-lg bg-muted/50 p-4">
-      <svg className="h-full w-full" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Graf rezultata napretka kroz vrijeme">
-        <line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="hsl(var(--border))" strokeWidth="1" />
-        <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="hsl(var(--border))" strokeWidth="1" />
-        {[0, 0.5, 1].map((ratio) => {
-          const y = padding + ratio * (height - padding * 2)
-          const score = maxScore - ratio * scoreRange
-          return (
-            <g key={ratio}>
-              <line x1={padding} y1={y} x2={width - padding} y2={y} stroke="hsl(var(--border))" strokeWidth="0.75" opacity="0.45" />
-              <text x={padding - 8} y={y + 4} textAnchor="end" className="fill-muted-foreground text-[10px]">
-                {score.toFixed(0)}
-              </text>
-            </g>
-          )
-        })}
-        <path d={linePath} fill="none" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        {points.map((point, index) => (
-          <g key={`${point.date}-${index}`}>
-            <circle cx={point.x} cy={point.y} r="5" fill="hsl(var(--primary))">
-              <title>{`${point.date}: score ${point.score}`}</title>
-            </circle>
-            <text x={point.x} y={height - 10} textAnchor="middle" className="fill-muted-foreground text-[10px]">
-              {point.date.slice(5)}
-            </text>
-          </g>
-        ))}
-      </svg>
+    <div className="h-64">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+          <XAxis
+            dataKey="date"
+            tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+            tickLine={false}
+            axisLine={{ stroke: 'hsl(var(--border))' }}
+          />
+          <YAxis
+            tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+            tickLine={false}
+            axisLine={false}
+            width={40}
+          />
+          <Tooltip
+            contentStyle={{
+              background: 'hsl(var(--card))',
+              border: '1px solid hsl(var(--border))',
+              borderRadius: '8px',
+              fontSize: '12px',
+              color: 'hsl(var(--foreground))'
+            }}
+            formatter={(value) => [`${value} pts`, 'Score']}
+          />
+          <ReferenceLine y={0} stroke="hsl(var(--border))" strokeDasharray="4 4" />
+          <Line
+            type="monotone"
+            dataKey="score"
+            stroke="hsl(var(--primary))"
+            strokeWidth={2.5}
+            dot={{ r: 4, fill: 'hsl(var(--primary))', strokeWidth: 0 }}
+            activeDot={{ r: 6, fill: 'hsl(var(--primary))' }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   )
 }
@@ -177,98 +133,37 @@ export default function AdminProgress() {
 
   useEffect(() => {
     async function loadMembers() {
-      const token = getToken()
-
-      if (!token) {
-        setMembers([])
-        setSelectedMember(null)
-        setError('Morate biti prijavljeni.')
-        setMembersLoading(false)
-        return
-      }
-
       setMembersLoading(true)
       setError('')
-
       try {
-        const response = await fetch(`${API_URL}/api/users/members`, {
-          headers: authHeaders(token),
-        })
-
-        if (!response.ok) {
-          throw new Error(getRequestErrorMessage(response.status, 'Nije moguće učitati članove iz backend-a.'))
-        }
-
-        const data = await response.json()
-        const loadedMembers = Array.isArray(data)
-          ? data
-            .map(normalizeMember)
-            .filter(member => member.id)
-          : []
-
-        console.log('loaded members', loadedMembers)
-
-        setMembers(loadedMembers)
-        setSelectedMember(loadedMembers[0] ?? null)
+        const data = await usersApi.getMembers()
+        const list = Array.isArray(data) ? data.map(normalizeMember).filter(m => m.id) : []
+        setMembers(list)
+        setSelectedMember(list[0] ?? null)
       } catch (err) {
         setMembers([])
         setSelectedMember(null)
-        setError(err.message || 'Nije moguće učitati članove iz backend-a.')
+        setError(err.message || 'Nije moguće učitati članove.')
       } finally {
         setMembersLoading(false)
       }
     }
-
     loadMembers()
   }, [])
 
   useEffect(() => {
-    async function loadProgress() {
-      const token = getToken()
-
-      if (!selectedMember?.id) {
-        setProgressEntries([])
-        return
-      }
-
-      if (!token) {
-        setProgressEntries([])
-        setError('Morate biti prijavljeni.')
-        return
-      }
-
-      console.log('selected member id', selectedMember.id)
-
-      setProgressLoading(true)
-      setError('')
-
-      try {
-        const response = await fetch(`${API_URL}/api/progress/user/${selectedMember.id}`, {
-          headers: authHeaders(token),
-        })
-
-        if (!response.ok) {
-          throw new Error(getRequestErrorMessage(response.status, 'Nije moguće učitati napredak za odabranog člana.'))
-        }
-
-        const data = await response.json()
-        const loadedEntries = Array.isArray(data)
-          ? data
-            .map(normalizeProgressEntry)
-            .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
+    if (!selectedMember?.id) { setProgressEntries([]); return }
+    setProgressLoading(true)
+    setError('')
+    progressApi.getByUser(selectedMember.id)
+      .then(data => {
+        const entries = Array.isArray(data)
+          ? data.map(normalizeProgressEntry).sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
           : []
-
-        console.log('loaded progress entries', loadedEntries)
-        setProgressEntries(loadedEntries)
-      } catch (err) {
-        setProgressEntries([])
-        setError(err.message || 'Nije moguće učitati napredak za odabranog člana.')
-      } finally {
-        setProgressLoading(false)
-      }
-    }
-
-    loadProgress()
+        setProgressEntries(entries)
+      })
+      .catch(err => { setProgressEntries([]); setError(err.message || 'Greška pri učitavanju napretka.') })
+      .finally(() => setProgressLoading(false))
   }, [selectedMember?.id])
 
   const filteredMembers = useMemo(() => {
@@ -285,70 +180,31 @@ export default function AdminProgress() {
   const latestEntry = progressEntries[0] ?? null
   const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
 
-  const refreshSelectedMemberProgress = async (token) => {
-    const progressResponse = await fetch(`${API_URL}/api/progress/user/${selectedMember.id}`, {
-      headers: authHeaders(token),
-    })
-
-    if (!progressResponse.ok) {
-      throw new Error(getRequestErrorMessage(progressResponse.status, 'Napredak je sačuvan, ali osvježavanje nije uspjelo.'))
-    }
-
-    const data = await progressResponse.json()
-    const loadedEntries = Array.isArray(data)
-      ? data
-        .map(normalizeProgressEntry)
-        .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
-      : []
-
-    console.log('loaded progress entries', loadedEntries)
-    setProgressEntries(loadedEntries)
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    const token = getToken()
-
-    if (!token) {
-      setError('Morate biti prijavljeni.')
-      return
-    }
-
-    if (!selectedMember?.id) {
-      setError('Odaberite člana prije spremanja napretka.')
-      return
-    }
-
+    if (!selectedMember?.id) { setError('Odaberite člana.'); return }
     setSaving(true)
     setError('')
-
     try {
-      const notes = [
-        form.t2 ? `T2: ${form.t2} cm` : '',
-        form.t3 ? `T3: ${form.t3} cm` : '',
-      ].filter(Boolean).join(' | ')
-
-      const response = await fetch(`${API_URL}/api/progress/user/${selectedMember.id}`, {
-        method: 'POST',
-        headers: jsonAuthHeaders(token),
-        body: JSON.stringify({
-          entryDate: form.date,
-          weightKg: toNullableNumber(form.weight),
-          waistCm: toNullableNumber(form.t1),
-          hipsCm: toNullableNumber(form.bokovi),
-          armCm: toNullableNumber(form.ruka),
-          thighCm: toNullableNumber(form.noga),
-          notes: notes || null,
-        }),
+      await progressApi.addForUser(selectedMember.id, {
+        entryDate: form.date,
+        heightCm: toNullableNumber(form.visina),   // ← visina → heightCm
+        weightKg: toNullableNumber(form.weight),
+        armCm: toNullableNumber(form.ruka),
+        waistCm: toNullableNumber(form.struk),
+        hipsCm: toNullableNumber(form.bokovi),
+        chestCm: toNullableNumber(form.grudi),
+        thighCm: toNullableNumber(form.noga),
+        notes: form.notes || null,
+        challengeId: null,
       })
-
-      if (!response.ok) {
-        throw new Error(getRequestErrorMessage(response.status, 'Nije moguće sačuvati napredak.'))
-      }
-
       setForm(emptyForm)
-      await refreshSelectedMemberProgress(token)
+      const updated = await progressApi.getByUser(selectedMember.id)
+      setProgressEntries(
+        Array.isArray(updated)
+          ? updated.map(normalizeProgressEntry).sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
+          : []
+      )
     } catch (err) {
       setError(err.message || 'Nije moguće sačuvati napredak.')
     } finally {
@@ -364,13 +220,9 @@ export default function AdminProgress() {
         <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljanje Napretkom</h1>
         <p className="text-muted-foreground">Prati i upravljaj mjerama članova</p>
       </div>
-
       {error && (
-        <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          {error}
-        </div>
+        <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</div>
       )}
-
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Lijeva kolona */}
         <div className="space-y-4">
@@ -389,20 +241,12 @@ export default function AdminProgress() {
                 {membersLoading ? (
                   <p className="px-3 py-6 text-center text-sm text-muted-foreground">Učitavanje članova...</p>
                 ) : filteredMembers.length > 0 ? (
-                  filteredMembers.map(member => (
-                    <button
-                      key={member.id}
-                      onClick={() => {
-                        setSelectedMember(member)
-                        setMemberSearch('')
-                      }}
-                      className={`w-full rounded-lg px-3 py-2.5 text-sm text-left transition-colors ${selectedMember?.id === member.id
-                          ? 'bg-primary text-primary-foreground'
-                          : 'hover:bg-muted text-foreground'
-                        }`}
-                    >
-                      <p className="font-medium">{formatMemberName(member)}</p>
-                      <p className="text-xs opacity-70">{member.email}</p>
+                  filteredMembers.map(m => (
+                    <button key={m.id} onClick={() => { setSelectedMember(m); setMemberSearch('') }}
+                      className={`w-full rounded-lg px-3 py-2.5 text-sm text-left transition-colors ${selectedMember?.id === m.id ? 'bg-primary text-primary-foreground' : 'hover:bg-muted text-foreground'
+                        }`}>
+                      <p className="font-medium">{formatMemberName(m)}</p>
+                      <p className="text-xs opacity-70">{m.email}</p>
                     </button>
                   ))
                 ) : (
@@ -419,43 +263,26 @@ export default function AdminProgress() {
             </div>
             <div className="p-5">
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label htmlFor="date" className={labelClass}>Datum</label>
-                  <input id="date" type="date" className={inputClass} value={form.date} onChange={handleChange} required />
-                </div>
-                <div>
-                  <label htmlFor="height" className={labelClass}>Visina (cm)</label>
-                  <input id="height" type="number" step="0.1" className={inputClass} placeholder="Unesite visinu" value={form.height} onChange={handleChange} />
-                </div>
-                <div>
-                  <label htmlFor="weight" className={labelClass}>Težina (kg)</label>
-                  <input id="weight" type="number" step="0.1" className={inputClass} placeholder="Unesite težinu" value={form.weight} onChange={handleChange} required />
-                </div>
-                <div>
-                  <label htmlFor="ruka" className={labelClass}>Ruka - sredina nadlaktice (cm)</label>
-                  <input id="ruka" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.ruka} onChange={handleChange} required />
-                </div>
-                <div>
-                  <label htmlFor="t1" className={labelClass}>T1 - najuži dio-struk (cm)</label>
-                  <input id="t1" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.t1} onChange={handleChange} required />
-                </div>
-                <div>
-                  <label htmlFor="t2" className={labelClass}>T2 - oko pupka (cm)</label>
-                  <input id="t2" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.t2} onChange={handleChange} />
-                </div>
-                <div>
-                  <label htmlFor="t3" className={labelClass}>T3 - najširi dio (cm)</label>
-                  <input id="t3" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.t3} onChange={handleChange} />
-                </div>
-                <div>
-                  <label htmlFor="bokovi" className={labelClass}>Bokovi - najširi dio (cm)</label>
-                  <input id="bokovi" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.bokovi} onChange={handleChange} required />
-                </div>
-                <div>
-                  <label htmlFor="noga" className={labelClass}>Noga - najširi dio natkoljenice (cm)</label>
-                  <input id="noga" type="number" step="0.1" className={inputClass} placeholder="Unesite mjeru" value={form.noga} onChange={handleChange} required />
-                </div>
-                <button type="submit" disabled={saving || !selectedMember} className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:cursor-not-allowed disabled:opacity-60">
+                <div><label htmlFor="date" className={labelClass}>Datum</label>
+                  <input id="date" type="date" className={inputClass} value={form.date} onChange={handleChange} required /></div>
+                <div><label htmlFor="visina" className={labelClass}>Visina (cm)</label>
+                  <input id="visina" type="number" step="0.1" className={inputClass} placeholder="npr. 168" value={form.visina} onChange={handleChange} /></div>
+                <div><label htmlFor="weight" className={labelClass}>Težina (kg)</label>
+                  <input id="weight" type="number" step="0.1" className={inputClass} placeholder="npr. 68.5" value={form.weight} onChange={handleChange} required /></div>
+                <div><label htmlFor="ruka" className={labelClass}>Ruka — sredina nadlaktice (cm)</label>
+                  <input id="ruka" type="number" step="0.1" className={inputClass} placeholder="npr. 28" value={form.ruka} onChange={handleChange} /></div>
+                <div><label htmlFor="struk" className={labelClass}>Struk — najuži dio (cm)</label>
+                  <input id="struk" type="number" step="0.1" className={inputClass} placeholder="npr. 72" value={form.struk} onChange={handleChange} /></div>
+                <div><label htmlFor="bokovi" className={labelClass}>Bokovi — najširi dio (cm)</label>
+                  <input id="bokovi" type="number" step="0.1" className={inputClass} placeholder="npr. 96" value={form.bokovi} onChange={handleChange} /></div>
+                <div><label htmlFor="grudi" className={labelClass}>Grudi (cm)</label>
+                  <input id="grudi" type="number" step="0.1" className={inputClass} placeholder="npr. 88" value={form.grudi} onChange={handleChange} /></div>
+                <div><label htmlFor="noga" className={labelClass}>Noga — najširi dio natkoljenice (cm)</label>
+                  <input id="noga" type="number" step="0.1" className={inputClass} placeholder="npr. 54" value={form.noga} onChange={handleChange} /></div>
+                <div><label htmlFor="notes" className={labelClass}>Bilješka (opcionalno)</label>
+                  <textarea id="notes" className={`${inputClass} min-h-16 resize-none`} placeholder="npr. Početna mjerenja" value={form.notes} onChange={handleChange} /></div>
+                <button type="submit" disabled={saving || !selectedMember}
+                  className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:cursor-not-allowed disabled:opacity-60">
                   {saving ? 'Spremanje...' : 'Sačuvaj napredak'}
                 </button>
               </form>
@@ -467,12 +294,12 @@ export default function AdminProgress() {
         <div className="space-y-4 lg:col-span-2">
           <div className="grid gap-4 md:grid-cols-5">
             {[
-              { icon: Ruler, label: 'Visina', value: '-', trend: '', neutral: true },
-              { icon: Scale, label: 'Težina', value: formatValue(latestEntry?.weightKg, 'kg'), trend: latestEntry ? 'Zadnji unos' : '' },
-              { icon: Ruler, label: 'Ruka', value: formatValue(latestEntry?.armCm, 'cm'), trend: latestEntry ? 'Zadnji unos' : '' },
-              { icon: Ruler, label: 'Bokovi', value: formatValue(latestEntry?.hipsCm, 'cm'), trend: latestEntry ? 'Zadnji unos' : '' },
-              { icon: Ruler, label: 'Noga', value: formatValue(latestEntry?.thighCm, 'cm'), trend: latestEntry ? 'Zadnji unos' : '' },
-            ].map(({ icon: Icon, label, value, trend, neutral }) => (
+              { icon: Ruler, label: 'Visina', value: formatValue(latestEntry?.heightCm, 'cm'), neutral: true },
+              { icon: Scale, label: 'Težina', value: formatValue(latestEntry?.weightKg, 'kg') },
+              { icon: Ruler, label: 'Ruka', value: formatValue(latestEntry?.armCm, 'cm') },
+              { icon: Ruler, label: 'Bokovi', value: formatValue(latestEntry?.hipsCm, 'cm') },
+              { icon: Ruler, label: 'Noga', value: formatValue(latestEntry?.thighCm, 'cm') },
+            ].map(({ icon: Icon, label, value, neutral }) => (
               <div key={label} className="rounded-lg border border-border bg-card p-4 shadow-sm">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 shrink-0"><Icon size={18} className="text-primary" /></div>
@@ -498,7 +325,9 @@ export default function AdminProgress() {
 
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="p-5 border-b border-border">
-              <h3 className="font-semibold text-foreground">Historija napretka - {selectedMember ? formatMemberName(selectedMember) : 'nema odabranog člana'}</h3>
+              <h3 className="font-semibold text-foreground">
+                Historija napretka — {selectedMember ? formatMemberName(selectedMember) : 'nema odabranog člana'}
+              </h3>
             </div>
             <div className="p-5 overflow-x-auto">
               <table className="w-full text-sm">
@@ -511,31 +340,23 @@ export default function AdminProgress() {
                 </thead>
                 <tbody>
                   {progressLoading ? (
-                    <tr>
-                      <td colSpan="9" className="py-6 text-center text-sm text-muted-foreground">
-                        Učitavanje napretka...
-                      </td>
-                    </tr>
+                    <tr><td colSpan="9" className="py-6 text-center text-sm text-muted-foreground">Učitavanje napretka...</td></tr>
                   ) : progressEntries.length > 0 ? (
                     progressEntries.map((entry, i) => (
                       <tr key={entry.id ?? entry.entryDate} className={i < progressEntries.length - 1 ? 'border-b border-border' : ''}>
-                        <td className="py-3 text-foreground">{formatDate(entry.entryDate)}</td>
-                        <td className="py-3 text-right text-foreground">-</td>
-                        <td className="py-3 text-right text-foreground">{formatValue(entry.weightKg, 'kg')}</td>
-                        <td className="py-3 text-right text-foreground">{formatValue(entry.armCm, 'cm')}</td>
-                        <td className="py-3 text-right text-foreground">{formatValue(entry.waistCm, 'cm')}</td>
-                        <td className="py-3 text-right text-foreground">-</td>
-                        <td className="py-3 text-right text-foreground">-</td>
-                        <td className="py-3 text-right text-foreground">{formatValue(entry.hipsCm, 'cm')}</td>
-                        <td className="py-3 text-right text-foreground">{formatValue(entry.thighCm, 'cm')}</td>
+                        <td className="py-3 px-1 text-foreground whitespace-nowrap">{formatDate(entry.entryDate)}</td>
+                        <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.heightCm, 'cm')}</td>
+                        <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.weightKg, 'kg')}</td>
+                        <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.armCm, 'cm')}</td>
+                        <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.waistCm, 'cm')}</td>
+                        <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.hipsCm, 'cm')}</td>
+                        <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.chestCm, 'cm')}</td>
+                        <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.thighCm, 'cm')}</td>
+                        <td className="py-3 px-1 text-right text-muted-foreground text-xs">{entry.notes || '—'}</td>
                       </tr>
                     ))
                   ) : (
-                    <tr>
-                      <td colSpan="9" className="py-6 text-center text-sm text-muted-foreground">
-                        Nema podataka o napretku.
-                      </td>
-                    </tr>
+                    <tr><td colSpan="9" className="py-6 text-center text-sm text-muted-foreground">Nema podataka o napretku.</td></tr>
                   )}
                 </tbody>
               </table>

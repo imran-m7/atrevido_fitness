@@ -1,32 +1,22 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { TrendingUp, Calendar, Scale, Ruler } from 'lucide-react'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
+import { TrendingUp, Calendar, Scale, Ruler, Plus, X } from 'lucide-react'
+import { progressApi } from '../../services/api'
 
-const API_URL = import.meta.env.VITE_API_URL
-
-function getToken() {
-  return localStorage.getItem('token') || ''
-}
-
-function authHeaders(token) {
-  return { Authorization: `Bearer ${token}` }
-}
-
-function getRequestErrorMessage(status, defaultMessage) {
-  if (status === 401) return 'Morate biti prijavljeni.'
-  if (status === 403) return 'Nemate dozvolu za pristup.'
-  if (status === 500) return 'Greška na serveru.'
-  return defaultMessage
-}
+const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
+const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
+const emptyForm = { entryDate: '', visina: '', weightKg: '', armCm: '', waistCm: '', hipsCm: '', chestCm: '', thighCm: '', notes: '' }
 
 function normalizeProgressEntry(entry) {
   return {
     id: entry.id ?? entry.Id,
     entryDate: entry.entryDate ?? entry.EntryDate,
+    heightCm: entry.heightCm ?? entry.HeightCm ?? null,
     weightKg: entry.weightKg ?? entry.WeightKg ?? null,
+    armCm: entry.armCm ?? entry.ArmCm ?? null,
     waistCm: entry.waistCm ?? entry.WaistCm ?? null,
     hipsCm: entry.hipsCm ?? entry.HipsCm ?? null,
     chestCm: entry.chestCm ?? entry.ChestCm ?? null,
-    armCm: entry.armCm ?? entry.ArmCm ?? null,
     thighCm: entry.thighCm ?? entry.ThighCm ?? null,
     notes: entry.notes ?? entry.Notes ?? '',
   }
@@ -43,105 +33,75 @@ function formatValue(value, unit) {
 }
 
 function formatTrend(oldestValue, latestValue, unit) {
-  if (
-    oldestValue === null ||
-    oldestValue === undefined ||
-    latestValue === null ||
-    latestValue === undefined
-  ) {
-    return ''
-  }
-
-  const difference = Number(latestValue) - Number(oldestValue)
-  const sign = difference > 0 ? '+' : ''
-  return `${sign}${difference.toFixed(1)} ${unit} ukupno`
+  if (oldestValue == null || latestValue == null) return ''
+  const diff = Number(latestValue) - Number(oldestValue)
+  return `${diff > 0 ? '+' : ''}${diff.toFixed(1)} ${unit} ukupno`
 }
 
-function measurementValue(value) {
-  return Number(value ?? 0)
-}
+function measurementValue(v) { return Number(v ?? 0) }
 
 function buildScoreChartData(entries) {
-  const sortedEntries = [...entries].sort((a, b) => new Date(a.entryDate) - new Date(b.entryDate))
-
-  if (sortedEntries.length === 0) return []
-
-  const first = sortedEntries[0]
-
-  return sortedEntries.map((entry) => {
+  const sorted = [...entries].sort((a, b) => new Date(a.entryDate) - new Date(b.entryDate))
+  if (sorted.length === 0) return []
+  const first = sorted[0]
+  return sorted.map(entry => {
     const weightLoss = measurementValue(first.weightKg) - measurementValue(entry.weightKg)
     const waistLoss = measurementValue(first.waistCm) - measurementValue(entry.waistCm)
     const armLoss = measurementValue(first.armCm) - measurementValue(entry.armCm)
     const thighLoss = measurementValue(first.thighCm) - measurementValue(entry.thighCm)
     const score = (weightLoss * 10) + (waistLoss * 3) + (armLoss * 2) + (thighLoss * 2)
-
-    return {
-      date: formatDate(entry.entryDate),
-      score: sortedEntries.length === 1 ? 0 : Number(score.toFixed(2)),
-    }
+    return { date: formatDate(entry.entryDate), score: sorted.length === 1 ? 0 : Number(score.toFixed(2)) }
   })
 }
 
+
 function ScoreProgressChart({ entries }) {
   const chartData = buildScoreChartData(entries)
-
   if (chartData.length < 2) {
     return (
       <div className="flex h-64 items-center justify-center rounded-lg bg-muted/50">
-        <p className="text-center text-sm text-muted-foreground">
-          Potrebna su najmanje dva unosa za prikaz grafa.
-        </p>
+        <p className="text-center text-sm text-muted-foreground">Potrebna su najmanje dva unosa za prikaz grafa.</p>
       </div>
     )
   }
-
-  const width = 640
-  const height = 220
-  const padding = 36
-  const scores = chartData.map(item => item.score)
-  const minScore = Math.min(0, ...scores)
-  const maxScore = Math.max(0, ...scores)
-  const scoreRange = maxScore - minScore || 1
-
-  const points = chartData.map((item, index) => {
-    const x = padding + (index / (chartData.length - 1)) * (width - padding * 2)
-    const y = height - padding - ((item.score - minScore) / scoreRange) * (height - padding * 2)
-    return { ...item, x, y }
-  })
-
-  const linePath = points
-    .map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-    .join(' ')
-
   return (
-    <div className="h-64 rounded-lg bg-muted/50 p-4">
-      <svg className="h-full w-full" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Graf rezultata napretka kroz vrijeme">
-        <line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="hsl(var(--border))" strokeWidth="1" />
-        <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="hsl(var(--border))" strokeWidth="1" />
-        {[0, 0.5, 1].map((ratio) => {
-          const y = padding + ratio * (height - padding * 2)
-          const score = maxScore - ratio * scoreRange
-          return (
-            <g key={ratio}>
-              <line x1={padding} y1={y} x2={width - padding} y2={y} stroke="hsl(var(--border))" strokeWidth="0.75" opacity="0.45" />
-              <text x={padding - 8} y={y + 4} textAnchor="end" className="fill-muted-foreground text-[10px]">
-                {score.toFixed(0)}
-              </text>
-            </g>
-          )
-        })}
-        <path d={linePath} fill="none" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        {points.map((point, index) => (
-          <g key={`${point.date}-${index}`}>
-            <circle cx={point.x} cy={point.y} r="5" fill="hsl(var(--primary))">
-              <title>{`${point.date}: score ${point.score}`}</title>
-            </circle>
-            <text x={point.x} y={height - 10} textAnchor="middle" className="fill-muted-foreground text-[10px]">
-              {point.date.slice(5)}
-            </text>
-          </g>
-        ))}
-      </svg>
+    <div className="h-64">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+          <XAxis
+            dataKey="date"
+            tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+            tickLine={false}
+            axisLine={{ stroke: 'hsl(var(--border))' }}
+          />
+          <YAxis
+            tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
+            tickLine={false}
+            axisLine={false}
+            width={40}
+          />
+          <Tooltip
+            contentStyle={{
+              background: 'hsl(var(--card))',
+              border: '1px solid hsl(var(--border))',
+              borderRadius: '8px',
+              fontSize: '12px',
+              color: 'hsl(var(--foreground))'
+            }}
+            formatter={(value) => [`${value} pts`, 'Score']}
+          />
+          <ReferenceLine y={0} stroke="hsl(var(--border))" strokeDasharray="4 4" />
+          <Line
+            type="monotone"
+            dataKey="score"
+            stroke="hsl(var(--primary))"
+            strokeWidth={2.5}
+            dot={{ r: 4, fill: 'hsl(var(--primary))', strokeWidth: 0 }}
+            activeDot={{ r: 6, fill: 'hsl(var(--primary))' }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   )
 }
@@ -150,79 +110,72 @@ export default function MemberProgress() {
   const [progressEntries, setProgressEntries] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState(emptyForm)
+  const [saving, setSaving] = useState(false)
 
-  useEffect(() => {
-    async function loadProgress() {
-      const token = getToken()
+  const fetchEntries = () => {
+    setLoading(true)
+    setError('')
+    progressApi.getMine()
+      .then(data => {
+        setProgressEntries(
+          Array.isArray(data)
+            ? data.map(normalizeProgressEntry).sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
+            : []
+        )
+      })
+      .catch(err => { setProgressEntries([]); setError(err.message || 'Nije moguće učitati podatke.') })
+      .finally(() => setLoading(false))
+  }
 
-      if (!token) {
-        setProgressEntries([])
-        setError('Morate biti prijavljeni.')
-        setLoading(false)
-        return
-      }
+  useEffect(() => { fetchEntries() }, [])
 
-      setLoading(true)
-      setError('')
+  const handleChange = (e) => setForm(prev => ({ ...prev, [e.target.id]: e.target.value }))
 
-      try {
-        const response = await fetch(`${API_URL}/api/progress/mine`, {
-          headers: authHeaders(token),
-        })
-
-        if (!response.ok) {
-          throw new Error(getRequestErrorMessage(response.status, 'Nije moguće učitati podatke o napretku.'))
-        }
-
-        const data = await response.json()
-        const entries = Array.isArray(data)
-          ? data
-            .map(normalizeProgressEntry)
-            .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
-          : []
-
-        console.log('loaded progress entries', entries)
-        setProgressEntries(entries)
-      } catch (err) {
-        setProgressEntries([])
-        setError(err.message || 'Nije moguće učitati podatke o napretku.')
-      } finally {
-        setLoading(false)
-      }
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setSaving(true)
+    setError('')
+    try {
+      await progressApi.add({
+        entryDate: form.entryDate,
+        heightCm: form.visina ? parseFloat(form.visina) : null,      // ← visina → heightCm
+        weightKg: form.weightKg ? parseFloat(form.weightKg) : null,
+        armCm: form.armCm ? parseFloat(form.armCm) : null,
+        waistCm: form.waistCm ? parseFloat(form.waistCm) : null,
+        hipsCm: form.hipsCm ? parseFloat(form.hipsCm) : null,
+        chestCm: form.chestCm ? parseFloat(form.chestCm) : null,
+        thighCm: form.thighCm ? parseFloat(form.thighCm) : null,
+        notes: form.notes || null,
+        challengeId: null,
+      })
+      setForm(emptyForm)
+      setShowForm(false)
+      fetchEntries()
+    } catch (err) {
+      setError(err.message || 'Greška pri čuvanju.')
+    } finally {
+      setSaving(false)
     }
-
-    loadProgress()
-  }, [])
+  }
 
   const summary = useMemo(() => {
     const latest = progressEntries[0] ?? null
     const oldest = progressEntries[progressEntries.length - 1] ?? null
-
     return [
+      { icon: Ruler, label: 'Visina', value: formatValue(latest?.heightCm, 'cm'), trend: '', neutral: true },
       {
-        icon: Scale,
-        label: 'Trenutna težina',
-        value: formatValue(latest?.weightKg, 'kg'),
-        trend: oldest && latest ? formatTrend(oldest.weightKg, latest.weightKg, 'kg') : '',
+        icon: Scale, label: 'Trenutna težina', value: formatValue(latest?.weightKg, 'kg'),
+        trend: oldest && latest && oldest !== latest ? formatTrend(oldest.weightKg, latest.weightKg, 'kg') : ''
       },
       {
-        icon: Ruler,
-        label: 'Struk',
-        value: formatValue(latest?.waistCm, 'cm'),
-        trend: oldest && latest ? formatTrend(oldest.waistCm, latest.waistCm, 'cm') : '',
+        icon: Ruler, label: 'Struk', value: formatValue(latest?.waistCm, 'cm'),
+        trend: oldest && latest && oldest !== latest ? formatTrend(oldest.waistCm, latest.waistCm, 'cm') : ''
       },
       {
-        icon: Ruler,
-        label: 'Kukovi',
-        value: formatValue(latest?.hipsCm, 'cm'),
-        trend: oldest && latest ? formatTrend(oldest.hipsCm, latest.hipsCm, 'cm') : '',
-      },
-      {
-        icon: Calendar,
-        label: 'Praćenje',
-        value: `${progressEntries.length}`,
-        trend: latest ? `Od ${formatDate(oldest?.entryDate)}` : '',
-        neutral: true,
+        icon: Calendar, label: 'Praćenje', value: `${progressEntries.length} unosa`,
+        trend: oldest ? `Od ${formatDate(oldest.entryDate)}` : '', neutral: true
       },
     ]
   }, [progressEntries])
@@ -288,73 +241,73 @@ export default function MemberProgress() {
       </div>
 
       <div className="space-y-6">
-        {/* Stats + Chart + Table */}
-        <div className="space-y-4">
-          {/* Summary Cards */}
-          <div className="grid gap-4 md:grid-cols-4">
-            {summary.map(({ icon: Icon, label, value, trend, neutral }) => (
-              <div key={label} className="rounded-lg border border-border bg-card p-4 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 shrink-0">
-                    <Icon size={18} className="text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{label}</p>
-                    <p className="text-lg font-bold text-foreground">{value}</p>
-                    <p className={`text-xs ${neutral ? 'text-muted-foreground' : 'text-green-600'}`}>{trend}</p>
-                  </div>
+        {/* Summary kartice */}
+        <div className="grid gap-4 md:grid-cols-4">
+          {summary.map(({ icon: Icon, label, value, trend, neutral }) => (
+            <div key={label} className="rounded-lg border border-border bg-card p-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 shrink-0"><Icon size={18} className="text-primary" /></div>
+                <div>
+                  <p className="text-sm text-muted-foreground">{label}</p>
+                  <p className="text-lg font-bold text-foreground">{value}</p>
+                  <p className={`text-xs ${neutral ? 'text-muted-foreground' : 'text-green-600'}`}>{trend}</p>
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Graf */}
+        <div className="rounded-lg border border-border bg-card shadow-sm">
+          <div className="flex items-center gap-2 p-5 border-b border-border">
+            <TrendingUp size={20} className="text-primary" />
+            <h3 className="font-semibold text-foreground">Graf napretka</h3>
           </div>
+          <div className="p-5"><ScoreProgressChart entries={progressEntries} /></div>
+        </div>
 
-          {/* Chart Placeholder */}
-          <div className="rounded-lg border border-border bg-card shadow-sm">
-            <div className="flex items-center gap-2 p-5 border-b border-border">
-              <TrendingUp size={20} className="text-primary" />
-              <h3 className="font-semibold text-foreground">Graf napretka</h3>
-            </div>
-            <div className="p-5">
-              <ScoreProgressChart entries={progressEntries} />
-            </div>
-
+        {/* Historija */}
+        <div className="rounded-lg border border-border bg-card shadow-sm">
+          <div className="p-5 border-b border-border">
+            <h3 className="font-semibold text-foreground">Historija napretka</h3>
           </div>
-
-          {/* History Table */}
-          <div className="rounded-lg border border-border bg-card shadow-sm">
-            <div className="p-5 border-b border-border">
-              <h3 className="font-semibold text-foreground">Historija napretka</h3>
-            </div>
-            <div className="p-5 overflow-x-auto">
-              {loading ? (
-                <p className="py-6 text-center text-sm text-muted-foreground">Učitavanje podataka o napretku...</p>
-              ) : error ? (
-                <p className="py-6 text-center text-sm text-destructive">{error}</p>
-              ) : progressEntries.length === 0 ? (
-                <p className="py-6 text-center text-sm text-muted-foreground">Nema podataka o napretku.</p>
-              ) : (
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border">
-                      {['Datum', 'Težina', 'Struk', 'Kukovi', 'Prs'].map(h => (
-                        <th key={h} className={`pb-3 text-sm font-medium text-muted-foreground ${h === 'Datum' ? 'text-left' : 'text-right'}`}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {progressEntries.map((entry, i) => (
-                      <tr key={entry.id ?? entry.entryDate} className={i < progressEntries.length - 1 ? 'border-b border-border' : ''}>
-                        <td className="py-3 text-sm text-foreground">{formatDate(entry.entryDate)}</td>
-                        <td className="py-3 text-right text-sm text-foreground">{formatValue(entry.weightKg, 'kg')}</td>
-                        <td className="py-3 text-right text-sm text-foreground">{formatValue(entry.waistCm, 'cm')}</td>
-                        <td className="py-3 text-right text-sm text-foreground">{formatValue(entry.hipsCm, 'cm')}</td>
-                        <td className="py-3 text-right text-sm text-foreground">{formatValue(entry.chestCm, 'cm')}</td>
-                      </tr>
+          <div className="p-5 overflow-x-auto">
+            {loading ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">Učitavanje podataka o napretku...</p>
+            ) : error ? (
+              <p className="py-6 text-center text-sm text-destructive">{error}</p>
+            ) : progressEntries.length === 0 ? (
+              <div className="py-8 text-center text-muted-foreground">
+                <TrendingUp size={40} className="mx-auto mb-2 opacity-40" />
+                <p className="text-sm">Nema unosa o napretku još.</p>
+                <p className="text-xs mt-1">Klikni "Dodaj mjerenja" da počneš pratiti napredak.</p>
+              </div>
+            ) : (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    {['Datum', 'Visina', 'Težina', 'Ruka', 'Struk', 'Bokovi', 'Grudi', 'Noga', 'Bilješka'].map(h => (
+                      <th key={h} className={`pb-3 px-1 text-xs font-medium text-muted-foreground whitespace-nowrap ${h === 'Datum' ? 'text-left' : 'text-right'}`}>{h}</th>
                     ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
+                  </tr>
+                </thead>
+                <tbody>
+                  {progressEntries.map((entry, i) => (
+                    <tr key={entry.id ?? entry.entryDate} className={i < progressEntries.length - 1 ? 'border-b border-border' : ''}>
+                      <td className="py-3 px-1 text-foreground whitespace-nowrap">{formatDate(entry.entryDate)}</td>
+                      <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.heightCm, 'cm')}</td>
+                      <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.weightKg, 'kg')}</td>
+                      <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.armCm, 'cm')}</td>
+                      <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.waistCm, 'cm')}</td>
+                      <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.hipsCm, 'cm')}</td>
+                      <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.chestCm, 'cm')}</td>
+                      <td className="py-3 px-1 text-right text-foreground">{formatValue(entry.thighCm, 'cm')}</td>
+                      <td className="py-3 px-1 text-right text-muted-foreground text-xs">{entry.notes || '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>

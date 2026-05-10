@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Plus, Edit, Trash2, Users, Calendar, Trophy, Eye, X } from 'lucide-react'
+import { Plus, Edit, Trash2, Users, Calendar, Trophy, Eye, X, Medal, Flame } from 'lucide-react'
+import { challengesApi } from '../../services/api'
 
 const statusColors = {
   Aktivan: 'bg-green-100 text-green-700',
@@ -7,79 +8,55 @@ const statusColors = {
   Zavrsen: 'bg-gray-100 text-gray-700',
 }
 
-const challengeTypes = ['Konstantnost', 'Snaga', 'Kardio', 'Fleksibilnost', 'Timski Kardio', 'Izdrzljivost']
 const challengeStatuses = ['Aktivan', 'Nadolazi', 'Zavrsen']
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
 const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
 
-function getToken() {
-  return localStorage.getItem('token') || ''
-}
-
-function getRequestErrorMessage(status, defaultMessage) {
-  if (status === 401) return 'Morate biti prijavljeni.'
-  if (status === 403) return 'Nemate dozvolu za pristup.'
-  if (status === 500) return 'Greška na serveru.'
-  return defaultMessage
-}
-
 function mapBackendStatusToUi(status) {
   if (status === 'Active') return 'Aktivan'
   if (status === 'Upcoming') return 'Nadolazi'
   if (status === 'Completed') return 'Zavrsen'
-  if (status === 'Aktivan' || status === 'Nadolazi' || status === 'Zavrsen') return status
-  return 'Nadolazi'
+  return status || 'Nadolazi'
 }
 
 function mapUiStatusToBackend(status) {
   if (status === 'Aktivan') return 'Active'
   if (status === 'Nadolazi') return 'Upcoming'
   if (status === 'Zavrsen') return 'Completed'
-  if (status === 'Active' || status === 'Upcoming' || status === 'Completed') return status
-  return 'Upcoming'
+  return status || 'Upcoming'
 }
 
 function formatDate(value) {
   if (!value) return '-'
-
   const date = new Date(value)
-  if (Number.isNaN(date.getTime())) {
-    return value
-  }
-
-  return date.toLocaleDateString('bs-BA', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleDateString('bs-BA', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 function toInputDate(value) {
   if (!value) return ''
-
   const date = new Date(value)
-  if (Number.isNaN(date.getTime())) {
-    return typeof value === 'string' ? value.slice(0, 10) : ''
-  }
-
+  if (Number.isNaN(date.getTime())) return typeof value === 'string' ? value.slice(0, 10) : ''
   return date.toISOString().slice(0, 10)
 }
 
-function normalizeChallenge(challenge) {
+function normalizeChallenge(c) {
   return {
-    id: challenge?.id ?? challenge?.Id,
-    title: challenge?.title ?? challenge?.Title ?? '',
-    description: challenge?.description ?? challenge?.Description ?? '',
-    rules: challenge?.rules ?? challenge?.Rules ?? '',
-    status: mapBackendStatusToUi(challenge?.status ?? challenge?.Status),
-    startDate: challenge?.startDate ?? challenge?.StartDate ?? '',
-    endDate: challenge?.endDate ?? challenge?.EndDate ?? '',
-    participants: challenge?.participantCount ?? challenge?.ParticipantCount ?? 0,
+    id: c.id ?? c.Id,
+    title: c.title ?? c.Title ?? '',
+    description: c.description ?? c.Description ?? '',
+    rules: c.rules ?? c.Rules ?? '',
+    status: mapBackendStatusToUi(c.status ?? c.Status),
+    startDate: c.startDate ?? c.StartDate ?? '',
+    endDate: c.endDate ?? c.EndDate ?? '',
+    participants: c.participantCount ?? c.ParticipantCount ?? 0,
     type: 'Izazov',
     progress: 0,
   }
 }
+
+const emptyForm = { title: '', description: '', rules: '', startDate: '', endDate: '', status: 'Aktivan', isPublic: true }
 
 export default function AdminChallenges() {
   const [challengesList, setChallengesList] = useState([])
@@ -91,97 +68,36 @@ export default function AdminChallenges() {
   const [showParticipantsModal, setShowParticipantsModal] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [selectedChallenge, setSelectedChallenge] = useState(null)
-  const [formData, setFormData] = useState({
-    title: '',
-    type: 'Konstantnost',
-    description: '',
-    startDate: '',
-    endDate: '',
-    status: 'Aktivan',
-  })
-
-  const apiUrl = import.meta.env.VITE_API_URL
+  const [saving, setSaving] = useState(false)
+  const [formData, setFormData] = useState(emptyForm)
+  const [leaderboard, setLeaderboard] = useState([])
+  const [leaderboardLoading, setLeaderboardLoading] = useState(false)
 
   const stats = [
     { label: 'Ukupno Izazova', value: challengesList.length, bg: 'bg-primary/10', color: 'text-primary', icon: Trophy },
-    { label: 'Aktivni Izazovi', value: challengesList.filter((c) => c.status === 'Aktivan').length, bg: 'bg-green-100', color: 'text-green-600', icon: Trophy },
+    { label: 'Aktivni Izazovi', value: challengesList.filter(c => c.status === 'Aktivan').length, bg: 'bg-green-100', color: 'text-green-600', icon: Trophy },
     { label: 'Ukupno Ucesnika', value: challengesList.reduce((sum, c) => sum + c.participants, 0), bg: 'bg-purple-100', color: 'text-purple-600', icon: Users },
   ]
 
-  function getAuthHeaders(token, includeJson = false) {
-    const headers = {}
-
-    headers.Authorization = `Bearer ${token}`
-
-    if (includeJson) {
-      headers['Content-Type'] = 'application/json'
-    }
-
-    return headers
-  }
-
   async function fetchChallenges() {
-    const url = `${apiUrl}/api/challenges/admin/all`
-
-    if (!apiUrl) {
-      setError('API not configured')
-      setChallengesList([])
-      setLoading(false)
-      return
-    }
-
-    const token = getToken()
-
-    if (!token) {
-      setError('Morate biti prijavljeni.')
-      setChallengesList([])
-      setLoading(false)
-      return
-    }
-
     try {
       setLoading(true)
       setError(null)
-
-      const response = await fetch(url, {
-        headers: getAuthHeaders(token),
-      })
-
-      if (!response.ok) {
-        const body = await response.text()
-        console.error('Failed to load challenges:', url, response.status, body)
-        throw new Error(getRequestErrorMessage(response.status, 'Failed to load challenges'))
-      }
-
-      const data = await response.json()
+      const data = await challengesApi.getAllAdmin()
       setChallengesList(Array.isArray(data) ? data.map(normalizeChallenge) : [])
-    } catch (fetchError) {
-      console.error('Failed to load challenges:', fetchError)
-      setError(fetchError.message || 'Failed to load challenges')
+    } catch (err) {
+      setError(err.message || 'Greška pri učitavanju izazova')
       setChallengesList([])
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => {
-    fetchChallenges()
-  }, [apiUrl])
+  useEffect(() => { fetchChallenges() }, [])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
-
-  const resetForm = () => {
-    setFormData({
-      title: '',
-      type: 'Konstantnost',
-      description: '',
-      startDate: '',
-      endDate: '',
-      status: 'Aktivan',
-    })
+    setFormData(prev => ({ ...prev, [name]: value }))
   }
 
   const handleOpenAddModal = () => {
@@ -195,116 +111,77 @@ export default function AdminChallenges() {
     setFormData({
       title: challenge.title,
       description: challenge.description,
+      rules: challenge.rules || '',
       startDate: toInputDate(challenge.startDate),
       endDate: toInputDate(challenge.endDate),
       status: challenge.status,
+      isPublic: true,
     })
     setShowModal(true)
   }
 
   const handleOpenParticipantsModal = async (challenge) => {
-    const url = `${apiUrl}/api/challenges/${challenge.id}/participants`
-
     setSelectedChallenge(challenge)
     setParticipants([])
+    setLeaderboard([])
     setShowParticipantsModal(true)
-
-    if (!apiUrl) {
-      setError('API not configured')
-      return
-    }
-
-    const token = getToken()
-
-    if (!token) {
-      setError('Morate biti prijavljeni.')
-      return
-    }
-
+    setParticipantsLoading(true)
+    setLeaderboardLoading(true)
     try {
-      setParticipantsLoading(true)
-      setError(null)
-
-      const response = await fetch(url, {
-        headers: getAuthHeaders(token),
-      })
-
-      if (!response.ok) {
-        const body = await response.text()
-        console.error('Failed to load participants:', url, response.status, body)
-        throw new Error(getRequestErrorMessage(response.status, 'Failed to load participants'))
-      }
-
-      const data = await response.json()
-      setParticipants(Array.isArray(data) ? data : [])
-    } catch (participantsError) {
-      console.error('Failed to load participants:', participantsError)
-      setError(participantsError.message || 'Failed to load participants')
+      const [parts, lb] = await Promise.all([
+        challengesApi.getParticipants(challenge.id),
+        challengesApi.getLeaderboard(challenge.id),
+      ])
+      setParticipants(Array.isArray(parts) ? parts : [])
+      setLeaderboard(Array.isArray(lb) ? lb : [])
+    } catch (err) {
+      setError(err.message || 'Greška pri učitavanju učesnika')
       setParticipants([])
+      setLeaderboard([])
     } finally {
       setParticipantsLoading(false)
+      setLeaderboardLoading(false)
     }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    if (!apiUrl) {
-      setError('API not configured')
-      return
-    }
-
-    const token = getToken()
-
-    if (!token) {
-      setError('Morate biti prijavljeni.')
-      return
-    }
-
-    const payload = {
-      title: formData.title,
-      description: formData.description,
-      rules: formData.description,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      status: mapUiStatusToBackend(formData.status),
-      isPublic: true,
-    }
-
+    setSaving(true)
+    setError(null)
     try {
-      setError(null)
-
-      const url = editingId
-        ? `${apiUrl}/api/challenges/${editingId}`
-        : `${apiUrl}/api/challenges`
-
-      const method = editingId ? 'PUT' : 'POST'
-
-      const response = await fetch(url, {
-        method,
-        headers: getAuthHeaders(token, true),
-        body: JSON.stringify(payload),
-      })
-
-      if (!response.ok) {
-        const body = await response.text()
-        console.error('Failed to save challenge:', url, response.status, body)
-        throw new Error(getRequestErrorMessage(response.status, 'Failed to save challenge'))
+      const payload = {
+        title: formData.title,
+        description: formData.description,
+        rules: formData.rules || formData.description,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        status: mapUiStatusToBackend(formData.status),
+        isPublic: formData.isPublic,
       }
-
+      if (editingId) {
+        await challengesApi.update(editingId, payload)
+      } else {
+        await challengesApi.create(payload)
+      }
       setShowModal(false)
       setEditingId(null)
       resetForm()
       await fetchChallenges()
-    } catch (submitError) {
-      console.error('Failed to save challenge:', submitError)
-      setError(submitError.message || 'Failed to save challenge')
+    } catch (err) {
+      setError(err.message || 'Greška pri čuvanju.')
+    } finally {
+      setSaving(false)
     }
   }
 
-  const handleDelete = (id) => {
-    console.warn(`Delete endpoint is not implemented for challenge ${id}.`)
-    setError('Brisanje izazova jos nije povezano sa backendom.')
+  const handleDelete = async (id) => {
+    if (!confirm('Jesi li sigurna da želiš obrisati ovaj izazov? Ova akcija se ne može poništiti.')) return
+    try {
+      await challengesApi.delete(id)
+      await fetchChallenges()
+    } catch (err) {
+      setError(err.message || 'Greška pri brisanju.')
+    }
   }
 
   return (
@@ -326,6 +203,7 @@ export default function AdminChallenges() {
         </div>
       )}
 
+      {/* Modal kreiranje/uređivanje */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
@@ -340,38 +218,12 @@ export default function AdminChallenges() {
                 <input id="title" name="title" type="text" className={inputClass}
                   placeholder="Unesite naziv izazova" value={formData.title} onChange={handleInputChange} required />
               </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <label htmlFor="type" className={labelClass}>Tip Izazova</label>
-                  <select
-                    id="type"
-                    name="type"
-                    className={inputClass}
-                    value={formData.type}
-                    onChange={handleInputChange}
-                  >
-                    {challengeTypes.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="status" className={labelClass}>Status Izazova</label>
-                  <select
-                    id="status"
-                    name="status"
-                    className={inputClass}
-                    value={formData.status}
-                    onChange={handleInputChange}
-                  >
-                    {challengeStatuses.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
+              <div>
+                <label htmlFor="status" className={labelClass}>Status Izazova</label>
+                <select id="status" name="status" className={inputClass} value={formData.status} onChange={handleInputChange}>
+                  {challengeStatuses.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
               </div>
-
               <div>
                 <label htmlFor="description" className={labelClass}>Opis Izazova</label>
                 <textarea id="description" name="description" className={`${inputClass} min-h-32 resize-none`}
@@ -382,47 +234,26 @@ export default function AdminChallenges() {
                 <textarea id="rules" name="rules" className={`${inputClass} min-h-20 resize-none`}
                   placeholder="Unesite pravila izazova" value={formData.rules} onChange={handleInputChange} />
               </div>
-
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label htmlFor="startDate" className={labelClass}>Datum Pocetka</label>
-                  <input
-                    id="startDate"
-                    name="startDate"
-                    type="date"
-                    className={inputClass}
-                    value={formData.startDate}
-                    onChange={handleInputChange}
-                    required
-                  />
+                  <input id="startDate" name="startDate" type="date" className={inputClass}
+                    value={formData.startDate} onChange={handleInputChange} required />
                 </div>
                 <div>
                   <label htmlFor="endDate" className={labelClass}>Datum Zavrsetka</label>
-                  <input
-                    id="endDate"
-                    name="endDate"
-                    type="date"
-                    className={inputClass}
-                    value={formData.endDate}
-                    onChange={handleInputChange}
-                    required
-                  />
+                  <input id="endDate" name="endDate" type="date" className={inputClass}
+                    value={formData.endDate} onChange={handleInputChange} required />
                 </div>
               </div>
-
               <div className="flex gap-3 pt-6">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors"
-                >
+                <button type="button" onClick={() => setShowModal(false)}
+                  className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">
                   Otkazi
                 </button>
-                <button
-                  type="submit"
-                  className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
-                >
-                  {editingId ? 'Azuriraj Izazov' : 'Napravi Izazov'}
+                <button type="submit" disabled={saving}
+                  className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50">
+                  {saving ? 'Cuvanje...' : editingId ? 'Azuriraj Izazov' : 'Napravi Izazov'}
                 </button>
               </div>
             </form>
@@ -430,6 +261,7 @@ export default function AdminChallenges() {
         </div>
       )}
 
+      {/* Modal učesnici */}
       {showParticipantsModal && selectedChallenge && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowParticipantsModal(false)} />
@@ -439,40 +271,75 @@ export default function AdminChallenges() {
                 <h2 className="text-2xl font-bold text-foreground">Ucesnici Izazova</h2>
                 <p className="mt-1 text-sm text-muted-foreground">{selectedChallenge.title}</p>
               </div>
-              <button onClick={() => setShowParticipantsModal(false)} className="text-muted-foreground hover:text-foreground">
-                <X size={24} />
-              </button>
+              <button onClick={() => setShowParticipantsModal(false)} className="text-muted-foreground hover:text-foreground"><X size={24} /></button>
             </div>
-
-            {participantsLoading ? (
+            {participantsLoading || leaderboardLoading ? (
               <div className="rounded-lg border border-border bg-muted/50 p-8 text-center">
-                <p className="text-muted-foreground">Ucitavanje ucesnika...</p>
+                <div className="h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-2" />
+                <p className="text-muted-foreground">Ucitavanje...</p>
               </div>
             ) : participants.length === 0 ? (
               <div className="rounded-lg border border-border bg-muted/50 p-8 text-center">
                 <Users size={48} className="mx-auto mb-3 text-muted-foreground opacity-50" />
-                <p className="text-muted-foreground">Ucesnici ce se pojaviti ovdje</p>
-                <p className="mt-1 text-sm text-muted-foreground">Ukupno ucesnika: {selectedChallenge.participants}</p>
+                <p className="text-muted-foreground">Nema ucesnika za ovaj izazov</p>
               </div>
             ) : (
-              <div className="grid gap-3">
-                {participants.map((participant) => (
-                  <div key={participant.id} className="rounded-lg border border-border bg-card p-4">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <p className="font-medium text-foreground">{participant.userFirstName} {participant.userLastName}</p>
-                        <p className="text-sm text-muted-foreground">{mapBackendStatusToUi(participant.status)}</p>
+              <div>
+                {/* Rang-lista ako ima score podataka */}
+                {leaderboard.length > 0 ? (
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-3">Rang-lista na osnovu napretka (težina × 10 + struk × 3 + ruka × 2 + noga × 2)</p>
+                    {leaderboard.map((entry, i) => (
+                      <div key={entry.userId}
+                        className={['flex items-center justify-between px-3 py-3 rounded-lg mb-1', i % 2 === 0 ? 'bg-muted/30' : ''].join(' ')}>
+                        <div className="flex items-center gap-3">
+                          {entry.rank === 1 ? <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-100 text-yellow-600 shrink-0"><Medal size={16} /></div>
+                            : entry.rank === 2 ? <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-600 shrink-0"><Medal size={16} /></div>
+                              : entry.rank === 3 ? <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-orange-600 shrink-0"><Medal size={16} /></div>
+                                : <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground text-sm font-medium shrink-0">{entry.rank}</div>
+                          }
+                          <p className="text-sm font-medium text-foreground">{entry.name}</p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Flame size={16} className="text-primary" />
+                          <span className="font-semibold text-foreground text-sm">{Number(entry.score).toFixed(1)} pts</span>
+                        </div>
                       </div>
-                      <p className="text-sm text-muted-foreground">{formatDate(participant.joinedAt)}</p>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  /* Samo lista ucesnika ako nema score-a */
+                  <div className="space-y-2">
+                    {participants.map(participant => (
+                      <div key={participant.id} className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 shrink-0">
+                            <span className="text-sm font-semibold text-primary">
+                              {participant.userFirstName?.[0]}{participant.userLastName?.[0]}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">{participant.userFirstName} {participant.userLastName}</p>
+                            <p className="text-xs text-muted-foreground">Pridruženo: {formatDate(participant.joinedAt)}</p>
+                          </div>
+                        </div>
+                        <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${participant.status === 'Active' ? 'bg-green-100 text-green-700' :
+                          participant.status === 'Completed' ? 'bg-blue-100 text-blue-700' :
+                            'bg-gray-100 text-gray-600'
+                          }`}>
+                          {mapBackendStatusToUi(participant.status)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
       )}
 
+      {/* Stats */}
       <div className="mb-6 grid w-fit gap-4 md:grid-cols-3 mx-auto">
         {stats.map(({ label, value, bg, color, icon: Icon }) => (
           <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
@@ -487,13 +354,12 @@ export default function AdminChallenges() {
         ))}
       </div>
 
+      {/* Lista izazova */}
       {loading ? (
-        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground shadow-sm">
-          Ucitavanje izazova...
-        </div>
+        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground shadow-sm">Ucitavanje izazova...</div>
       ) : (
         <div className="grid gap-6">
-          {challengesList.map((c) => (
+          {challengesList.map(c => (
             <div key={c.id} className="rounded-lg border border-border bg-card shadow-sm p-5">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex items-start gap-4">
@@ -503,7 +369,7 @@ export default function AdminChallenges() {
                   <div>
                     <div className="mb-2 flex flex-wrap items-center gap-2">
                       <h3 className="font-semibold text-foreground">{c.title}</h3>
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${statusColors[c.status]}`}>{c.status}</span>
+                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${statusColors[c.status] || 'bg-gray-100 text-gray-700'}`}>{c.status}</span>
                       <span className="rounded border border-border px-2 py-0.5 text-xs text-muted-foreground">{c.type}</span>
                     </div>
                     <p className="mb-3 text-sm text-muted-foreground">{c.description}</p>
@@ -525,13 +391,16 @@ export default function AdminChallenges() {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <button onClick={() => handleOpenParticipantsModal(c)} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+                  <button onClick={() => handleOpenParticipantsModal(c)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
                     <Eye size={14} /> Vidi Ucesnike
                   </button>
-                  <button onClick={() => handleOpenEditModal(c)} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+                  <button onClick={() => handleOpenEditModal(c)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
                     <Edit size={14} /> Uredi
                   </button>
-                  <button onClick={() => handleDelete(c.id)} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-destructive hover:bg-muted transition-colors">
+                  <button onClick={() => handleDelete(c.id)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-destructive hover:bg-muted transition-colors">
                     <Trash2 size={14} /> Obrisi
                   </button>
                 </div>
