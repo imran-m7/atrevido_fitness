@@ -1,19 +1,12 @@
 import React, { useState } from 'react'
 import { Plus, Edit, Trash2, Search, Calendar, BookOpen, X } from 'lucide-react'
-
-const initialBlogPosts = [
-  { id: 1, title: '10 Essential Tips for Building a Sustainable Fitness Routine', category: 'Fitnes Savjeti', status: 'Objavljen', date: 'March 15, 2024', featured: true, image: null, content: 'Content here...' },
-  { id: 2, title: 'Nutrition Myths Debunked: What Really Works',                  category: 'Ishrana',    status: 'Objavljen', date: 'March 12, 2024', featured: false, image: null, content: 'Content here...' },
-  { id: 3, title: 'The Power of Group Fitness: Why Working Out Together Works',   category: 'Motivacija',   status: 'Objavljen', date: 'March 8, 2024',  featured: false, image: null, content: 'Content here...' },
-  { id: 4, title: "Beginner's Guide to Strength Training for Women",              category: 'Fitnes Savjeti', status: 'Objavljen', date: 'March 5, 2024',  featured: false, image: null, content: 'Content here...' },
-  { id: 5, title: 'How to Stay Motivated When Progress Feels Slow',               category: 'Motivacija',   status: 'Objavljen', date: 'March 1, 2024',  featured: false, image: null, content: 'Content here...' },
-]
+import { useBlog } from '../../context/BlogContext'
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
 const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
 
 export default function AdminBlog() {
-  const [blogPosts, setBlogPosts] = useState(initialBlogPosts)
+  const { blogs: blogPosts, createBlog, updateBlog, deleteBlog } = useBlog()
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -72,29 +65,27 @@ export default function AdminBlog() {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (editingId) {
-      setBlogPosts(prev =>
-        prev.map(p =>
-          p.id === editingId
-            ? { ...p, ...formData, date: p.date }
-            : p
-        )
-      )
+      updateBlog(editingId, {
+        title: formData.title,
+        category: formData.category,
+        content: formData.content,
+        image: formData.image
+      })
     } else {
-      const newPost = {
-        id: Math.max(...blogPosts.map(p => p.id), 0) + 1,
-        ...formData,
-        status: 'Objavljen',
-        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-        featured: false
-      }
-      setBlogPosts(prev => [newPost, ...prev])
+      createBlog({
+        title: formData.title,
+        category: formData.category,
+        content: formData.content,
+        image: formData.image,
+        description: formData.title
+      })
     }
     setShowModal(false)
     setFormData({ title: '', category: 'Fitness Savjeti', content: '', image: null })
   }
 
   const handleDelete = (id) => {
-    setBlogPosts(prev => prev.filter(p => p.id !== id))
+    deleteBlog(id)
   }
 
   return (

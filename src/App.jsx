@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
 import { AuthProvider } from './context/AuthContext'
+import { BlogProvider } from './context/BlogContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
 // Layouts
@@ -27,6 +28,7 @@ import MemberChallenges from './pages/member/Challenges.jsx'
 import MemberProgress from './pages/member/Progress.jsx'
 import MemberNutrition from './pages/member/Nutrition.jsx'
 import MemberBlog from './pages/member/Blog.jsx'
+import MemberBlogDetail from './pages/member/BlogDetail.jsx'
 import MemberProfile from './pages/member/Profile.jsx'
 
 // Admin pages
@@ -43,7 +45,8 @@ import AdminSettings from './pages/admin/Settings.jsx'
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BlogProvider>
+        <BrowserRouter>
         <Routes>
 
           {/* ── Public routes ─────────────────────────── */}
@@ -75,6 +78,7 @@ export default function App() {
             <Route path="progress" element={<MemberProgress />} />
             <Route path="nutrition" element={<MemberNutrition />} />
             <Route path="blog" element={<MemberBlog />} />
+            <Route path="blog/:id" element={<MemberBlogDetail />} />
             <Route path="profile" element={<MemberProfile />} />
           </Route>
 
@@ -103,7 +107,8 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
 
         </Routes>
-      </BrowserRouter>
+        </BrowserRouter>
+      </BlogProvider>
     </AuthProvider>
   )
 }
