@@ -22,6 +22,8 @@ namespace AtrevidoFitness.API.Models.Entities
         public string PaymentStatus { get; set; } = "Pending";
 
         public DateTime RequestedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? EndDate { get; set; }
+
 
         public DateTime? ActivatedAt { get; set; }
 

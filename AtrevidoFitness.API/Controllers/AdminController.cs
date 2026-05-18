@@ -78,12 +78,40 @@ namespace AtrevidoFitness.API.Controllers
                         u.TrainingMembership.NutritionEnabled,
                         u.TrainingMembership.RequestedAt,
                         u.TrainingMembership.ActivatedAt,
-                        u.TrainingMembership.AdminNotes
+                        u.TrainingMembership.AdminNotes,
+                        u.TrainingMembership.EndDate
                     }
                 })
                 .ToListAsync();
 
             return Ok(members);
+        }
+
+        // PUT api/admin/members/{id}/reset-password
+        [HttpPut("members/{id}/reset-password")]
+        public async Task<IActionResult> ResetMemberPassword(int id, [FromBody] AdminResetPasswordDto dto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound(new { message = "Korisnik nije pronađen." });
+
+            if (string.IsNullOrWhiteSpace(dto.NewPassword))
+                return BadRequest(new { message = "Šifra ne može biti prazna." });
+
+            if (dto.NewPassword.Length < 6)
+                return BadRequest(new { message = "Šifra mora imati najmanje 6 karaktera." });
+
+            if (!dto.NewPassword.Any(char.IsUpper))
+                return BadRequest(new { message = "Šifra mora sadržati najmanje jedno veliko slovo." });
+
+            if (!System.Text.RegularExpressions.Regex.IsMatch(dto.NewPassword,
+                @"[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]"))
+                return BadRequest(new { message = "Šifra mora sadržati najmanje jedan specijalni znak." });
+
+            await _context.Database.ExecuteSqlRawAsync(
+                "UPDATE Users SET PasswordHash = {0} WHERE Id = {1}",
+                BCrypt.Net.BCrypt.HashPassword(dto.NewPassword), id);
+
+            return Ok(new { message = $"Šifra za {user.FirstName} {user.LastName} je promijenjena." });
         }
 
         // PUT api/admin/members/{id}/membership
@@ -107,7 +135,10 @@ namespace AtrevidoFitness.API.Controllers
                 };
 
                 if (dto.Status == "Active")
+                {
                     membership.ActivatedAt = DateTime.UtcNow;
+                    membership.EndDate = DateTime.UtcNow.AddDays(30);
+                }
 
                 _context.UserTrainingMemberships.Add(membership);
             }
@@ -120,7 +151,10 @@ namespace AtrevidoFitness.API.Controllers
                 if (dto.AdminNotes != null) membership.AdminNotes = dto.AdminNotes;
 
                 if (dto.Status == "Active" && membership.ActivatedAt == null)
+                {
                     membership.ActivatedAt = DateTime.UtcNow;
+                    membership.EndDate = DateTime.UtcNow.AddDays(30);
+                }
             }
 
             await _context.SaveChangesAsync();
@@ -143,6 +177,22 @@ namespace AtrevidoFitness.API.Controllers
                     ? $"Korisnik {user.FirstName} {user.LastName} je aktiviran."
                     : $"Korisnik {user.FirstName} {user.LastName} je deaktiviran."
             });
+        }
+
+        // DELETE api/admin/members/{id}
+        [HttpDelete("members/{id}")]
+        public async Task<IActionResult> DeleteMember(int id)
+        {
+            var user = await _context.Users
+                .Include(u => u.TrainingMembership)
+                .FirstOrDefaultAsync(u => u.Id == id && u.Role == "Member");
+
+            if (user == null) return NotFound(new { message = "Korisnik nije pronađen." });
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = $"Korisnik {user.FirstName} {user.LastName} je obrisan." });
         }
     }
 }

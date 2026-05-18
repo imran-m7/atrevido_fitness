@@ -50,4 +50,33 @@ namespace AtrevidoFitness.API.DTOs
     {
         public bool IsActive { get; set; }
     }
+
+    public class UserProfileDto
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
+        public string? Username { get; set; }
+        public string? NewPassword { get; set; }
+    }
+
+    public class UserProfileResponseDto
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string? Email { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string Role { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+        public string? MembershipType { get; set; }
+        public string? MembershipStatus { get; set; }
+        public bool NutritionEnabled { get; set; }
+    }
+
+    public class AdminResetPasswordDto
+    {
+        public string NewPassword { get; set; } = string.Empty;
+    }
 }

@@ -4,6 +4,7 @@ using AtrevidoFitness.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AtrevidoFitness.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260513120639_AddMembershipEndDate")]
+    partial class AddMembershipEndDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,6 +229,41 @@ namespace AtrevidoFitness.API.Migrations
                             Status = "Active",
                             UserId = 5
                         });
+                });
+
+            modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.ContactMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ContactMessages");
                 });
 
             modelBuilder.Entity("AtrevidoFitness.API.Models.Entities.NutritionPlan", b =>
@@ -610,7 +648,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Dika",
                             IsActive = true,
                             LastName = "Admin",
-                            PasswordHash = "$2a$11$oTALI3gYmY4j//OFPi8om.yEPRPIOHhYeulI0xlzpCkTKyCQJTtdW",
+                            PasswordHash = "$2a$11$/VqZyPDKX02LQQ0N3k4hdOCXnO2pqQf3OAQuFjsCoMX0CT2ptq5fK",
                             Role = "Admin",
                             Username = "dika.admin"
                         },
@@ -622,7 +660,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Sarah",
                             IsActive = true,
                             LastName = "Johnson",
-                            PasswordHash = "$2a$11$PXyNPJU7j6blleqAo5gzz.aL.6169MoR27v1OMabQR/7xUixBmsKG",
+                            PasswordHash = "$2a$11$cSe47iAHw/B7wNcjLYEfJ.mNEgJSQ.OXGNnfA6KnP9XI4XSOWRA/K",
                             Role = "Member",
                             Username = ""
                         },
@@ -634,7 +672,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Maria",
                             IsActive = true,
                             LastName = "Smith",
-                            PasswordHash = "$2a$11$CtzE62AELnfdllgpu2PULu5wVIvXEMKWcLO3CrszpV/j1NQrZgkpy",
+                            PasswordHash = "$2a$11$hlHDE9lpHR4JohaHMbNT6ue7H9m4OZ2tfSNZ78JQsuqB2FqxU4dsK",
                             Role = "Member",
                             Username = ""
                         },
@@ -646,7 +684,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Jennifer",
                             IsActive = true,
                             LastName = "Kane",
-                            PasswordHash = "$2a$11$g8eEdRhoEOjrsHZqH2/mfePiFU9KEXP//Z8lPDesLqdQ4OMSGNBJ6",
+                            PasswordHash = "$2a$11$r9oq.FRzsHMzixTrBMOymOFIBGGSpBsQpsDMgJBvMk3XzUS2jvfNC",
                             Role = "Member",
                             Username = ""
                         },
@@ -658,7 +696,7 @@ namespace AtrevidoFitness.API.Migrations
                             FirstName = "Amanda",
                             IsActive = true,
                             LastName = "Ross",
-                            PasswordHash = "$2a$11$G9qpM3dCxkPlytSP3dUPfOokgjzmIT5J5UiXcX19LGs4.Z3ZOhUdi",
+                            PasswordHash = "$2a$11$eLaGAYDC/U3AJNCAOZ.DKOIE1iR7.2zGPPsa8dPIB2roHIsYL.RIS",
                             Role = "Member",
                             Username = ""
                         });

@@ -17,7 +17,6 @@ namespace AtrevidoFitness.API.Data
         public DbSet<ProgressEntry> ProgressEntries { get; set; }
         public DbSet<NutritionPlan> NutritionPlans { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
-        public DbSet<ContactMessage> ContactMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

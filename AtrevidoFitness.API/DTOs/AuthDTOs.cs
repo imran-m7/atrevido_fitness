@@ -20,4 +20,10 @@ namespace AtrevidoFitness.API.DTOs
         public string Role { get; set; } = string.Empty;
         public bool IsActive { get; set; }
     }
+
+    public class ResetPasswordDto
+    {
+        public string Username { get; set; } = string.Empty;
+        public string NewPassword { get; set; } = string.Empty;
+    }
 }

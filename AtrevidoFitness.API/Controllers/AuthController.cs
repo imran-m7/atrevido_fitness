@@ -100,5 +100,23 @@ namespace AtrevidoFitness.API.Controllers
                 IsActive = user.IsActive
             });
         }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == dto.Username.ToLower());
+
+            if (user == null)
+                return BadRequest(new { message = "Korisnik sa tim usernameom ne postoji." });
+
+            if (!IsValidPassword(dto.NewPassword, out var passwordError))
+                return BadRequest(new { message = passwordError });
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Šifra uspješno promijenjena." });
+        }
     }
 }
