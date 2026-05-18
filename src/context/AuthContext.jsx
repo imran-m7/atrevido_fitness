@@ -10,11 +10,13 @@ export function AuthProvider({ children }) {
         const token = localStorage.getItem('token')
         const role = localStorage.getItem('role')
         const firstName = localStorage.getItem('firstName')
+        const username = localStorage.getItem('username')
         const userId = localStorage.getItem('userId')
         const isActive = localStorage.getItem('isActive') === 'true'
 
         if (token && role) {
-            setUser({ token, role, firstName, userId: userId ? parseInt(userId) : null, isActive })
+            setUser({ token, role, firstName, username, userId: userId ? parseInt(userId) : null, isActive })
+
         }
         setLoading(false)
     }, [])
@@ -23,12 +25,14 @@ export function AuthProvider({ children }) {
         localStorage.setItem('token', data.token)
         localStorage.setItem('role', data.role)
         localStorage.setItem('firstName', data.firstName)
+        localStorage.setItem('username', data.username)
         localStorage.setItem('userId', data.id)
         localStorage.setItem('isActive', data.isActive ? 'true' : 'false')
         setUser({
             token: data.token,
             role: data.role,
             firstName: data.firstName,
+            username: data.username,
             userId: data.id,
             isActive: data.isActive
         })
@@ -57,6 +61,12 @@ export function AuthProvider({ children }) {
         setUser(prev => prev ? { ...prev, isActive } : null)
     }
 
+    const updateProfile = (firstName, username) => {
+        localStorage.setItem('firstName', firstName)
+        if (username) localStorage.setItem('username', username)
+        setUser(prev => prev ? { ...prev, firstName, username } : null)
+    }
+
     const logout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('role')
@@ -74,7 +84,7 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{
             user, login, logout, isAdmin, isMember, isLoggedIn,
-            isAccountActive, updateIsActive, refreshStatus, loading
+            isAccountActive, updateIsActive, refreshStatus, updateProfile, loading
         }}>
             {children}
         </AuthContext.Provider>

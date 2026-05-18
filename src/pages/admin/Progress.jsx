@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { TrendingUp, Plus, Scale, Ruler, Search } from 'lucide-react'
 import { progressApi, usersApi } from '../../services/api'
 
@@ -79,10 +79,16 @@ function ScoreProgressChart({ entries }) {
     )
   }
   return (
-    <div className="h-64">
+    <div className="h-72">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+        <ComposedChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 0 }}>
+          <defs>
+            <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#e05594" stopOpacity={1} />
+              <stop offset="100%" stopColor="#e05594" stopOpacity={0.15} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
           <XAxis
             dataKey="date"
             tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
@@ -106,15 +112,21 @@ function ScoreProgressChart({ entries }) {
             formatter={(value) => [`${value} pts`, 'Score']}
           />
           <ReferenceLine y={0} stroke="hsl(var(--border))" strokeDasharray="4 4" />
-          <Line
-            type="monotone"
+          <Bar
             dataKey="score"
-            stroke="hsl(var(--primary))"
-            strokeWidth={2.5}
-            dot={{ r: 4, fill: 'hsl(var(--primary))', strokeWidth: 0 }}
-            activeDot={{ r: 6, fill: 'hsl(var(--primary))' }}
+            fill="url(#barGradient)"
+            radius={[6, 6, 0, 0]}
+            maxBarSize={36}
           />
-        </LineChart>
+          <Line
+            type="natural"
+            dataKey="score"
+            stroke="#e05594"
+            strokeWidth={3}
+            dot={{ r: 4, fill: 'hsl(var(--primary))', strokeWidth: 2, stroke: 'white' }}
+            activeDot={{ r: 6, fill: 'hsl(var(--primary))', stroke: 'white', strokeWidth: 2 }}
+          />
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   )
@@ -168,13 +180,8 @@ export default function AdminProgress() {
 
   const filteredMembers = useMemo(() => {
     const search = memberSearch.trim().toLowerCase()
-
     if (!search) return members
-
-    return members.filter(member => {
-      const text = `${formatMemberName(member)} ${member.email}`.toLowerCase()
-      return text.includes(search)
-    })
+    return members.filter(m => `${formatMemberName(m)} ${m.email}`.toLowerCase().includes(search))
   }, [memberSearch, members])
 
   const latestEntry = progressEntries[0] ?? null
@@ -318,9 +325,7 @@ export default function AdminProgress() {
               <TrendingUp size={20} className="text-primary" />
               <h3 className="font-semibold text-foreground">Chart napretka</h3>
             </div>
-            <div className="p-5">
-              <ScoreProgressChart entries={progressEntries} />
-            </div>
+            <div className="p-5"><ScoreProgressChart entries={progressEntries} /></div>
           </div>
 
           <div className="rounded-lg border border-border bg-card shadow-sm">

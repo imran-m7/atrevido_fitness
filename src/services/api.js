@@ -126,6 +126,19 @@ export const adminApi = {
             headers: headers(),
             body: JSON.stringify({ isActive })
         }).then(handleResponse),
+
+    resetMemberPassword: (userId, newPassword) =>
+        fetch(`${API_URL}/api/admin/members/${userId}/reset-password`, {
+            method: 'PUT',
+            headers: headers(),
+            body: JSON.stringify({ newPassword })
+        }).then(handleResponse),
+
+    deleteMember: (userId) =>
+        fetch(`${API_URL}/api/admin/members/${userId}`, {
+            method: 'DELETE',
+            headers: headers()
+        }).then(handleResponse),
 }
 
 // ── NUTRITION ─────────────────────────────────────────
@@ -280,10 +293,25 @@ export const progressApi = {
         }).then(handleResponse),
 }
 
-//  USERS 
+// ── USERS ─────────────────────────────────────────────
 export const usersApi = {
     getMembers: () =>
         fetch(`${API_URL}/api/users/members`, {
             headers: headers()
+        }).then(handleResponse),
+}
+
+// ── PROFILE ────────────────────────────────────────────────────────────────
+export const profileApi = {
+    get: () =>
+        fetch(`${API_URL}/api/users/profile`, {
+            headers: headers()
+        }).then(handleResponse),
+
+    update: (data) =>
+        fetch(`${API_URL}/api/users/profile`, {
+            method: 'PUT',
+            headers: headers(),
+            body: JSON.stringify(data)
         }).then(handleResponse),
 }

@@ -13,6 +13,9 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Poruka koja dolazi sa ForgotPassword stranice
+  const successMessage = location.state?.message
+
   const handleChange = (e) => setForm({ ...form, [e.target.id]: e.target.value })
 
   const handleSubmit = async (e) => {
@@ -52,6 +55,11 @@ export default function Login() {
         </div>
 
         <div className="p-6 space-y-4">
+          {successMessage && (
+            <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+              {successMessage}
+            </div>
+          )}
           {error && (
             <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
               {error}
@@ -63,7 +71,7 @@ export default function Login() {
               placeholder="Unesite korisničko ime" value={form.username} onChange={handleChange} />
           </div>
           <div>
-            <label htmlFor="password" className={labelClass}>Šifra</label>
+
             <input id="password" type="password" className={inputClass}
               placeholder="Unesite šifru" value={form.password} onChange={handleChange} />
           </div>

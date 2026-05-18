@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { authApi, membershipApi } from '../../services/api'
 import logo from '../../assets/logo2.png'
+import PhoneInput, { isValidBAPhone } from '../../components/PhoneInput'
 
 const programs = [
   { id: 'group', title: 'Grupni Treninzi' },
@@ -70,6 +71,10 @@ export default function Register() {
       setError('Molimo prihvatite uslove korištenja.')
       return
     }
+    if (form.phone && !isValidBAPhone(form.phone)) {
+      setError('Unesite ispravan bosanski broj telefona (npr. 061 123 456).')
+      return
+    }
 
     setLoading(true)
     try {
@@ -133,7 +138,7 @@ export default function Register() {
           <div>
             <label htmlFor="username" className={labelClass}>Korisničko ime *</label>
             <input id="username" type="text" className={inputClass}
-              placeholder="npr. korisnik.trening (bez razmaka)"
+              placeholder="npr. marija_fitness (bez razmaka)"
               value={form.username} onChange={handleChange} />
             <p className="mt-1 text-xs text-muted-foreground">Minimalno 3 karaktera, bez razmaka</p>
           </div>
@@ -147,9 +152,7 @@ export default function Register() {
 
           <div>
             <label htmlFor="phone" className={labelClass}>Broj Telefona</label>
-            <input id="phone" type="tel" className={inputClass}
-              placeholder="Unesite broj telefona"
-              value={form.phone} onChange={handleChange} />
+            <PhoneInput id="phone" value={form.phone} onChange={(val) => setForm(prev => ({ ...prev, phone: val }))} />
           </div>
 
           <div>

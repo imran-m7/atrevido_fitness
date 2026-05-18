@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { TrendingUp, Calendar, Scale, Ruler, Plus, X } from 'lucide-react'
 import { progressApi } from '../../services/api'
 
@@ -65,10 +65,16 @@ function ScoreProgressChart({ entries }) {
     )
   }
   return (
-    <div className="h-64">
+    <div className="h-72">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+        <ComposedChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 0 }}>
+          <defs>
+            <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
+              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.15} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
           <XAxis
             dataKey="date"
             tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }}
@@ -92,15 +98,21 @@ function ScoreProgressChart({ entries }) {
             formatter={(value) => [`${value} pts`, 'Score']}
           />
           <ReferenceLine y={0} stroke="hsl(var(--border))" strokeDasharray="4 4" />
+          <Bar
+            dataKey="score"
+            fill="url(#barGradient)"
+            radius={[6, 6, 0, 0]}
+            maxBarSize={36}
+          />
           <Line
-            type="monotone"
+            type="natural"
             dataKey="score"
             stroke="hsl(var(--primary))"
-            strokeWidth={2.5}
-            dot={{ r: 4, fill: 'hsl(var(--primary))', strokeWidth: 0 }}
-            activeDot={{ r: 6, fill: 'hsl(var(--primary))' }}
+            strokeWidth={3}
+            dot={{ r: 4, fill: 'hsl(var(--primary))', strokeWidth: 2, stroke: 'white' }}
+            activeDot={{ r: 6, fill: 'hsl(var(--primary))', stroke: 'white', strokeWidth: 2 }}
           />
-        </LineChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   )

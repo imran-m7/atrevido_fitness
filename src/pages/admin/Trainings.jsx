@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Plus, Search, Edit, Trash2, Users, Clock, X, Calendar, Zap } from 'lucide-react'
+import { Plus, Search, Edit, Trash2, Users, Clock, X, Calendar, Zap, CheckSquare, Square } from 'lucide-react'
 import { trainingSessionsApi, trainingRegistrationsApi } from '../../services/api'
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
@@ -134,6 +134,9 @@ export default function AdminTrainings() {
   const [view, setView] = useState('active') // 'active' | 'past'
   const [generating, setGenerating] = useState(false)
   const [generateResult, setGenerateResult] = useState(null)
+  const [selectedIds, setSelectedIds] = useState([])
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false)
+  const [deletingAll, setDeletingAll] = useState(false)
 
   const fetchSessions = async () => {
     try {
@@ -259,6 +262,33 @@ export default function AdminTrainings() {
     }
   }
 
+  const handleDeleteSelected = async () => {
+    setDeletingAll(true)
+    try {
+      for (const id of selectedIds) {
+        await trainingSessionsApi.delete(id)
+      }
+      setSelectedIds([])
+      setShowDeleteAllModal(false)
+      await fetchSessions()
+    } catch (err) {
+      alert('Greška pri brisanju: ' + err.message)
+    } finally {
+      setDeletingAll(false)
+    }
+  }
+
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id])
+  }
+
+  const selectAll = () => {
+    const allIds = filteredByView.map(s => s.id)
+    setSelectedIds(allIds)
+  }
+
+  const clearSelection = () => setSelectedIds([])
+
   const filtered = trainingSessions.filter(s =>
     s.groupName?.toLowerCase().includes(search.toLowerCase()) ||
     (dayToBosanski[s.dayOfWeek] || s.dayOfWeek)?.toLowerCase().includes(search.toLowerCase())
@@ -300,6 +330,7 @@ export default function AdminTrainings() {
             className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors">
             <Zap size={16} className="text-primary" /> Generiši sedmicu
           </button>
+
           <button onClick={handleOpenAddModal}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
             <Plus size={16} /> Dodaj Trening
@@ -309,8 +340,8 @@ export default function AdminTrainings() {
 
       {/* ── Sedmica info banner ── */}
       <div className={`mb-6 flex items-center gap-3 rounded-lg border p-4 ${isWeekend
-          ? 'border-primary/30 bg-primary/5'
-          : 'border-border bg-card'
+        ? 'border-primary/30 bg-primary/5'
+        : 'border-border bg-card'
         }`}>
         <Calendar size={18} className={isWeekend ? 'text-primary shrink-0' : 'text-muted-foreground shrink-0'} />
         <div>
@@ -610,6 +641,34 @@ export default function AdminTrainings() {
       )}
 
 
+      {/* ── Delete All Confirm Modal ── */}
+      {showDeleteAllModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => !deletingAll && setShowDeleteAllModal(false)} />
+          <div className="relative z-10 w-full max-w-sm rounded-lg border border-border bg-card p-6 shadow-lg">
+            <div className="mb-4 flex justify-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+                <Trash2 size={24} className="text-destructive" />
+              </div>
+            </div>
+            <h3 className="mb-2 text-center text-lg font-semibold text-foreground">Obriši odabrane treninge</h3>
+            <p className="mb-6 text-center text-sm text-muted-foreground">
+              Jesi li sigurna da želiš obrisati <strong>{selectedIds.length}</strong> treninga? Ovo će obrisati i sve rezervacije.
+            </p>
+            <div className="flex gap-3">
+              <button onClick={() => setShowDeleteAllModal(false)} disabled={deletingAll}
+                className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-50">
+                Otkaži
+              </button>
+              <button onClick={handleDeleteSelected} disabled={deletingAll}
+                className="flex-1 rounded-lg bg-destructive px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50">
+                {deletingAll ? 'Brisanje...' : 'Obriši sve'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Filter tabovi */}
       <div className="mb-6 flex items-center gap-2">
         <button
@@ -634,6 +693,29 @@ export default function AdminTrainings() {
           </span>
         )}
       </div>
+
+      {/* Select All / Clear / Delete */}
+      {filteredByView.length > 0 && (
+        <div className="mb-4 flex items-center gap-3">
+          <button onClick={selectedIds.length === filteredByView.length ? clearSelection : selectAll}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+            {selectedIds.length === filteredByView.length
+              ? <><CheckSquare size={15} className="text-primary" /> Poništi sve</>
+              : <><Square size={15} /> Odaberi sve ({filteredByView.length})</>}
+          </button>
+          {selectedIds.length > 0 && (
+            <>
+              <span className="text-sm text-muted-foreground">
+                Odabrano: <strong className="text-foreground">{selectedIds.length}</strong>
+              </span>
+              <button onClick={() => setShowDeleteAllModal(true)}
+                className="inline-flex items-center gap-2 rounded-lg bg-destructive hover:bg-red-500 px-3 py-1.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity">
+                <Trash2 size={14} /> Obriši odabrane ({selectedIds.length})
+              </button>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Search */}
       <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
@@ -667,8 +749,15 @@ export default function AdminTrainings() {
                   return (
                     <div key={session.id} className={[
                       "flex items-center gap-4 px-5 py-4",
-                      view === 'past' ? 'bg-muted/20' : ''
+                      view === 'past' ? 'bg-muted/20' : '',
+                      selectedIds.includes(session.id) ? 'bg-primary/5' : ''
                     ].join(' ')}>
+                      <button onClick={() => toggleSelect(session.id)}
+                        className="shrink-0 text-muted-foreground hover:text-primary transition-colors">
+                        {selectedIds.includes(session.id)
+                          ? <CheckSquare size={18} className="text-primary" />
+                          : <Square size={18} />}
+                      </button>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className={view === 'past' ? 'font-medium text-muted-foreground text-sm' : 'font-medium text-foreground text-sm'}>{session.groupName}</p>

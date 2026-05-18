@@ -20,6 +20,7 @@ import Contact from './pages/public/Contact.jsx'
 import Login from './pages/public/Login.jsx'
 import Register from './pages/public/Register.jsx'
 
+
 // Member pages
 import MemberDashboard from './pages/member/Dashboard.jsx'
 import MemberSchedule from './pages/member/Schedule.jsx'
@@ -47,66 +48,67 @@ export default function App() {
     <AuthProvider>
       <BlogProvider>
         <BrowserRouter>
-        <Routes>
+          <Routes>
 
-          {/* ── Public routes ─────────────────────────── */}
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/programs" element={<Programs />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:id" element={<BlogDetail />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Route>
+            {/* ── Public routes ─────────────────────────── */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/programs" element={<Programs />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:id" element={<BlogDetail />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-          {/* ── Member routes (zaštićene) ──────────────── */}
-          <Route
-            path="/member"
-            element={
-              <ProtectedRoute requiredRole="Member">
-                <MemberLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Navigate to="/member/dashboard" replace />} />
-            <Route path="dashboard" element={<MemberDashboard />} />
-            <Route path="schedule" element={<MemberSchedule />} />
-            <Route path="book" element={<MemberBook />} />
-            <Route path="challenges" element={<MemberChallenges />} />
-            <Route path="progress" element={<MemberProgress />} />
-            <Route path="nutrition" element={<MemberNutrition />} />
-            <Route path="blog" element={<MemberBlog />} />
-            <Route path="blog/:id" element={<MemberBlogDetail />} />
-            <Route path="profile" element={<MemberProfile />} />
-          </Route>
+            </Route>
 
-          {/* ── Admin routes (zaštićene) ───────────────── */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute requiredRole="Admin">
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Navigate to="/admin/dashboard" replace />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="trainings" element={<AdminTrainings />} />
-            <Route path="members" element={<AdminMembers />} />
-            <Route path="progress" element={<AdminProgress />} />
-            <Route path="challenges" element={<AdminChallenges />} />
-            <Route path="nutrition" element={<AdminNutrition />} />
-            <Route path="blog" element={<AdminBlog />} />
-            <Route path="reports" element={<AdminReports />} />
-            <Route path="settings" element={<AdminSettings />} />
-          </Route>
+            {/* ── Member routes (zaštićene) ──────────────── */}
+            <Route
+              path="/member"
+              element={
+                <ProtectedRoute requiredRole="Member">
+                  <MemberLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate to="/member/dashboard" replace />} />
+              <Route path="dashboard" element={<MemberDashboard />} />
+              <Route path="schedule" element={<MemberSchedule />} />
+              <Route path="book" element={<MemberBook />} />
+              <Route path="challenges" element={<MemberChallenges />} />
+              <Route path="progress" element={<MemberProgress />} />
+              <Route path="nutrition" element={<MemberNutrition />} />
+              <Route path="blog" element={<MemberBlog />} />
+              <Route path="blog/:id" element={<MemberBlogDetail />} />
+              <Route path="profile" element={<MemberProfile />} />
+            </Route>
 
-          {/* ── Fallback ──────────────────────────────── */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+            {/* ── Admin routes (zaštićene) ───────────────── */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="trainings" element={<AdminTrainings />} />
+              <Route path="members" element={<AdminMembers />} />
+              <Route path="progress" element={<AdminProgress />} />
+              <Route path="challenges" element={<AdminChallenges />} />
+              <Route path="nutrition" element={<AdminNutrition />} />
+              <Route path="blog" element={<AdminBlog />} />
+              <Route path="reports" element={<AdminReports />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
 
-        </Routes>
+            {/* ── Fallback ──────────────────────────────── */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+
+          </Routes>
         </BrowserRouter>
       </BlogProvider>
     </AuthProvider>
