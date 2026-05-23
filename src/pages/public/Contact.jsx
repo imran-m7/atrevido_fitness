@@ -1,5 +1,7 @@
 import React from 'react'
 import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+
+import trcanje3 from '../../assets/trcanje31.jpeg'
  
 export default function Contact() {
  
@@ -7,14 +9,28 @@ export default function Contact() {
     <div className="min-h-screen bg-background">
  
       {/* Hero */}
-      <section className="bg-linear-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
-        <div className="container mx-auto max-w-4xl text-center">
-          <span className="inline-block mb-4 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground">
+      <section
+        className="relative px-4 py-16 lg:py-24 overflow-hidden bg-cover bg-no-repeat min-h-[400px]"
+        style={{
+          backgroundImage: `url(${trcanje3})`,
+          backgroundPosition: 'center 20%',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/60" />
+
+        <div className="relative z-10 container mx-auto max-w-4xl text-center">
+          <span className="inline-block mb-4 rounded-full bg-white/10 px-4 py-1.5 text-2xl font-medium text-white">
             Kontaktirajte Nas
           </span>
-          <h1 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">Povežite Se Sa Nama</h1>
-          <p className="text-lg text-muted-foreground">
-            Imate pitanja o našim programima? Želite zakazati obilazak? Rado ćemo vas čuti i pomoći vam.
+
+          <h1 className="mb-4 text-4xl font-bold text-white lg:text-5xl">
+            Povežite Se Sa Nama
+          </h1>
+
+          <p className="text-lg text-white/90 mt-7">
+            Imate pitanja o našim programima? Želite zakazati obilazak ili saznati više o treninzima i članstvima?
+            Rado ćemo vas saslušati, odgovoriti na vaša pitanja i pomoći vam da pronađete program koji najbolje odgovara
+            vašim ciljevima i potrebama.
           </p>
         </div>
       </section>

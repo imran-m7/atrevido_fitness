@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Users, User, Clock, CheckCircle2, Dumbbell, Salad, ArrowRight } from 'lucide-react'
- 
+
+import trcanje3 from '../../assets/trcanje31.jpeg'
+
 const programs = [
   {
     id: 'group',
@@ -38,7 +40,7 @@ const programs = [
     description: 'Naš najobuhvatniji program kombinuje personalizovane treninge sa kompletnim planom ishrane. Dobijte potpuno fitness iskustvo uz planove obroka, recepte i smjernice za ishranu.',
     icon: Salad,
     duration: '1 sat',
-    price: '$199',
+    price: '480 KM',
     period: '/mjesec',
     features: ['Sve što je uključeno u individualne treninge', 'Personalizovani plan ishrane', 'Prilagođeni prijedlozi obroka', 'Pristup bazi recepata', 'Smjernice za ishranu', 'Sedmične provjere napretka'],
     notIncluded: [],
@@ -52,18 +54,27 @@ export default function Programs() {
     <div className="min-h-screen bg-background">
  
       {/* Hero */}
-      <section className="bg-linear-to-br from-primary/10 to-accent/10 px-4 py-16 lg:py-24">
-        <div className="container mx-auto max-w-4xl text-center">
-          <span className="inline-block mb-4 rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground">
+      <section
+        className="relative px-4 py-16 lg:py-24 overflow-hidden bg-cover bg-no-repeat min-h-[400px]"
+        style={{ backgroundImage: `url(${trcanje3})`, backgroundPosition: 'center 20%' }}
+      >
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative z-10 container mx-auto max-w-4xl text-center">
+          
+          <span className="inline-block mb-4 rounded-full bg-white/20 px-4 py-1.5 text-2xl font-medium text-white">
             Trening Programi
           </span>
-          <h1 className="mb-4 text-4xl font-bold text-foreground lg:text-5xl">
+
+          <h1 className="mb-4 text-4xl font-bold text-white lg:text-5xl">
             Izaberi Svoj Put
           </h1>
-          <p className="text-lg text-muted-foreground">
-            Bez obzira da li vam više odgovara grupno okruženje ili individualni pristup, 
-            imamo program koji je prilagođen vašim potrebama i ciljevima.
+
+          <p className="text-lg text-white/90 mt-7">
+            Bez obzira da li vam više odgovara grupno okruženje ili individualni pristup, imamo program koji je prilagođen 
+            vašim potrebama i ciljevima. Kroz funkcionalne treninge, stručno vođenje i podržavajuću atmosferu pomažemo 
+            vam da razvijete snagu, poboljšate kondiciju i izgradite zdrave navike koje traju dugoročno.
           </p>
+
         </div>
       </section>
  

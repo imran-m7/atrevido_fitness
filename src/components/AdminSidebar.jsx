@@ -60,7 +60,7 @@ export default function AdminSidebar() {
       {/* Sidebar */}
       <aside className={[
         'fixed left-0 top-0 z-40 h-full w-64 flex flex-col',
-        'border-r border-sidebar-border bg-sidebar',
+        'border-r border-zinc-900 bg-black text-white',
         'transition-transform duration-200 lg:translate-x-0',
         mobileMenuOpen ? 'translate-x-0' : '-translate-x-full',
       ].join(' ')}>

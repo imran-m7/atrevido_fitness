@@ -1,34 +1,35 @@
 @import 'tailwindcss';
  
 :root {
-  --background: oklch(0.98 0.005 340);
-  --foreground: oklch(0.2 0.02 340);
+  --background: #FFF7FA;
+  --accent: #C4105C;
+  --foreground: oklch(0.2 0.02 350);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.02 340);
-  --primary: oklch(0.65 0.18 340);
+  --card-foreground: oklch(0.2 0.02 350);
+  --primary: #E8186D;
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.95 0.02 340);
-  --secondary-foreground: oklch(0.3 0.02 340);
-  --muted: oklch(0.96 0.01 340);
-  --muted-foreground: oklch(0.5 0.02 340);
-  --accent: oklch(0.75 0.12 340);
+  --secondary: #FDE3EB;
+  --secondary-foreground: #9B0F49;
+  --muted: #FEF0F5;
+  --muted-foreground: oklch(0.5 0.05 350);
+  --accent: #F48AB2;
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.9 0.02 340);
-  --input: oklch(0.92 0.01 340);
-  --ring: oklch(0.65 0.18 340);
+  --border: #FBD1DC;
+  --input: #FDE3EB;
+  --ring: #E8186D;
   --radius: 0.625rem;
  
   /* Sidebar */
-  --sidebar: oklch(0.25 0.03 340);
-  --sidebar-foreground: oklch(0.95 0.01 340);
-  --sidebar-primary: oklch(0.65 0.18 340);
+  --sidebar: oklch(0.25 0.03 350);
+  --sidebar-foreground: oklch(0.95 0.01 350);
+  --sidebar-primary: #E8186D;
   --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.35 0.04 340);
-  --sidebar-accent-foreground: oklch(0.95 0.01 340);
-  --sidebar-border: oklch(0.35 0.03 340);
-  --sidebar-ring: oklch(0.65 0.18 340);
+  --sidebar-accent: oklch(0.35 0.05 350);
+  --sidebar-accent-foreground: oklch(0.95 0.01 350);
+  --sidebar-border: oklch(0.35 0.03 350);
+  --sidebar-ring: #E8186D;
 }
  
 @theme inline {

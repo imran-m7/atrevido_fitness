@@ -1,38 +1,59 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Dumbbell, Users, Clock, Star, MapPin, Phone, Mail,
-  ChevronRight, Heart, Zap, Target,
+  ChevronRight, Heart, Zap, Target, ChevronLeft,
 } from 'lucide-react'
- 
+
+import trcanje3 from '../../assets/trcanje3.jpeg'
+
+import clanice from '../../assets/clanice2.jpeg'
+import grtrening1 from '../../assets/grupni_treninzi7.jpeg'
+import grtrening2 from '../../assets/grupnitreninzi4.jpeg'
+import indtrening1 from '../../assets/individualni_trening.jpeg'
+import planinarenje1 from '../../assets/planinarenje.jpeg'
+import RFTC4 from '../../assets/RFTC4.jpeg'
+import slavlje1 from '../../assets/slavlje.jpeg'
+
+const galleryImages = [
+  { src: clanice,      caption: 'Naše Članice' },
+  { src: grtrening1,   caption: 'Grupni Treninzi' },
+  { src: grtrening2,   caption: 'Grupni Treninzi' },
+  { src: indtrening1,  caption: 'Individualni Trening' },
+  { src: planinarenje1,caption: 'Planinarenje' },
+  { src: RFTC4,        caption: 'Atrevido Fitness' },
+  { src: slavlje1,     caption: 'Slavlje' },
+]
+
 const features = [
   { icon: Dumbbell, title: 'Snaga i Balans',                      description: "Kroz treninge nastojimo pomoći ženama da razviju snagu, izdržljivost i stabilnost, ali i da izgrade zdrav odnos prema vlastitom tijelu i kretanju." },
   { icon: Users,    title: 'Zdravlje Na Prvom Mjestu',            description: "Poseban naglasak stavljamo na zdrav način života, pravilno kretanje, jačanje tijela i dugoročno očuvanje zdravlja, a ne samo na estetske rezultate. " },
   { icon: Heart,    title: 'Krug Podrške',                        description: 'U protekle dvije i po godine Atrevido je postao mjesto zajednice, podrške i motivacije, gdje žene zajedno rade na svom fizičkom i mentalnom stanju.' },
   { icon: Target,   title: 'Treninzi Prilagođeni Svakoj Ženi',    description: 'Naš program obuhvata grupne i individualne treninge, koji su prilagođeni različitim nivoima fizičke spremnosti – od početnica do žena koje već imaju iskustvo u treningu.' },
 ]
- 
- 
+
 const testimonials = [
   { name: 'Amina Mehić',  rating: 5, content: 'Treniram već dugo i isprobala sam razne grupne treninge i teretane, ali Atrevido je najbolji! 💪 Atmosfera je motivirajuća i prijateljska, što treninge čini pravim užitkom. 🏋️‍♀️ Dika je izuzetno posvećena, pažljivo prati svakog člana i prilagođava treninge individualnim potrebama. Treninzi su dinamični, izazovni, ali istovremeno zabavni, što ih čini nečim čemu se uvijek radujem. 😊 Njena energija i trud su stvarno inspirativni. Preporučujem svakome ko želi trenirati u podržavajućem i pozitivnom okruženju! 🔥✨' },
-  ]
- 
-const stats = [
-  { value: '500+', label: 'Aktivnih Članova' },
-  { value: '1',  label: 'Profesionalna Trenerica' },
-  { value: '50+',  label: 'Sedmičnih Treninga' },
 ]
- 
+
+const stats = [
+  { value: '30+', label: 'Aktivnih Članova' },
+  { value: '1',  label: 'Profesionalna Trenerica' },
+  { value: '10+',  label: 'Sedmičnih Treninga' },
+]
+
 export default function Home() {
+  const [current, setCurrent] = useState(0)
+
+  const prev = () => setCurrent((i) => (i === 0 ? galleryImages.length - 1 : i - 1))
+  const next = () => setCurrent((i) => (i === galleryImages.length - 1 ? 0 : i + 1))
+
   return (
     <div className="min-h-screen bg-background">
- 
+
       {/* Hero */}
-      <section className="relative overflow-hidden bg-linear-to-br from-primary via-primary to-accent">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-20 right-20 h-64 w-64 rounded-full bg-white blur-3xl" />
-          <div className="absolute bottom-20 left-20 h-48 w-48 rounded-full bg-white blur-3xl" />
-        </div>
+      <section className="relative overflow-hidden bg-cover bg-no-repeat min-h-[500px]" style={{ backgroundImage: `url(${trcanje3})`, backgroundPosition: 'center 20%' }}>
+        <div className="absolute inset-0 bg-black/60"/>
         <div className="container relative mx-auto px-4 py-20 lg:py-32">
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm text-white">
@@ -51,19 +72,19 @@ export default function Home() {
                 to="/register"
                 className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-base font-semibold text-primary hover:bg-white/90 transition-opacity"
               >
-                Započni Svoju Avanturu <ChevronRight size={18} />
+                Započni svoju avanturu <ChevronRight size={18} />
               </Link>
               <Link
                 to="/programs"
                 className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/20 px-6 py-3 text-base font-semibold text-white hover:bg-white/40 transition-colors"
               >
-                Pregled Programa
+                Pregled programa
               </Link>
             </div>
           </div>
         </div>
       </section>
- 
+
       {/* Stats Bar */}
       <section className="border-b border-border bg-card">
         <div className="container mx-auto">
@@ -84,14 +105,16 @@ export default function Home() {
           </div>
         </div>
       </section>
- 
+
       {/* Features */}
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-foreground">Zašto Birati Atrevido Fitness?</h2>
+          <h2 className="mb-4 text-3xl font-bold text-foreground">Zašto birati Atrevido Fitness?</h2>
           <p className="mx-auto max-w-2xl text-muted-foreground">
-            U Atrevidu se fokusiramo na funkcionalni način treninga, koji podrazumijeva pokrete 
-            i vježbe prilagođene svakodnevnim aktivnostima i potrebama ženskog tijela.
+            U Atrevidu se fokusiramo na funkcionalni način treninga prilagođen svakodnevnim aktivnostima i potrebama ženskog tijela.
+            Naš cilj nije samo postizanje estetskih rezultata, već razvoj snage, stabilnosti i zdravih životnih navika.
+            Kroz individualan pristup, podržavajuće okruženje i stručno vođene treninge pomažemo ženama da napreduju vlastitim tempom i
+            izgrade zdrav odnos prema fizičkoj aktivnosti.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -107,6 +130,70 @@ export default function Home() {
               </div>
             )
           })}
+        </div>
+      </section>
+
+      {/* Photo Gallery */}
+      <section className="bg-muted/50 px-4 py-16 lg:py-24">
+        <div className="container mx-auto max-w-4xl">
+          <div className="mb-10 text-center">
+            <h2 className="mb-3 text-3xl font-bold text-foreground">Naš Studio u Slikama</h2>
+            <p className="mx-auto max-w-xl text-muted-foreground">
+              Zavirite u svakodnevni život Atrevido Fitnessa — treninge, zajednicu i trenutke koji nas čine posebnima.
+            </p>
+          </div>
+
+          {/* Slider */}
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-sm mx-auto max-w-sm">
+            {/* Image */}
+            <div className="flex items-center justify-center p-4">
+              <img
+                key={current}
+                src={galleryImages[current].src}
+                alt={galleryImages[current].caption}
+                className="w-full h-auto object-contain block rounded-lg"
+              />
+            </div>
+
+            {/* Caption */}
+            <div className="px-6 py-4 text-center border-t border-border">
+              <p className="text-sm font-medium text-muted-foreground">{galleryImages[current].caption}</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">{current + 1} / {galleryImages.length}</p>
+            </div>
+
+            {/* Prev arrow */}
+            <button
+              onClick={prev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 border border-border shadow-sm hover:bg-white transition-colors"
+              aria-label="Prethodna slika"
+            >
+              <ChevronLeft size={20} className="text-foreground" />
+            </button>
+
+            {/* Next arrow */}
+            <button
+              onClick={next}
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 border border-border shadow-sm hover:bg-white transition-colors"
+              aria-label="Sljedeća slika"
+            >
+              <ChevronRight size={20} className="text-foreground" />
+            </button>
+          </div>
+
+          {/* Dots */}
+          <div className="mt-4 flex justify-center gap-2">
+            {galleryImages.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={[
+                  'h-2 rounded-full transition-all',
+                  i === current ? 'w-6 bg-primary' : 'w-2 bg-border hover:bg-primary/40',
+                ].join(' ')}
+                aria-label={`Slika ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -145,7 +232,7 @@ export default function Home() {
           </div>
         </div>
       </section>
- 
+
       {/* Contact Info */}
       <section className="bg-muted/50 px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-4xl">
@@ -181,9 +268,9 @@ export default function Home() {
           </div>
         </div>
       </section>
- 
+
       {/* CTA */}
-      <section className="bg-linear-to-r from-primary to-accent px-4 py-16 lg:py-24">
+      <section className="bg-[#C4105C] px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-3xl text-center">
           <h2 className="mb-4 text-3xl font-bold text-white">Spremni Za Svoju Transformaciju?</h2>
           <p className="mb-8 text-white/90">
@@ -197,7 +284,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
- 
+
     </div>
   )
 }

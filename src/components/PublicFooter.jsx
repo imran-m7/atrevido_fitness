@@ -5,7 +5,7 @@ import logo from '../assets/logo2.png'
  
 export default function PublicFooter() {
   return (
-    <footer className="border-t border-border bg-sidebar text-sidebar-foreground">
+    <footer className="border-t border-border bg-black text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
  

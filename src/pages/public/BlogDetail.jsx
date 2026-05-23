@@ -20,10 +20,8 @@ export default function BlogDetail() {
     )
   }
 
-  // Get related blogs (excluding current)
   const relatedBlogs = blogs.filter(b => b.id !== blog.id).slice(0, 2)
 
-  // Calculate read time
   const getReadTime = (content) => {
     const words = content.split(/\s+/).length
     const minutes = Math.ceil(words / 200)
@@ -57,9 +55,13 @@ export default function BlogDetail() {
       <section className="container mx-auto px-4 py-12">
         <div className="mx-auto max-w-3xl">
           {/* Image */}
-          <div className="mb-8 flex aspect-video items-center justify-center rounded-lg bg-linear-to-br from-primary/20 to-accent/20 overflow-hidden">
+          <div className="mb-8 flex items-center justify-center rounded-lg bg-linear-to-br from-primary/20 to-accent/20 overflow-hidden p-6 min-h-[280px]">
             {blog.image ? (
-              <img src={blog.image} alt={blog.title} className="w-full h-full object-cover" />
+              <img
+                src={blog.image}
+                alt={blog.title}
+                className="max-w-full max-h-[500px] w-auto h-auto object-contain rounded-lg"
+              />
             ) : (
               <div className="text-center text-muted-foreground">
                 <div className="mx-auto mb-2 h-16 w-16 rounded-full bg-primary/20" />
