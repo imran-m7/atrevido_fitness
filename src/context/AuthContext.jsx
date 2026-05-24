@@ -16,24 +16,8 @@ export function AuthProvider({ children }) {
 
         if (token && role) {
             setUser({ token, role, firstName, username, userId: userId ? parseInt(userId) : null, isActive })
-        } else {
-            // Demo admin auto-login
-            const demoAdmin = {
-                token: 'demo-token-admin',
-                role: 'Admin',
-                firstName: 'Demo',
-                username: 'admin',
-                userId: 1,
-                isActive: true
-            }
-            localStorage.setItem('token', demoAdmin.token)
-            localStorage.setItem('role', demoAdmin.role)
-            localStorage.setItem('firstName', demoAdmin.firstName)
-            localStorage.setItem('username', demoAdmin.username)
-            localStorage.setItem('userId', demoAdmin.userId)
-            localStorage.setItem('isActive', 'true')
-            setUser(demoAdmin)
         }
+
         setLoading(false)
     }, [])
 
@@ -54,7 +38,6 @@ export function AuthProvider({ children }) {
         })
     }
 
-    // Osvježi isActive iz baze (admin je možda promijenio)
     const refreshStatus = async () => {
         const token = localStorage.getItem('token')
         if (!token) return
@@ -62,7 +45,6 @@ export function AuthProvider({ children }) {
             const res = await fetch('https://localhost:7087/api/membership/mine', {
                 headers: { 'Authorization': `Bearer ${token}` }
             })
-            // Ako je 401 — token više nije validan (user deaktiviran od admina)
             if (res.status === 401) {
                 logout()
                 return
