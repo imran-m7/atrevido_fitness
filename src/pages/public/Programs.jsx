@@ -7,7 +7,7 @@ import trcanje3 from '../../assets/trcanje31.jpeg'
 const programs = [
   {
     id: 'group',
-    title: 'Grupni Treninzi',
+    title: 'Grupni treninzi',
     subtitle: 'Trenirajmo zajedno, rastimo zajedno',
     description: "Pridružite se našim energičnim grupnim treninzima gdje vježbate zajedno s drugim motivisanim ženama. Naši grupni časovi su osmišljeni da vas izazovu, a istovremeno budu zabavni i društveni.",
     icon: Users,
@@ -17,11 +17,11 @@ const programs = [
     features: ['Pristup svim grupnim treninzima', 'Sedmična prijava na treninge', 'Učešće u izazovima', 'Praćenje napretka', 'Osnovne smjernice za ishranu', 'Podrška zajednice'],
     notIncluded: ['Individualni treninzi', 'Personalizovani plan ishrane'],
     popular: false,
-    buttonText: 'Pridruži se Grupnim Treninzima',
+    buttonText: 'Pridruži se grupnim treninzima',
   },
   {
     id: 'individual',
-    title: 'Individualni Treninzi',
+    title: 'Individualni treninzi',
     subtitle: 'Personalizovana pažnja',
     description: 'Dobijte individualnu pažnju uz prilagođene planove treninga koji su usklađeni s vašim specifičnim ciljevima, nivoom fizičke spremnosti i rasporedom. Idealno za one koji žele fokusirano i personalizovano vođenje.',
     icon: User,
@@ -31,12 +31,12 @@ const programs = [
     features: ['Individualni treninzi', 'Fleksibilno zakazivanje termina sa trenericom', 'Prilagođeni planovi treninga', 'Praćenje napretka', 'Učešće u izazovima', 'Prioritetna rezervacija termina'],
     notIncluded: ['Personalizovani plan ishrane'],
     popular: true,
-    buttonText: 'Zatraži Individualni Trening',
+    buttonText: 'Zatraži individualni trening',
   },
   {
     id: 'individual-nutrition',
-    title: 'Individualni Trening + Ishrana',
-    subtitle: 'Puni Paket',
+    title: 'Individualni trening + ishrana',
+    subtitle: 'Puni paket',
     description: 'Naš najobuhvatniji program kombinuje personalizovane treninge sa kompletnim planom ishrane. Dobijte potpuno fitness iskustvo uz planove obroka, recepte i smjernice za ishranu.',
     icon: Salad,
     duration: '1 sat',
@@ -45,7 +45,7 @@ const programs = [
     features: ['Sve što je uključeno u individualne treninge', 'Personalizovani plan ishrane', 'Prilagođeni prijedlozi obroka', 'Pristup bazi recepata', 'Smjernice za ishranu', 'Sedmične provjere napretka'],
     notIncluded: [],
     popular: false,
-    buttonText: 'Uzmi Kompletan Paket',
+    buttonText: 'Uzmi kompletan paket',
   },
 ]
  
@@ -62,11 +62,11 @@ export default function Programs() {
         <div className="relative z-10 container mx-auto max-w-4xl text-center">
           
           <span className="inline-block mb-4 rounded-full bg-white/20 px-4 py-1.5 text-2xl font-medium text-white">
-            Trening Programi
+            Trening programi
           </span>
 
           <h1 className="mb-4 text-4xl font-bold text-white lg:text-5xl">
-            Izaberi Svoj Put
+            Izaberi svoj put
           </h1>
 
           <p className="text-lg text-white/90 mt-7">

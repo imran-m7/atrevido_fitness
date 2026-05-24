@@ -125,7 +125,7 @@ export default function AdminNutrition() {
       />
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Planom Ishrane</h1>
+        <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj planom ishrane</h1>
         <p className="text-muted-foreground">Postavi personalizovan PDF plan za svaku članicu</p>
       </div>
 
@@ -161,7 +161,7 @@ export default function AdminNutrition() {
       {/* Members List */}
       <div className="rounded-lg border border-border bg-card shadow-sm">
         <div className="p-5 border-b border-border">
-          <h3 className="font-semibold text-foreground">Planovi Ishrane ({filtered.length})</h3>
+          <h3 className="font-semibold text-foreground">Planovi ishrane ({filtered.length})</h3>
         </div>
         <div className="p-5 space-y-4">
           {filtered.length === 0 ? (

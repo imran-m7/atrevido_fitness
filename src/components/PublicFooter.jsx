@@ -27,9 +27,9 @@ export default function PublicFooter() {
  
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 font-semibold">Brzi Linkovi</h3>
+            <h3 className="mb-4 font-semibold">Brzi linkovi</h3>
             <ul className="space-y-2 text-sm text-sidebar-foreground/70">
-              <li><Link to="/about"    className="hover:text-primary transition-colors">O Nama</Link></li>
+              <li><Link to="/about"    className="hover:text-primary transition-colors">O nama</Link></li>
               <li><Link to="/programs" className="hover:text-primary transition-colors">Programi</Link></li>
               <li><Link to="/blog"     className="hover:text-primary transition-colors">Blog</Link></li>
               <li><Link to="/contact"  className="hover:text-primary transition-colors">Kontakt</Link></li>
@@ -57,7 +57,7 @@ export default function PublicFooter() {
  
           {/* Hours & Social */}
           <div>
-            <h3 className="mb-4 font-semibold">Radno Vrijeme</h3>
+            <h3 className="mb-4 font-semibold">Radno vrijeme</h3>
             <ul className="space-y-1 text-sm text-sidebar-foreground/70">
               <li>Ponedjeljak, Srijeda i Petak: <br /> 07:00 – 09:00 <br /> 16:30 – 20:15</li> <br />
               <li>Utorak i Četvrtak: <br /> 08:00 – 09:00 <br /> 17:00 – 19:00</li> <br />

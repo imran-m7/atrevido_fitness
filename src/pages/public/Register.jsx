@@ -111,8 +111,8 @@ export default function Register() {
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
             <img src={logo} alt="Atrevido Fitness Logo" className="h-12 w-auto" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Napravi Račun</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Pridruži se Atrevido Fitness</p>
+          <h1 className="text-2xl font-bold text-foreground">Napravi račun</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Pridruži se Atrevido Fitnessu</p>
         </div>
 
         <div className="p-6 space-y-4">
@@ -151,7 +151,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label htmlFor="phone" className={labelClass}>Broj Telefona</label>
+            <label htmlFor="phone" className={labelClass}>Broj telefona</label>
             <PhoneInput id="phone" value={form.phone} onChange={(val) => setForm(prev => ({ ...prev, phone: val }))} />
           </div>
 
@@ -174,7 +174,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className={labelClass}>Potvrdite Šifru *</label>
+            <label htmlFor="confirmPassword" className={labelClass}>Potvrdite šifru *</label>
             <input id="confirmPassword" type="password" className={inputClass}
               placeholder="Potvrdite šifru" value={form.confirmPassword} onChange={handleChange} />
             {form.confirmPassword && form.password !== form.confirmPassword && (
@@ -186,7 +186,7 @@ export default function Register() {
           </div>
 
           <div>
-            <label htmlFor="trainingProgram" className={labelClass}>Odaberite Trening Program *</label>
+            <label htmlFor="trainingProgram" className={labelClass}>Odaberite trening program *</label>
             <select id="trainingProgram" value={form.trainingProgram}
               onChange={(e) => setForm({ ...form, trainingProgram: e.target.value })}
               className={`${inputClass} ${!form.trainingProgram ? 'text-muted-foreground' : 'text-foreground'}`}>
@@ -212,7 +212,7 @@ export default function Register() {
 
           <button onClick={handleSubmit} disabled={loading}
             className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50">
-            {loading ? 'Slanje...' : 'Napravite Profil'}
+            {loading ? 'Slanje...' : 'Napravite profil'}
           </button>
         </div>
 

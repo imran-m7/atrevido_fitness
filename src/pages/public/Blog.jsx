@@ -5,7 +5,7 @@ import { useBlog } from '../../context/BlogContext'
 
 import trcanje3 from '../../assets/trcanje31.jpeg'
  
-const categories = ['Sve', 'Fitness Savjeti', 'Ishrana', 'Motivacija', 'Lifestyle']
+const categories = ['Sve', 'Fitness savjeti', 'Ishrana', 'Motivacija', 'Lifestyle']
 
 export default function Blog() {
   const { blogs: blogPosts } = useBlog()
@@ -47,7 +47,7 @@ export default function Blog() {
           </span>
 
           <h1 className="mb-4 text-4xl font-bold text-white lg:text-5xl">
-            Fitness Savjeti & Inspiracija
+            Fitness savjeti & inspiracija
           </h1>
 
           <p className="text-lg text-white/90 mt-7">
@@ -126,7 +126,7 @@ export default function Blog() {
  
       {/* Blog Grid */}
       <section className="container mx-auto px-4 pb-16">
-        <h2 className="mb-8 text-2xl font-bold text-foreground mt-7">Najnoviji Članci</h2>
+        <h2 className="mb-8 text-2xl font-bold text-foreground mt-7">Najnoviji članci</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {otherPosts.map((post) => (
             <div key={post.id} className="flex flex-col rounded-lg border border-border bg-card shadow-sm overflow-hidden">
@@ -173,7 +173,7 @@ export default function Blog() {
  
         <div className="mt-8 text-center">
           <button className="rounded-lg border border-border px-6 py-3 text-sm font-medium text-foreground hover:bg-muted transition-colors">
-            Učitaj Više Članaka
+            Učitaj više članaka
           </button>
         </div>
       </section>

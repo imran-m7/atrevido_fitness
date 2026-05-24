@@ -12,7 +12,7 @@ import { membershipApi } from '../services/api'
 const navItems = [
   { href: '/member/dashboard', label: 'Početna', icon: LayoutDashboard },
   { href: '/member/schedule', label: 'Raspored', icon: Calendar },
-  { href: '/member/book', label: 'Rezervacija Treninga', icon: CalendarPlus },
+  { href: '/member/book', label: 'Rezervacija treninga', icon: CalendarPlus },
   { href: '/member/challenges', label: 'Izazovi', icon: Trophy },
   { href: '/member/progress', label: 'Napredak', icon: TrendingUp },
   { href: '/member/nutrition', label: 'Ishrana', icon: Salad },
@@ -79,7 +79,7 @@ export default function MemberSidebar() {
       {/* Sidebar */}
       <aside className={[
         'fixed left-0 top-0 z-40 h-full w-64 flex flex-col',
-        'border-r border-sidebar-border bg-sidebar',
+        'border-r border-neutral-800 bg-black',
         'transition-transform duration-200 lg:translate-x-0',
         mobileMenuOpen ? 'translate-x-0' : '-translate-x-full',
       ].join(' ')}>
@@ -91,7 +91,7 @@ export default function MemberSidebar() {
           </div>
           <div>
             <h1 className="text-lg font-bold text-sidebar-foreground">Atrevido</h1>
-            <p className="text-xs text-sidebar-foreground/70">Portal za Članice</p>
+            <p className="text-xs text-sidebar-foreground/70">Portal za članice</p>
           </div>
         </div>
 

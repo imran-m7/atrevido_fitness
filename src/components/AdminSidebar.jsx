@@ -9,12 +9,12 @@ import { useAuth } from '../context/AuthContext'
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Početna', icon: LayoutDashboard },
-  { href: '/admin/trainings', label: 'Upravljaj Treninzima', icon: Calendar },
-  { href: '/admin/members', label: 'Upravljaj Članovima', icon: Users },
-  { href: '/admin/progress', label: 'Upravljaj Napretkom', icon: TrendingUp },
-  { href: '/admin/challenges', label: 'Upravljaj Izazovima', icon: Trophy },
-  { href: '/admin/nutrition', label: 'Upravljaj Ishranom', icon: Salad },
-  { href: '/admin/blog', label: 'Upravljaj Blogovima', icon: BookOpen },
+  { href: '/admin/trainings', label: 'Upravljaj treninzima', icon: Calendar },
+  { href: '/admin/members', label: 'Upravljaj članovima', icon: Users },
+  { href: '/admin/progress', label: 'Upravljaj napretkom', icon: TrendingUp },
+  { href: '/admin/challenges', label: 'Upravljaj izazovima', icon: Trophy },
+  { href: '/admin/nutrition', label: 'Upravljaj ishranom', icon: Salad },
+  { href: '/admin/blog', label: 'Upravljaj blogovima', icon: BookOpen },
 ]
 
 export default function AdminSidebar() {
@@ -70,7 +70,7 @@ export default function AdminSidebar() {
           <img src={logo2} alt="Atrevido Logo" className="h-9 w-9 object-cover rounded-lg" />
           <div>
             <h1 className="text-lg font-bold text-sidebar-foreground">Atrevido</h1>
-            <p className="text-xs text-sidebar-foreground/70">Portal za Admina</p>
+            <p className="text-xs text-sidebar-foreground/70">Portal za admina</p>
           </div>
         </div>
 

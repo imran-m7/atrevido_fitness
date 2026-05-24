@@ -25,7 +25,7 @@ export default function AdminBlog() {
   )
 
   const stats = [
-    { label: 'Ukupno Objava', value: blogPosts.length, bg: 'bg-primary/10', color: 'text-primary', icon: BookOpen },
+    { label: 'Ukupno objava', value: blogPosts.length, bg: 'bg-primary/10', color: 'text-primary', icon: BookOpen },
     { label: 'Objavljeni', value: blogPosts.filter(p => p.status === 'Objavljen').length, bg: 'bg-green-100', color: 'text-green-600', icon: BookOpen },
   ]
 
@@ -92,11 +92,11 @@ export default function AdminBlog() {
     <div className="p-4 lg:p-8">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljanje Blogom</h1>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljanje blogom</h1>
           <p className="text-muted-foreground">Napravi i upravljaj blog objavama</p>
         </div>
         <button onClick={handleOpenAddModal} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-          <Plus size={16} /> Nova Objava
+          <Plus size={16} /> Nova objava
         </button>
       </div>
 
@@ -106,7 +106,7 @@ export default function AdminBlog() {
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">{editingId ? 'Uredi Blog' : 'Kreiraj Novi Blog'}</h2>
+              <h2 className="text-2xl font-bold text-foreground">{editingId ? 'Uredi blog' : 'Kreiraj novi blog'}</h2>
               <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground">
                 <X size={24} />
               </button>
@@ -115,7 +115,7 @@ export default function AdminBlog() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Blog Title */}
               <div>
-                <label htmlFor="title" className={labelClass}>Naslov Bloga</label>
+                <label htmlFor="title" className={labelClass}>Naslov bloga</label>
                 <input
                   id="title"
                   name="title"
@@ -146,7 +146,7 @@ export default function AdminBlog() {
 
               {/* Blog Content */}
               <div>
-                <label htmlFor="content" className={labelClass}>Sadržaj Bloga</label>
+                <label htmlFor="content" className={labelClass}>Sadržaj bloga</label>
                 <textarea
                   id="content"
                   name="content"
@@ -160,7 +160,7 @@ export default function AdminBlog() {
 
               {/* Image Upload */}
               <div>
-                <label className={labelClass}>Prikvačite Sliku</label>
+                <label className={labelClass}>Zakačite sliku</label>
                 <div className="flex items-center gap-4">
                   {formData.image && (
                     <div className="relative">
@@ -175,7 +175,7 @@ export default function AdminBlog() {
                     </div>
                   )}
                   <label className="flex items-center gap-2 rounded-lg border-2 border-dashed border-border px-4 py-3 cursor-pointer hover:border-primary transition-colors">
-                    <span className="text-sm font-medium text-foreground">Izaberi Sliku</span>
+                    <span className="text-sm font-medium text-foreground">Izaberi sliku</span>
                     <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                   </label>
                 </div>
@@ -194,7 +194,7 @@ export default function AdminBlog() {
                   type="submit"
                   className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
                 >
-                  {editingId ? 'Ažuriraj Objavu' : 'Objavi Objavu'}
+                  {editingId ? 'Ažuriraj objavu' : 'Objavi objavu'}
                 </button>
               </div>
             </form>
@@ -203,7 +203,7 @@ export default function AdminBlog() {
       )}
 
       {/* Stats */}
-      <div className="mb-6 grid gap-4 md:grid-cols-2 w-fit mx-auto">
+      <div className="mb-6 grid gap-4 md:grid-cols-2 w-fit">
         {stats.map(({ label, value, bg, color, icon: Icon }) => (
           <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-3">
@@ -230,7 +230,7 @@ export default function AdminBlog() {
       {/* Table */}
       <div className="rounded-lg border border-border bg-card shadow-sm">
         <div className="p-5 border-b border-border">
-          <h3 className="font-semibold text-foreground">Blog Objave</h3>
+          <h3 className="font-semibold text-foreground">Blog objave</h3>
         </div>
         <div className="p-5 overflow-x-auto">
           <table className="w-full">

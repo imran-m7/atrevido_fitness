@@ -74,9 +74,9 @@ export default function AdminChallenges() {
   const [leaderboardLoading, setLeaderboardLoading] = useState(false)
 
   const stats = [
-    { label: 'Ukupno Izazova', value: challengesList.length, bg: 'bg-primary/10', color: 'text-primary', icon: Trophy },
-    { label: 'Aktivni Izazovi', value: challengesList.filter(c => c.status === 'Aktivan').length, bg: 'bg-green-100', color: 'text-green-600', icon: Trophy },
-    { label: 'Ukupno Ucesnika', value: challengesList.reduce((sum, c) => sum + c.participants, 0), bg: 'bg-purple-100', color: 'text-purple-600', icon: Users },
+    { label: 'Ukupno izazova', value: challengesList.length, bg: 'bg-primary/10', color: 'text-primary', icon: Trophy },
+    { label: 'Aktivni izazovi', value: challengesList.filter(c => c.status === 'Aktivan').length, bg: 'bg-green-100', color: 'text-green-600', icon: Trophy },
+    { label: 'Ukupno učesnika', value: challengesList.reduce((sum, c) => sum + c.participants, 0), bg: 'bg-purple-100', color: 'text-purple-600', icon: Users },
   ]
 
   async function fetchChallenges() {
@@ -188,12 +188,12 @@ export default function AdminChallenges() {
     <div className="p-4 lg:p-8">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Izazovima</h1>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj izazovima</h1>
           <p className="text-muted-foreground">Napravi i upravljaj izazovima</p>
         </div>
         <button onClick={handleOpenAddModal}
           className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-          <Plus size={16} /> Napravi Izazov
+          <Plus size={16} /> Napravi izazov
         </button>
       </div>
 
@@ -268,7 +268,7 @@ export default function AdminChallenges() {
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-foreground">Ucesnici Izazova</h2>
+                <h2 className="text-2xl font-bold text-foreground">Učesnici izazova</h2>
                 <p className="mt-1 text-sm text-muted-foreground">{selectedChallenge.title}</p>
               </div>
               <button onClick={() => setShowParticipantsModal(false)} className="text-muted-foreground hover:text-foreground"><X size={24} /></button>
@@ -276,12 +276,12 @@ export default function AdminChallenges() {
             {participantsLoading || leaderboardLoading ? (
               <div className="rounded-lg border border-border bg-muted/50 p-8 text-center">
                 <div className="h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-2" />
-                <p className="text-muted-foreground">Ucitavanje...</p>
+                <p className="text-muted-foreground">Učitavanje...</p>
               </div>
             ) : participants.length === 0 ? (
               <div className="rounded-lg border border-border bg-muted/50 p-8 text-center">
                 <Users size={48} className="mx-auto mb-3 text-muted-foreground opacity-50" />
-                <p className="text-muted-foreground">Nema ucesnika za ovaj izazov</p>
+                <p className="text-muted-foreground">Nema učesnika za ovaj izazov</p>
               </div>
             ) : (
               <div>
@@ -340,7 +340,7 @@ export default function AdminChallenges() {
       )}
 
       {/* Stats */}
-      <div className="mb-6 grid w-fit gap-4 md:grid-cols-3 mx-auto">
+      <div className="mb-6 grid w-fit gap-4 md:grid-cols-3">
         {stats.map(({ label, value, bg, color, icon: Icon }) => (
           <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-3">
@@ -356,7 +356,7 @@ export default function AdminChallenges() {
 
       {/* Lista izazova */}
       {loading ? (
-        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground shadow-sm">Ucitavanje izazova...</div>
+        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground shadow-sm">Učitavanje izazova...</div>
       ) : (
         <div className="grid gap-6">
           {challengesList.map(c => (

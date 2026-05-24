@@ -50,7 +50,7 @@ export default function Login() {
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
             <img src={logo} alt="Atrevido Fitness Logo" className="h-12 w-auto" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Dobrodošli Nazad</h1>
+          <h1 className="text-2xl font-bold text-foreground">Dobrodošli nazad</h1>
           <p className="mt-1 text-sm text-muted-foreground">Prijavite se na Vaš Atrevido Fitness račun</p>
         </div>
 

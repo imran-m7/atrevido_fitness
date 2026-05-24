@@ -18,13 +18,13 @@ const galleryImages = [
   { src: RFTC2,        caption: 'Race for the Cure' },
   { src: RFTC5,        caption: 'Race for the Cure' },
   { src: slavlje2,     caption: 'Slavlje' },
-  { src: clanice2,     caption: 'Članice Vježbaju Zajedno' },
+  { src: clanice2,     caption: 'Članice vježbaju zajedno' },
   { src: tenk,         caption: '10K Maraton' },
-  { src: grtrening3,   caption: 'Grupni Treninzi' },
+  { src: grtrening3,   caption: 'Grupni treninzi' },
   { src: planinarenje1,caption: 'Planinarenje' },
   { src: planinarenje2,caption: 'Planinarenje' },
-  { src: grtrening4,   caption: 'Grupni Treninzi' },
-  { src: clanica1,     caption: 'Individualni Trening' },
+  { src: grtrening4,   caption: 'Grupni treninzi' },
+  { src: clanica1,     caption: 'Individualni trening' },
 ]
 
 const certifications = [
@@ -39,10 +39,10 @@ const certifications = [
 ]
 
 const achievements = [
-  { icon: Calendar, value: '5+', label: 'Godine Iskustva' },
+  { icon: Calendar, value: '5+', label: 'Godine iskustva' },
   { icon: Users,    value: '30+', label: 'Klijenti' },
-  { icon: Star,     value: '5.0',  label: 'Prosječna Ocjena' },
-  { icon: Award,    value: '4',  label: 'Certifikati i Diplome' },
+  { icon: Star,     value: '5.0',  label: 'Prosječna ocjena' },
+  { icon: Award,    value: '4',  label: 'Certifikati i diplome' },
 ]
 
 const expertise = [
@@ -69,9 +69,9 @@ export default function About() {
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 container mx-auto max-w-4xl text-center">
           <span className="inline-block mb-4 rounded-full bg-white/20 px-4 py-1.5 text-2xl font-medium text-white">
-            O Nama
+            O nama
           </span>
-          <h1 className="mb-4 text-4xl font-bold text-white lg:text-5xl">Upoznajte Trenericu</h1>
+          <h1 className="mb-4 text-4xl font-bold text-white lg:text-5xl">Upoznajte trenericu</h1>
           <p className="text-lg text-white/90 mt-7">
             Kroz znanje, iskustvo i individualan pristup, cilj joj je pomoći ženama da izgrade snagu, samopouzdanje i zdrave životne navike.
             Fokus rada usmjeren je na funkcionalni trening, pravilno kretanje i stvaranje podržavajuće zajednice u kojoj svaka žena može
@@ -141,7 +141,7 @@ export default function About() {
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
               <GraduationCap size={28} className="text-primary" />
             </div>
-            <h2 className="mb-2 text-2xl font-bold text-foreground">Certifikati i Kvalifikacije</h2>
+            <h2 className="mb-2 text-2xl font-bold text-foreground">Certifikati i kvalifikacije</h2>
             <p className="text-muted-foreground">Kroz svoj profesionalni angažman nastojim omogućiti inkluzivnu fizičku aktivnost i unaprijediti motoričke sposobnosti, funkcionalnost i kvalitet života kroz prilagođene programe.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
@@ -158,7 +158,7 @@ export default function About() {
       <section className="bg-muted/50 px-4 py-16">
         <div className="container mx-auto max-w-4xl">
           <div className="mb-10 text-center">
-            <h2 className="mb-3 text-2xl font-bold text-foreground">Aktivnosti Sa Članicama</h2>
+            <h2 className="mb-3 text-2xl font-bold text-foreground">Aktivnosti sa članicama</h2>
             <p className="mx-auto max-w-xl text-muted-foreground">
               Zajedno gradimo više od treninga. Pored redovnih aktivnosti u studiju, organizujemo različite događaje i 
               aktivnosti poput planinarenja, trčanja, učešća na utrkama i zajedničkih druženja. Kroz ovakva iskustva 
@@ -225,7 +225,7 @@ export default function About() {
       <section className="px-4 py-16">
         <div className="container mx-auto max-w-4xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-2xl font-bold text-foreground">Stručna Područja</h2>
+            <h2 className="mb-4 text-2xl font-bold text-foreground">Stručna područja</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
             {expertise.map((e) => {

@@ -16,20 +16,20 @@ import RFTC4 from '../../assets/RFTC4.jpeg'
 import slavlje1 from '../../assets/slavlje.jpeg'
 
 const galleryImages = [
-  { src: clanice,      caption: 'Naše Članice' },
-  { src: grtrening1,   caption: 'Grupni Treninzi' },
-  { src: grtrening2,   caption: 'Grupni Treninzi' },
-  { src: indtrening1,  caption: 'Individualni Trening' },
+  { src: clanice,      caption: 'Naše članice' },
+  { src: grtrening1,   caption: 'Grupni treninzi' },
+  { src: grtrening2,   caption: 'Grupni treninzi' },
+  { src: indtrening1,  caption: 'Individualni trening' },
   { src: planinarenje1,caption: 'Planinarenje' },
   { src: RFTC4,        caption: 'Atrevido Fitness' },
   { src: slavlje1,     caption: 'Slavlje' },
 ]
 
 const features = [
-  { icon: Dumbbell, title: 'Snaga i Balans',                      description: "Kroz treninge nastojimo pomoći ženama da razviju snagu, izdržljivost i stabilnost, ali i da izgrade zdrav odnos prema vlastitom tijelu i kretanju." },
-  { icon: Users,    title: 'Zdravlje Na Prvom Mjestu',            description: "Poseban naglasak stavljamo na zdrav način života, pravilno kretanje, jačanje tijela i dugoročno očuvanje zdravlja, a ne samo na estetske rezultate. " },
-  { icon: Heart,    title: 'Krug Podrške',                        description: 'U protekle dvije i po godine Atrevido je postao mjesto zajednice, podrške i motivacije, gdje žene zajedno rade na svom fizičkom i mentalnom stanju.' },
-  { icon: Target,   title: 'Treninzi Prilagođeni Svakoj Ženi',    description: 'Naš program obuhvata grupne i individualne treninge, koji su prilagođeni različitim nivoima fizičke spremnosti – od početnica do žena koje već imaju iskustvo u treningu.' },
+  { icon: Dumbbell, title: 'Snaga i balans',                      description: "Kroz treninge nastojimo pomoći ženama da razviju snagu, izdržljivost i stabilnost, ali i da izgrade zdrav odnos prema vlastitom tijelu i kretanju." },
+  { icon: Users,    title: 'Zdravlje na prvom mjestu',            description: "Poseban naglasak stavljamo na zdrav način života, pravilno kretanje, jačanje tijela i dugoročno očuvanje zdravlja, a ne samo na estetske rezultate. " },
+  { icon: Heart,    title: 'Krug podrške',                        description: 'U protekle dvije i po godine Atrevido je postao mjesto zajednice, podrške i motivacije, gdje žene zajedno rade na svom fizičkom i mentalnom stanju.' },
+  { icon: Target,   title: 'Treninzi prilagođeni svakoj ženi',    description: 'Naš program obuhvata grupne i individualne treninge, koji su prilagođeni različitim nivoima fizičke spremnosti – od početnica do žena koje već imaju iskustvo u treningu.' },
 ]
 
 const testimonials = [
@@ -37,9 +37,9 @@ const testimonials = [
 ]
 
 const stats = [
-  { value: '30+', label: 'Aktivnih Članova' },
-  { value: '1',  label: 'Profesionalna Trenerica' },
-  { value: '10+',  label: 'Sedmičnih Treninga' },
+  { value: '30+', label: 'Aktivnih članova' },
+  { value: '1',  label: 'Profesionalna trenerica' },
+  { value: '10+',  label: 'Sedmičnih treninga' },
 ]
 
 export default function Home() {
@@ -58,7 +58,7 @@ export default function Home() {
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm text-white">
               <Zap size={16} />
-              Funkcionalni Fitness Studio za Žene
+              Funkcionalni Fitness Studio za žene
             </div>
             <h1 className="mb-6 text-4xl font-bold tracking-tight text-white lg:text-6xl">
               Dobrodošli u Atrevido Fitness
@@ -137,7 +137,7 @@ export default function Home() {
       <section className="bg-muted/50 px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-4xl">
           <div className="mb-10 text-center">
-            <h2 className="mb-3 text-3xl font-bold text-foreground">Naš Studio u Slikama</h2>
+            <h2 className="mb-3 text-3xl font-bold text-foreground">Naš studio u slikama</h2>
             <p className="mx-auto max-w-xl text-muted-foreground">
               Zavirite u svakodnevni život Atrevido Fitnessa — treninge, zajednicu i trenutke koji nas čine posebnima.
             </p>
@@ -200,7 +200,7 @@ export default function Home() {
       {/* Testimonials */}
       <section className="container mx-auto px-4 py-16 lg:py-24">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-foreground">Iskustva Naših Članova u Atrevido Fitnessu</h2>
+          <h2 className="mb-4 text-3xl font-bold text-foreground">Iskustva naših članova u Atrevido Fitnessu</h2>
           <p className="mx-auto max-w-2xl text-muted-foreground">
             Otkrijte iskustva naših članova i njihov put u Atrevido Fitnessu.
           </p>
@@ -226,7 +226,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-base font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
               >
-                Pogledajte Više Recenzija
+                Pogledajte više recenzija
               </a>
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function Home() {
         <div className="container mx-auto max-w-4xl">
           <div className="rounded-lg border border-border bg-card shadow-sm">
             <div className="border-b border-border p-6 text-center">
-              <h2 className="text-2xl font-bold text-foreground">Posjetite Nas Danas</h2>
+              <h2 className="text-2xl font-bold text-foreground">Posjetite nas danas</h2>
             </div>
             <div className="p-6">
               <div className="grid gap-6 md:grid-cols-3 mb-8">
@@ -259,7 +259,7 @@ export default function Home() {
                 ))}
               </div>
               <div className="rounded-lg bg-muted p-6 text-center">
-                <h3 className="mb-2 font-semibold text-foreground">Radno Vrijeme</h3>
+                <h3 className="mb-2 font-semibold text-foreground">Radno vrijeme</h3>
                 <p className="text-muted-foreground">Ponedjeljak, Srijeda i Petak: <br /> 07:00 – 09:00 <br /> 16:30 – 20:15</p> <br />
                 <p className="text-muted-foreground">Utorak i Četvrtak: <br /> 08:00 – 09:00 <br /> 17:00 – 19:00</p> <br />
                 <p className="text-muted-foreground">Subota i Nedjelja: <strong>Zatvoreno</strong></p>
@@ -272,7 +272,7 @@ export default function Home() {
       {/* CTA */}
       <section className="bg-[#C4105C] px-4 py-16 lg:py-24">
         <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="mb-4 text-3xl font-bold text-white">Spremni Za Svoju Transformaciju?</h2>
+          <h2 className="mb-4 text-3xl font-bold text-white">Spremni za svoju transformaciju?</h2>
           <p className="mb-8 text-white/90">
             Pridružite se Atrevido Fitnessu i zakoračite u zajednicu podrške i snage.
           </p>

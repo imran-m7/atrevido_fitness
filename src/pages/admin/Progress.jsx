@@ -224,7 +224,7 @@ export default function AdminProgress() {
   return (
     <div className="p-4 lg:p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljanje Napretkom</h1>
+        <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljanje napretkom</h1>
         <p className="text-muted-foreground">Prati i upravljaj mjerama članova</p>
       </div>
       {error && (

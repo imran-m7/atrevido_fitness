@@ -80,7 +80,7 @@ export default function MemberDashboard() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-foreground lg:text-3xl">
-          Dobro došla nazad, {user?.firstName || 'Članice'}! 👋
+          Dobro došla nazad, {user?.firstName || 'Članice'}! 
         </h1>
         <p className="text-muted-foreground">Pregled tvojih aktivnosti</p>
       </div>

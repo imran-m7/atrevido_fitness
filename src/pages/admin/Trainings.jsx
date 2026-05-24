@@ -322,7 +322,7 @@ export default function AdminTrainings() {
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Treninzima</h1>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj treninzima</h1>
           <p className="text-muted-foreground">Pregled i upravljanje treninzima</p>
         </div>
         <div className="flex gap-2">
@@ -333,7 +333,7 @@ export default function AdminTrainings() {
 
           <button onClick={handleOpenAddModal}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-            <Plus size={16} /> Dodaj Trening
+            <Plus size={16} /> Dodaj trening
           </button>
         </div>
       </div>
@@ -459,7 +459,7 @@ export default function AdminTrainings() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-foreground">
-                  {editingId ? 'Uredi Trening' : 'Dodaj Trening'}
+                  {editingId ? 'Uredi trening' : 'Dodaj trening'}
                 </h2>
                 {/* Sedmica info u Add/Edit modalu */}
                 {!editingId && (
@@ -550,7 +550,7 @@ export default function AdminTrainings() {
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50">
-                  {saving ? 'Snimanje...' : editingId ? 'Ažuriraj' : 'Napravi Trening'}
+                  {saving ? 'Snimanje...' : editingId ? 'Ažuriraj' : 'Napravi trening'}
                 </button>
               </div>
             </form>
@@ -731,7 +731,7 @@ export default function AdminTrainings() {
         <div className="rounded-lg border border-border bg-card p-12 text-center text-muted-foreground">
           <Calendar size={40} className="mx-auto mb-3 opacity-40" />
           <p className="font-medium">{view === 'past' ? 'Nema prošlih treninga.' : 'Nema treninga.'}</p>
-          <p className="text-sm mt-1">{view === 'past' ? 'Svi treninzi su aktivni za ovu sedmicu.' : 'Klikni "Generiši sedmicu" ili "Dodaj Trening" ručno.'}</p>
+          <p className="text-sm mt-1">{view === 'past' ? 'Svi treninzi su aktivni za ovu sedmicu.' : 'Klikni "Generiši sedmicu" ili "Dodaj trening" ručno.'}</p>
         </div>
       ) : (
         <div className="space-y-4">

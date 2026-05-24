@@ -20,11 +20,11 @@ export default function Contact() {
 
         <div className="relative z-10 container mx-auto max-w-4xl text-center">
           <span className="inline-block mb-4 rounded-full bg-white/10 px-4 py-1.5 text-2xl font-medium text-white">
-            Kontaktirajte Nas
+            Kontaktirajte nas
           </span>
 
           <h1 className="mb-4 text-4xl font-bold text-white lg:text-5xl">
-            Povežite Se Sa Nama
+            Povežite se sa nama
           </h1>
 
           <p className="text-lg text-white/90 mt-7">
@@ -67,7 +67,7 @@ export default function Contact() {
                   <Clock size={22} className="text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="mb-2 font-semibold text-foreground">Radno Vrijeme</h3>
+                  <h3 className="mb-2 font-semibold text-foreground">Radno vrijeme</h3>
                   <div className="space-y-1 text-sm text-muted-foreground">
                     <p className="text-muted-foreground">Ponedjeljak, Srijeda i Petak: <br /> 07:00 – 09:00 <br /> 16:30 – 20:15</p> <br />
                     <p className="text-muted-foreground">Utorak i Četvrtak: <br /> 08:00 – 09:00 <br /> 17:00 – 19:00</p> <br />

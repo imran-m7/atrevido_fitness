@@ -5,7 +5,7 @@ import logo from '../assets/logo2.png'
  
 const navLinks = [
   { href: '/',         label: 'Home' },
-  { href: '/about',    label: 'O Nama' },
+  { href: '/about',    label: 'O nama' },
   { href: '/programs', label: 'Programi' },
   { href: '/blog',     label: 'Blog' },
   { href: '/contact',  label: 'Kontakt' },

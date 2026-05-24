@@ -180,12 +180,12 @@ export default function AdminMembers() {
     <div className="p-4 lg:p-8">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Članovima</h1>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj članovima</h1>
           <p className="text-muted-foreground">Pregled i upravljanje članovima</p>
         </div>
         <button onClick={() => setShowAddModal(true)}
           className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-          <UserPlus size={16} /> Dodaj Člana
+          <UserPlus size={16} /> Dodaj člana
         </button>
       </div>
 
@@ -195,7 +195,7 @@ export default function AdminMembers() {
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAddModal(false)} />
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">Dodaj Člana</h2>
+              <h2 className="text-2xl font-bold text-foreground">Dodaj člana</h2>
               <button onClick={() => setShowAddModal(false)} className="text-muted-foreground hover:text-foreground"><X size={24} /></button>
             </div>
             <form onSubmit={handleAddMember} className="space-y-5">
@@ -214,10 +214,10 @@ export default function AdminMembers() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div><label htmlFor="password" className={labelClass}>Šifra</label>
                   <input id="password" type="password" className={inputClass} placeholder="Unesite šifru" value={addForm.password} onChange={handleAddChange} required /></div>
-                <div><label htmlFor="confirmPassword" className={labelClass}>Potvrdite Šifru</label>
+                <div><label htmlFor="confirmPassword" className={labelClass}>Potvrdite šifru</label>
                   <input id="confirmPassword" type="password" className={inputClass} placeholder="Potvrdite šifru" value={addForm.confirmPassword} onChange={handleAddChange} required /></div>
               </div>
-              <div><label htmlFor="trainingProgram" className={labelClass}>Trening Program</label>
+              <div><label htmlFor="trainingProgram" className={labelClass}>Trening program</label>
                 <select id="trainingProgram" value={addForm.trainingProgram}
                   onChange={(e) => setAddForm({ ...addForm, trainingProgram: e.target.value })}
                   className={`${inputClass} ${!addForm.trainingProgram ? 'text-muted-foreground' : 'text-foreground'}`} required>
@@ -229,7 +229,7 @@ export default function AdminMembers() {
                 <button type="button" onClick={() => setShowAddModal(false)}
                   className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">Otkaži</button>
                 <button type="submit"
-                  className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">Dodaj Člana</button>
+                  className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">Dodaj člana</button>
               </div>
             </form>
           </div>
