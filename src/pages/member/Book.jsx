@@ -66,9 +66,10 @@ function getWeekLabel(weekStart) {
   return `${fmt(weekStart)} – ${fmt(end)}`
 }
 
-// Uvijek prikazuj ovu sedmicu
+// Vikend → sljedeća sedmica, radni dan → ova sedmica
 function getInitialOffset() {
-  return 0
+  const day = new Date().getDay()
+  return (day === 0 || day === 6) ? 1 : 0
 }
 
 
@@ -102,8 +103,8 @@ export default function MemberBook() {
 
   const today = new Date().toISOString().split('T')[0]
 
-  const weekOffset = 0
-  const weekStart = getWeekStart(0)
+  const initialOffset = getInitialOffset()
+  const weekStart = getWeekStart(initialOffset)
   const weekDays = getWeekDays(weekStart)
 
   // Defaultni odabrani dan — prvi dostupni radni dan u sedmici
@@ -111,8 +112,7 @@ export default function MemberBook() {
     days.find(d => !d.isClosed && d.dateKey >= today)?.dateKey || days.find(d => !d.isClosed)?.dateKey
 
   const [selectedDateKey, setSelectedDateKey] = useState(() => {
-    const offset = getInitialOffset()
-    return getDefaultDay(getWeekDays(getWeekStart(offset)))
+    return getDefaultDay(getWeekDays(getWeekStart(getInitialOffset())))
   })
 
   const fetchData = async () => {
@@ -135,7 +135,7 @@ export default function MemberBook() {
   useEffect(() => { fetchData() }, [])
 
   const selectedDay = weekDays.find(d => d.dateKey === selectedDateKey)
-  const isPastDay = selectedDateKey < today
+  const isPastDay = selectedDateKey < today && initialOffset === 0
 
   // Sesije za izabrani dan filtrirane po membership tipu
   const daySessions = sessions.filter(s => {
@@ -232,7 +232,7 @@ export default function MemberBook() {
       {/* ── Sedmica info ── */}
       <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
         <div className="text-center">
-          <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Ova sedmica</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">{initialOffset === 1 ? 'Sljedeća sedmica' : 'Ova sedmica'}</p>
           <p className="font-semibold text-foreground mt-0.5">{getWeekLabel(weekStart)}</p>
         </div>
       </div>

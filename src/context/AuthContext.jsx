@@ -13,11 +13,11 @@ export function AuthProvider({ children }) {
         const username = localStorage.getItem('username')
         const userId = localStorage.getItem('userId')
         const isActive = localStorage.getItem('isActive') === 'true'
+        const profileImage = localStorage.getItem('profileImage') || null
 
         if (token && role) {
-            setUser({ token, role, firstName, username, userId: userId ? parseInt(userId) : null, isActive })
+            setUser({ token, role, firstName, username, userId: userId ? parseInt(userId) : null, isActive, profileImage })
         }
-
         setLoading(false)
     }, [])
 
@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
         localStorage.setItem('token', data.token)
         localStorage.setItem('role', data.role)
         localStorage.setItem('firstName', data.firstName)
-        localStorage.setItem('username', data.username)
+        localStorage.setItem('username', data.username || '')
         localStorage.setItem('userId', data.id)
         localStorage.setItem('isActive', data.isActive ? 'true' : 'false')
         setUser({
@@ -34,7 +34,8 @@ export function AuthProvider({ children }) {
             firstName: data.firstName,
             username: data.username,
             userId: data.id,
-            isActive: data.isActive
+            isActive: data.isActive,
+            profileImage: null
         })
     }
 
@@ -59,18 +60,29 @@ export function AuthProvider({ children }) {
         setUser(prev => prev ? { ...prev, isActive } : null)
     }
 
-    const updateProfile = (firstName, username) => {
+    const updateProfile = (firstName, username, profileImage) => {
         localStorage.setItem('firstName', firstName)
         if (username) localStorage.setItem('username', username)
-        setUser(prev => prev ? { ...prev, firstName, username } : null)
+        if (profileImage !== undefined) {
+            if (profileImage) localStorage.setItem('profileImage', profileImage)
+            else localStorage.removeItem('profileImage')
+        }
+        setUser(prev => prev ? {
+            ...prev,
+            firstName,
+            username: username || prev.username,
+            ...(profileImage !== undefined ? { profileImage } : {})
+        } : null)
     }
 
     const logout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('role')
         localStorage.removeItem('firstName')
+        localStorage.removeItem('username')
         localStorage.removeItem('userId')
         localStorage.removeItem('isActive')
+        localStorage.removeItem('profileImage')
         setUser(null)
     }
 

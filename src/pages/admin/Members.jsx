@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Search, Users, UserPlus, X, CheckCircle, XCircle, Clock, KeyRound, Trash2 } from 'lucide-react'
+import { Search, Users, UserPlus, X, CheckCircle, XCircle, Clock, KeyRound, Trash2, Settings } from 'lucide-react'
 import { adminApi, authApi } from '../../services/api'
 import PhoneInput, { isValidBAPhone } from '../../components/PhoneInput'
 
@@ -47,6 +47,12 @@ export default function AdminMembers() {
   const [passwordError, setPasswordError] = useState('')
   const [passwordSaving, setPasswordSaving] = useState(false)
 
+  // Change plan modal
+  const [showPlanModal, setShowPlanModal] = useState(false)
+  const [memberForPlan, setMemberForPlan] = useState(null)
+  const [newPlan, setNewPlan] = useState('group')
+  const [planSaving, setPlanSaving] = useState(false)
+
   // Delete modal
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [memberToDelete, setMemberToDelete] = useState(null)
@@ -83,6 +89,7 @@ export default function AdminMembers() {
         nutritionEnabled: addForm.trainingProgram === 'individual-nutrition',
         adminNotes: 'Dodano od strane admina'
       })
+      await adminApi.updateUserStatus(registerData.id, true)
       await fetchMembers()
       setShowAddModal(false)
       setAddForm({ firstName: '', lastName: '', username: '', email: '', phone: '', password: '', confirmPassword: '', trainingProgram: '' })
@@ -135,6 +142,37 @@ export default function AdminMembers() {
     }
   }
 
+  // Change plan
+  const openPlanModal = (member) => {
+    setMemberForPlan(member)
+    const current = member.membership?.trainingType
+    const hasNutrition = member.membership?.nutritionEnabled
+    if (current === 'Individual' && hasNutrition) setNewPlan('individual-nutrition')
+    else if (current === 'Individual') setNewPlan('individual')
+    else setNewPlan('group')
+    setShowPlanModal(true)
+  }
+
+  const handleChangePlan = async () => {
+    setPlanSaving(true)
+    try {
+      await adminApi.updateMembership(memberForPlan.id, {
+        trainingType: newPlan === 'group' ? 'Group' : 'Individual',
+        nutritionEnabled: newPlan === 'individual-nutrition',
+        status: 'Active',
+        paymentStatus: 'Paid',
+      })
+      await adminApi.updateUserStatus(memberForPlan.id, true)
+      setShowPlanModal(false)
+      setMemberForPlan(null)
+      await fetchMembers()
+    } catch (err) {
+      alert(err.message || 'Greška pri promjeni plana.')
+    } finally {
+      setPlanSaving(false)
+    }
+  }
+
   // Delete member
   const openDeleteModal = (member) => {
     setMemberToDelete(member)
@@ -180,12 +218,12 @@ export default function AdminMembers() {
     <div className="p-4 lg:p-8">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj članovima</h1>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Članovima</h1>
           <p className="text-muted-foreground">Pregled i upravljanje članovima</p>
         </div>
         <button onClick={() => setShowAddModal(true)}
           className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-          <UserPlus size={16} /> Dodaj člana
+          <UserPlus size={16} /> Dodaj Člana
         </button>
       </div>
 
@@ -195,7 +233,7 @@ export default function AdminMembers() {
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowAddModal(false)} />
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-foreground">Dodaj člana</h2>
+              <h2 className="text-2xl font-bold text-foreground">Dodaj Člana</h2>
               <button onClick={() => setShowAddModal(false)} className="text-muted-foreground hover:text-foreground"><X size={24} /></button>
             </div>
             <form onSubmit={handleAddMember} className="space-y-5">
@@ -214,10 +252,10 @@ export default function AdminMembers() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div><label htmlFor="password" className={labelClass}>Šifra</label>
                   <input id="password" type="password" className={inputClass} placeholder="Unesite šifru" value={addForm.password} onChange={handleAddChange} required /></div>
-                <div><label htmlFor="confirmPassword" className={labelClass}>Potvrdite šifru</label>
+                <div><label htmlFor="confirmPassword" className={labelClass}>Potvrdite Šifru</label>
                   <input id="confirmPassword" type="password" className={inputClass} placeholder="Potvrdite šifru" value={addForm.confirmPassword} onChange={handleAddChange} required /></div>
               </div>
-              <div><label htmlFor="trainingProgram" className={labelClass}>Trening program</label>
+              <div><label htmlFor="trainingProgram" className={labelClass}>Trening Program</label>
                 <select id="trainingProgram" value={addForm.trainingProgram}
                   onChange={(e) => setAddForm({ ...addForm, trainingProgram: e.target.value })}
                   className={`${inputClass} ${!addForm.trainingProgram ? 'text-muted-foreground' : 'text-foreground'}`} required>
@@ -229,7 +267,7 @@ export default function AdminMembers() {
                 <button type="button" onClick={() => setShowAddModal(false)}
                   className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">Otkaži</button>
                 <button type="submit"
-                  className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">Dodaj člana</button>
+                  className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">Dodaj Člana</button>
               </div>
             </form>
           </div>
@@ -273,6 +311,48 @@ export default function AdminMembers() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Change Plan Modal ── */}
+      {showPlanModal && memberForPlan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowPlanModal(false)} />
+          <div className="relative z-10 w-full max-w-sm rounded-lg border border-border bg-card p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h2 className="text-lg font-bold text-foreground">Promijeni plan</h2>
+                <p className="text-sm text-muted-foreground">{memberForPlan.firstName} {memberForPlan.lastName}</p>
+              </div>
+              <button onClick={() => setShowPlanModal(false)} className="text-muted-foreground hover:text-foreground"><X size={20} /></button>
+            </div>
+            <div className="space-y-3 mb-6">
+              {[
+                { id: 'group', label: 'Grupni treninzi', desc: 'Pristup grupnim treninzima' },
+                { id: 'individual', label: 'Individualni treninzi', desc: 'Pristup individualnim treninzima' },
+                { id: 'individual-nutrition', label: 'Individualni + Ishrana', desc: 'Individualni treninzi + nutrition plan' },
+              ].map(plan => (
+                <button key={plan.id} onClick={() => setNewPlan(plan.id)}
+                  className={`w-full rounded-lg border p-3 text-left transition-colors ${newPlan === plan.id ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted'}`}>
+                  <div className="flex items-center gap-2">
+                    <div className={`h-4 w-4 rounded-full border-2 shrink-0 ${newPlan === plan.id ? 'border-primary bg-primary' : 'border-muted-foreground'}`} />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{plan.label}</p>
+                      <p className="text-xs text-muted-foreground">{plan.desc}</p>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setShowPlanModal(false)}
+                className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">Otkaži</button>
+              <button onClick={handleChangePlan} disabled={planSaving}
+                className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50">
+                {planSaving ? 'Čuvanje...' : 'Sačuvaj plan'}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -347,8 +427,8 @@ export default function AdminMembers() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border">
-                {['Član', 'Telefon', 'Plan', 'Membership', 'Račun', 'Datum reg.', 'Ističe', 'Radnje'].map((h, i) => (
-                  <th key={h} className={`pb-3 text-sm font-medium text-muted-foreground ${i === 7 ? 'text-right' : 'text-left'}`}>{h}</th>
+                {['Član', 'Telefon', 'Plan', 'Membership', 'Datum reg.', 'Ističe', 'Radnje'].map((h, i) => (
+                  <th key={h} className={`pb-3 text-sm font-medium text-muted-foreground ${i === 6 ? 'text-right' : 'text-left'}`}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -357,11 +437,16 @@ export default function AdminMembers() {
                 <tr key={member.id} className={i < filtered.length - 1 ? 'border-b border-border' : ''}>
                   <td className="py-4">
                     <div className="flex items-center gap-3">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-full shrink-0 ${member.isActive ? 'bg-primary/10' : 'bg-gray-100'}`}>
-                        <span className={`text-sm font-medium ${member.isActive ? 'text-primary' : 'text-gray-400'}`}>
-                          {member.firstName[0]}{member.lastName[0]}
-                        </span>
-                      </div>
+                      {member.profileImageBase64 ? (
+                        <img src={member.profileImageBase64} alt="Avatar"
+                          className={`h-10 w-10 rounded-full object-cover shrink-0 ${member.isActive ? 'border-2 border-primary/30' : 'opacity-60'}`} />
+                      ) : (
+                        <div className={`flex h-10 w-10 items-center justify-center rounded-full shrink-0 ${member.isActive ? 'bg-primary/10' : 'bg-gray-100'}`}>
+                          <span className={`text-sm font-medium ${member.isActive ? 'text-primary' : 'text-gray-400'}`}>
+                            {member.firstName[0]}{member.lastName[0]}
+                          </span>
+                        </div>
+                      )}
                       <div>
                         <p className="font-medium text-foreground">{member.firstName} {member.lastName}</p>
                         <p className="text-xs text-muted-foreground">{member.username || member.email}</p>
@@ -380,11 +465,6 @@ export default function AdminMembers() {
                       {member.membership?.status === 'Active' ? 'Aktivan' :
                         member.membership?.status === 'Pending' ? 'Na čekanju' :
                           member.membership ? 'Neaktivan' : 'Bez plana'}
-                    </span>
-                  </td>
-                  <td className="py-4">
-                    <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${member.isActive ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-600'}`}>
-                      {member.isActive ? 'Aktivan' : 'Deaktiviran'}
                     </span>
                   </td>
                   <td className="py-4 text-sm text-muted-foreground">
@@ -429,6 +509,10 @@ export default function AdminMembers() {
                         className="inline-flex items-center gap-1 rounded-lg bg-blue-100 px-2.5 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-200 transition-colors">
                         <KeyRound size={12} /> Šifra
                       </button>
+                      <button onClick={() => openPlanModal(member)}
+                        className="inline-flex items-center gap-1 rounded-lg bg-purple-100 px-2.5 py-1.5 text-xs font-medium text-purple-700 hover:bg-purple-200 transition-colors">
+                        <Settings size={12} /> Plan
+                      </button>
                       <button onClick={() => openDeleteModal(member)}
                         className="inline-flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-600 hover:bg-red-100 hover:text-red-600 transition-colors">
                         <Trash2 size={12} /> Obriši
@@ -438,7 +522,7 @@ export default function AdminMembers() {
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={8} className="py-8 text-center text-muted-foreground">Nema članova</td></tr>
+                <tr><td colSpan={7} className="py-8 text-center text-muted-foreground">Nema članova</td></tr>
               )}
             </tbody>
           </table>

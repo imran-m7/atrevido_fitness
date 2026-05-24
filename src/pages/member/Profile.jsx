@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { User, Phone, Edit, CreditCard, X, KeyRound, AtSign } from 'lucide-react'
+import { User, Phone, Edit, CreditCard, X, AtSign, Camera } from 'lucide-react'
 import { profileApi } from '../../services/api'
 import PhoneInput, { isValidBAPhone } from '../../components/PhoneInput'
 import { useAuth } from '../../context/AuthContext'
@@ -28,6 +28,7 @@ const emptyForm = {
   username: '',
   newPassword: '',
   confirmPassword: '',
+  profileImageBase64: null,
 }
 
 export default function MemberProfile() {
@@ -99,9 +100,10 @@ export default function MemberProfile() {
         phoneNumber: form.phoneNumber || null,
         username: form.username || null,
         newPassword: form.newPassword || null,
+        profileImageBase64: form.profileImageBase64 || null,
       })
 
-      updateProfile(form.firstName, result?.newUsername)
+      updateProfile(form.firstName, result?.newUsername, form.profileImageBase64 || profile?.profileImageBase64 || null)
       setSuccess('Profil uspješno ažuriran.')
       setIsEditModalOpen(false)
       await fetchProfile()
@@ -149,8 +151,15 @@ export default function MemberProfile() {
           </div>
           <div className="p-5">
             <div className="flex items-start gap-6">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 shrink-0">
-                <User size={40} className="text-primary" />
+              <div className="relative flex h-20 w-20 shrink-0">
+                {profile?.profileImageBase64 ? (
+                  <img src={profile.profileImageBase64} alt="Profilna slika"
+                    className="h-20 w-20 rounded-full object-cover border-2 border-primary/20" />
+                ) : (
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                    <User size={40} className="text-primary" />
+                  </div>
+                )}
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-foreground">
@@ -246,6 +255,39 @@ export default function MemberProfile() {
               <div>
                 <label htmlFor="phoneNumber" className={labelClass}>Telefon</label>
                 <PhoneInput id="phoneNumber" value={form.phoneNumber} onChange={(val) => setForm(prev => ({ ...prev, phoneNumber: val }))} />
+              </div>
+
+              {/* Profilna slika */}
+              <div>
+                <label className={labelClass}>Profilna slika</label>
+                <div className="flex items-center gap-4">
+                  <div className="relative h-16 w-16 shrink-0">
+                    {form.profileImageBase64 || profile?.profileImageBase64 ? (
+                      <img src={form.profileImageBase64 || profile?.profileImageBase64} alt="Preview"
+                        className="h-16 w-16 rounded-full object-cover border-2 border-primary/20" />
+                    ) : (
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                        <User size={28} className="text-primary" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <label htmlFor="imageUpload"
+                      className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+                      <Camera size={15} /> Odaberi sliku
+                    </label>
+                    <input id="imageUpload" type="file" accept="image/*" className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files[0]
+                        if (!file) return
+                        if (file.size > 2 * 1024 * 1024) { setError('Slika mora biti manja od 2MB.'); return }
+                        const reader = new FileReader()
+                        reader.onload = (ev) => setForm(prev => ({ ...prev, profileImageBase64: ev.target.result }))
+                        reader.readAsDataURL(file)
+                      }} />
+                    <p className="mt-1 text-xs text-muted-foreground">JPG, PNG — max 2MB</p>
+                  </div>
+                </div>
               </div>
 
               {/* Username */}

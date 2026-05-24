@@ -98,9 +98,14 @@ export default function MemberSidebar() {
         {/* User Info */}
         <div className="border-b border-sidebar-border p-4 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sidebar-accent shrink-0">
-              <User size={20} className="text-sidebar-accent-foreground" />
-            </div>
+            {user?.profileImage ? (
+              <img src={user.profileImage} alt="Avatar"
+                className="h-10 w-10 rounded-full object-cover shrink-0 border-2 border-sidebar-accent" />
+            ) : (
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sidebar-accent shrink-0">
+                <User size={20} className="text-sidebar-accent-foreground" />
+              </div>
+            )}
             <div className="min-w-0">
               <p className="truncate font-medium text-sidebar-foreground">
                 {user?.firstName || 'Članica'}

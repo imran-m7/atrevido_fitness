@@ -70,8 +70,8 @@ function ScoreProgressChart({ entries }) {
         <ComposedChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1} />
-              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.15} />
+              <stop offset="0%" stopColor="#e05594" stopOpacity={1} />
+              <stop offset="100%" stopColor="#e05594" stopOpacity={0.15} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
@@ -107,7 +107,7 @@ function ScoreProgressChart({ entries }) {
           <Line
             type="natural"
             dataKey="score"
-            stroke="hsl(var(--primary))"
+            stroke="#e05594"
             strokeWidth={3}
             dot={{ r: 4, fill: 'hsl(var(--primary))', strokeWidth: 2, stroke: 'white' }}
             activeDot={{ r: 6, fill: 'hsl(var(--primary))', stroke: 'white', strokeWidth: 2 }}
