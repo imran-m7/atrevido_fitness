@@ -31,6 +31,9 @@ namespace AtrevidoFitness.API.Models.Entities
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        public string? ProfileImageBase64 { get; set; }
+
+
         public bool IsActive { get; set; } = false;
 
         public UserTrainingMembership? TrainingMembership { get; set; }

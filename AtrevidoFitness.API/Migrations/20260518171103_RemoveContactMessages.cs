@@ -11,10 +11,10 @@ namespace AtrevidoFitness.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ContactMessages");
+           migrationBuilder.Sql("IF OBJECT_ID('ContactMessages', 'U') IS NOT NULL DROP TABLE [ContactMessages]");
+        
 
-            migrationBuilder.UpdateData(
+        migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: 1,

@@ -58,6 +58,8 @@ namespace AtrevidoFitness.API.DTOs
         public string? PhoneNumber { get; set; }
         public string? Username { get; set; }
         public string? NewPassword { get; set; }
+
+        public string? ProfileImageBase64 { get; set; }
     }
 
     public class UserProfileResponseDto
@@ -73,6 +75,8 @@ namespace AtrevidoFitness.API.DTOs
         public string? MembershipType { get; set; }
         public string? MembershipStatus { get; set; }
         public bool NutritionEnabled { get; set; }
+
+        public string? ProfileImageBase64 { get; set; }
     }
 
     public class AdminResetPasswordDto

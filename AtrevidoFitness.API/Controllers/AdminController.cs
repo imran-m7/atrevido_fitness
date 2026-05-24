@@ -70,6 +70,8 @@ namespace AtrevidoFitness.API.Controllers
                     u.Role,
                     u.IsActive,
                     u.CreatedAt,
+                    u.ProfileImageBase64,
+
                     Membership = u.TrainingMembership == null ? null : new
                     {
                         u.TrainingMembership.TrainingType,
@@ -79,7 +81,7 @@ namespace AtrevidoFitness.API.Controllers
                         u.TrainingMembership.RequestedAt,
                         u.TrainingMembership.ActivatedAt,
                         u.TrainingMembership.AdminNotes,
-                        u.TrainingMembership.EndDate
+                        u.TrainingMembership.EndDate,
                     }
                 })
                 .ToListAsync();

@@ -44,6 +44,8 @@ namespace AtrevidoFitness.API.Controllers
                 MembershipType = user.TrainingMembership?.TrainingType,
                 MembershipStatus = user.TrainingMembership?.Status,
                 NutritionEnabled = user.TrainingMembership?.NutritionEnabled ?? false,
+
+                ProfileImageBase64 = user.ProfileImageBase64,
             });
         }
 
@@ -86,6 +88,9 @@ namespace AtrevidoFitness.API.Controllers
                     "UPDATE Users SET PasswordHash = {0} WHERE Id = {1}",
                     hashed, userId);
             }
+
+            if (!string.IsNullOrWhiteSpace(dto.ProfileImageBase64))
+                user.ProfileImageBase64 = dto.ProfileImageBase64;
 
             await _context.SaveChangesAsync();
 
