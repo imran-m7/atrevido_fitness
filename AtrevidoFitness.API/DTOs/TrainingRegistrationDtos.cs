@@ -7,6 +7,8 @@ namespace AtrevidoFitness.API.DTOs
         public int TrainingSessionId { get; set; }
         public DateOnly SessionDate { get; set; }
         public string Status { get; set; } = string.Empty;
+        public string? UserProfileImage { get; set; }
+
         public DateTime RegisteredAt { get; set; }
         public string? UserFirstName { get; set; }
         public string? UserLastName { get; set; }

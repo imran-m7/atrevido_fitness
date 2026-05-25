@@ -37,6 +37,7 @@ namespace AtrevidoFitness.API.Controllers
                     u.FirstName,
                     u.LastName,
                     u.Username,
+                    u.ProfileImageBase64,
                     NutritionPlan = _context.NutritionPlans
                         .Where(n => n.AssignedToUserId == u.Id && n.IsActive)
                         .Select(n => new NutritionPlanResponseDto

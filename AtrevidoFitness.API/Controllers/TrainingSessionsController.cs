@@ -48,6 +48,8 @@ namespace AtrevidoFitness.API.Controllers
                         UserId = r.UserId,
                         UserFirstName = r.User.FirstName,
                         UserLastName = r.User.LastName,
+                        UserProfileImage = r.User.ProfileImageBase64,  
+
                         SessionDate = r.SessionDate,
                         Status = r.Status
                     })

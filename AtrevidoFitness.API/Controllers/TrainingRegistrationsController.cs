@@ -167,7 +167,9 @@ namespace AtrevidoFitness.API.Controllers
                     Status = r.Status,
                     RegisteredAt = r.RegisteredAt,
                     UserFirstName = r.User.FirstName,
-                    UserLastName = r.User.LastName
+                    UserLastName = r.User.LastName,
+                    UserProfileImage = r.User.ProfileImageBase64 
+
                 })
                 .ToListAsync();
 
