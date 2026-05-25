@@ -15,17 +15,6 @@ namespace AtrevidoFitness.API.Migrations
         {
 
             migrationBuilder.InsertData(
-    table: "Users",
-    columns: new[] { "Id", "CreatedAt", "Email", "FirstName", "IsActive", "LastName", "PasswordHash", "PhoneNumber", "Role", "Username" },
-    columnTypes: new[] { "int", "datetime2", "nvarchar(200)", "nvarchar(100)", "bit", "nvarchar(100)", "nvarchar(max)", "nvarchar(20)", "nvarchar(max)", "nvarchar(100)" },
-    values: new object[,]
-    {
-        { 2, new DateTime(2026, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc), "sarah@atrevido.ba", "Sarah", true, "Johnson", "$2a$11$eSLEcEK/fIQa2fbNq5.hzuPLdx2DQW2E6bTnyvOgI0K.1Eb/RH6hy", null, "Member", "sarah.johnson" },
-        { 3, new DateTime(2026, 1, 20, 0, 0, 0, 0, DateTimeKind.Utc), "maria@atrevido.ba", "Maria", true, "Smith", "$2a$11$8oymNmewEY7Xrk0bkSOjuOKFGFYvJMaIsj3ly9r.bfnaYaiej35YC", null, "Member", "maria.smith" },
-        { 4, new DateTime(2026, 2, 1, 0, 0, 0, 0, DateTimeKind.Utc), "jennifer@atrevido.ba", "Jennifer", true, "Kane", "$2a$11$Yq/dNl8oUgcucr8390Upw.FCcDPkgVt8zdvleho0Q0K/MvWcJRTqq", null, "Member", "jennifer.kane" },
-        { 5, new DateTime(2026, 2, 10, 0, 0, 0, 0, DateTimeKind.Utc), "amanda@atrevido.ba", "Amanda", true, "Ross", "$2a$11$HKGYkNQMtvrbtA5QGc1rpuBPAajrdKh2fpiOwLBWVc08q2fCyi/b.", null, "Member", "amanda.ross" }
-    });
-            migrationBuilder.InsertData(
                 table: "ChallengeParticipants",
                 columns: new[] { "Id", "ChallengeId", "JoinedAt", "Status", "UserId" },
                 values: new object[,]
