@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Users, Calendar, Trophy, BookOpen, Salad, Clock, TrendingUp, ArrowRight, Plus } from 'lucide-react'
+import { Users, Calendar, Trophy, BookOpen, Salad, Clock, TrendingUp, ArrowRight } from 'lucide-react'
 
 const API_URL = 'https://localhost:7087'
 
 const quickActions = [
-  { label: 'Upravljanje treninzima', href: '/admin/trainings', icon: Calendar },
-  { label: 'Upravljanje članovima', href: '/admin/members', icon: Users },
-  { label: 'Upravljanje napretkom', href: '/admin/progress', icon: TrendingUp },
-  { label: 'Upravljanje izazovima', href: '/admin/challenges', icon: Trophy },
-  { label: 'Upravljanje ishranom', href: '/admin/nutrition', icon: Salad },
-  { label: 'Upravljanje blogovima', href: '/admin/blog', icon: BookOpen },
+  { label: 'Upravljanje Treninzima', href: '/admin/trainings', icon: Calendar },
+  { label: 'Upravljanje Članovima', href: '/admin/members', icon: Users },
+  { label: 'Upravljanje Napretkom', href: '/admin/progress', icon: TrendingUp },
+  { label: 'Upravljanje Izazovima', href: '/admin/challenges', icon: Trophy },
+  { label: 'Upravljanje Ishranom', href: '/admin/nutrition', icon: Salad },
+  { label: 'Upravljanje Blogovima', href: '/admin/blog', icon: BookOpen },
 ]
 
 export default function AdminDashboard() {
@@ -53,9 +53,9 @@ export default function AdminDashboard() {
   }, [])
 
   const stats = [
-    { title: 'Ukupno članova', value: dashData?.totalMembers ?? '...', change: 'Registrovani članovi', icon: Users, trend: 'up' },
-    { title: 'Današnji treninzi', value: dashData?.todaySessions ?? '...', change: 'Termini danas', icon: Calendar, trend: null },
-    { title: 'Prijave ove sedmice', value: dashData?.weekRegistrations ?? '...', change: 'Prijave na treninge', icon: Trophy, trend: null },
+    { title: 'Ukupno Članova', value: dashData?.totalMembers ?? '...', change: 'Registrovani članovi', icon: Users, trend: 'up' },
+    { title: 'Današnji Treninzi', value: dashData?.todaySessions ?? '...', change: 'Termini danas', icon: Calendar, trend: null },
+    { title: 'Prijave Ove Sedmice', value: dashData?.weekRegistrations ?? '...', change: 'Prijave na treninge', icon: Trophy, trend: null },
   ]
 
   // Filtriraj treninge za danas
@@ -70,7 +70,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3 w-fit">
+      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3 w-fit mx-auto">
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h2 className="mb-4 text-lg font-semibold text-foreground">Brzo upravljanje</h2>
+        <h2 className="mb-4 text-lg font-semibold text-foreground">Brzo Upravljanje</h2>
         <div className="flex flex-wrap gap-3">
           {quickActions.map((action) => {
             const Icon = action.icon
@@ -115,9 +115,9 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between p-5 border-b border-border">
             <div className="flex items-center gap-2">
               <Clock size={20} className="text-primary" />
-              <h3 className="font-semibold text-foreground">Nadolazeći treninzi danas</h3>
+              <h3 className="font-semibold text-foreground">Nadolazeći Treninzi Danas</h3>
             </div>
-            <Link to="/admin/trainings" className="text-sm font-medium text-primary hover:underline">Vidi sve</Link>
+            <Link to="/admin/trainings" className="text-sm font-medium text-primary hover:underline">Vidi Sve</Link>
           </div>
           <div className="p-5 space-y-4">
             {todaySessions.length > 0 ? todaySessions.map((session, i) => {
@@ -160,11 +160,11 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between p-5 border-b border-border">
             <div className="flex items-center gap-2">
               <Trophy size={20} className="text-primary" />
-              <h3 className="font-semibold text-foreground">Pregled aktivnih izazova</h3>
+              <h3 className="font-semibold text-foreground">Pregled Aktivnih Izazova</h3>
             </div>
             <Link to="/admin/challenges"
               className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-              Upravljanje izazovima <ArrowRight size={16} />
+              Upravljanje Izazovima <ArrowRight size={16} />
             </Link>
           </div>
           <div className="p-5">
@@ -183,12 +183,6 @@ export default function AdminDashboard() {
               )) : (
                 <p className="text-muted-foreground text-sm">Nema aktivnih izazova</p>
               )}
-              <div className="flex items-center justify-center rounded-lg border border-dashed border-border p-4">
-                <Link to="/admin/challenges"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                  <Plus size={16} /> Kreiraj novi izazov
-                </Link>
-              </div>
             </div>
           </div>
         </div>

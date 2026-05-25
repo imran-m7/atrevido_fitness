@@ -11,6 +11,7 @@ function normalizeProgressEntry(entry) {
   return {
     id: entry.id ?? entry.Id,
     entryDate: entry.entryDate ?? entry.EntryDate,
+    createdAt: entry.createdAt ?? entry.CreatedAt ?? null,
     heightCm: entry.heightCm ?? entry.HeightCm ?? null,
     weightKg: entry.weightKg ?? entry.WeightKg ?? null,
     armCm: entry.armCm ?? entry.ArmCm ?? null,
@@ -38,26 +39,69 @@ function formatTrend(oldestValue, latestValue, unit) {
   return `${diff > 0 ? '+' : ''}${diff.toFixed(1)} ${unit} ukupno`
 }
 
-function measurementValue(v) { return Number(v ?? 0) }
+function measurementLoss(baselineValue, currentValue) {
+  if (baselineValue === '' || baselineValue === null || baselineValue === undefined) return 0
+  if (currentValue === '' || currentValue === null || currentValue === undefined) return 0
+  const baseline = Number(baselineValue)
+  const current = Number(currentValue)
+  return Number.isFinite(baseline) && Number.isFinite(current) ? baseline - current : 0
+}
+
+function calculateProgressScore(baseline, current) {
+  const weightLoss = measurementLoss(baseline.weightKg, current.weightKg)
+  const waistLoss = measurementLoss(baseline.waistCm, current.waistCm)
+  const armLoss = measurementLoss(baseline.armCm, current.armCm)
+  const thighLoss = measurementLoss(baseline.thighCm, current.thighCm)
+  const score = (weightLoss * 10) + (waistLoss * 3) + (armLoss * 2) + (thighLoss * 2)
+  return Number(score.toFixed(2))
+}
+
+function getTimeValue(value) {
+  if (!value) return 0
+  const time = new Date(value).getTime()
+  return Number.isFinite(time) ? time : 0
+}
+
+function compareProgressEntries(a, b) {
+  const dateDiff = getTimeValue(a.entryDate) - getTimeValue(b.entryDate)
+  if (dateDiff !== 0) return dateDiff
+
+  const createdDiff = getTimeValue(a.createdAt) - getTimeValue(b.createdAt)
+  if (createdDiff !== 0) return createdDiff
+
+  const aId = Number(a.id)
+  const bId = Number(b.id)
+  if (Number.isFinite(aId) && Number.isFinite(bId) && aId !== bId) return aId - bId
+
+  return String(a.id ?? '').localeCompare(String(b.id ?? ''))
+}
+
+function latestEntriesByDate(sortedEntries) {
+  const entriesByDate = new Map()
+  sortedEntries.forEach(entry => {
+    entriesByDate.set(formatDate(entry.entryDate), entry)
+  })
+  return Array.from(entriesByDate.values())
+}
 
 function buildScoreChartData(entries) {
-  const sorted = [...entries].sort((a, b) => new Date(a.entryDate) - new Date(b.entryDate))
+  const sorted = [...entries].sort(compareProgressEntries)
   if (sorted.length === 0) return []
   const first = sorted[0]
-  return sorted.map(entry => {
-    const weightLoss = measurementValue(first.weightKg) - measurementValue(entry.weightKg)
-    const waistLoss = measurementValue(first.waistCm) - measurementValue(entry.waistCm)
-    const armLoss = measurementValue(first.armCm) - measurementValue(entry.armCm)
-    const thighLoss = measurementValue(first.thighCm) - measurementValue(entry.thighCm)
-    const score = (weightLoss * 10) + (waistLoss * 3) + (armLoss * 2) + (thighLoss * 2)
-    return { date: formatDate(entry.entryDate), score: sorted.length === 1 ? 0 : Number(score.toFixed(2)) }
+  return latestEntriesByDate(sorted).map(entry => {
+    const date = formatDate(entry.entryDate)
+    return {
+      key: `${date}-${entry.id ?? ''}`,
+      date,
+      score: sorted.length === 1 ? 0 : calculateProgressScore(first, entry),
+    }
   })
 }
 
 
 function ScoreProgressChart({ entries }) {
   const chartData = buildScoreChartData(entries)
-  if (chartData.length < 2) {
+  if (chartData.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center rounded-lg bg-muted/50">
         <p className="text-center text-sm text-muted-foreground">Potrebna su najmanje dva unosa za prikaz grafa.</p>

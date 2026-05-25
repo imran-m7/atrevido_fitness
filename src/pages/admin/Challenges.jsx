@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Plus, Edit, Trash2, Users, Calendar, Trophy, Eye, X, Medal, Flame } from 'lucide-react'
+import { Edit, Users, Calendar, Trophy, Eye, X, Medal, Flame } from 'lucide-react'
 import { challengesApi } from '../../services/api'
 
 const statusColors = {
@@ -7,8 +7,6 @@ const statusColors = {
   Nadolazi: 'bg-blue-100 text-blue-700',
   Zavrsen: 'bg-gray-100 text-gray-700',
 }
-
-const challengeStatuses = ['Aktivan', 'Nadolazi', 'Zavrsen']
 
 const inputClass = 'w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring'
 const labelClass = 'block mb-1.5 text-sm font-medium text-foreground'
@@ -20,25 +18,11 @@ function mapBackendStatusToUi(status) {
   return status || 'Nadolazi'
 }
 
-function mapUiStatusToBackend(status) {
-  if (status === 'Aktivan') return 'Active'
-  if (status === 'Nadolazi') return 'Upcoming'
-  if (status === 'Zavrsen') return 'Completed'
-  return status || 'Upcoming'
-}
-
 function formatDate(value) {
   if (!value) return '-'
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
   return date.toLocaleDateString('bs-BA', { day: 'numeric', month: 'long', year: 'numeric' })
-}
-
-function toInputDate(value) {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return typeof value === 'string' ? value.slice(0, 10) : ''
-  return date.toISOString().slice(0, 10)
 }
 
 function normalizeChallenge(c) {
@@ -52,11 +36,10 @@ function normalizeChallenge(c) {
     endDate: c.endDate ?? c.EndDate ?? '',
     participants: c.participantCount ?? c.ParticipantCount ?? 0,
     type: 'Izazov',
-    progress: 0,
   }
 }
 
-const emptyForm = { title: '', description: '', rules: '', startDate: '', endDate: '', status: 'Aktivan', isPublic: true }
+const emptyForm = { title: '', description: '', rules: '' }
 
 export default function AdminChallenges() {
   const [challengesList, setChallengesList] = useState([])
@@ -74,10 +57,13 @@ export default function AdminChallenges() {
   const [leaderboardLoading, setLeaderboardLoading] = useState(false)
 
   const stats = [
-    { label: 'Ukupno izazova', value: challengesList.length, bg: 'bg-primary/10', color: 'text-primary', icon: Trophy },
-    { label: 'Aktivni izazovi', value: challengesList.filter(c => c.status === 'Aktivan').length, bg: 'bg-green-100', color: 'text-green-600', icon: Trophy },
-    { label: 'Ukupno učesnika', value: challengesList.reduce((sum, c) => sum + c.participants, 0), bg: 'bg-purple-100', color: 'text-purple-600', icon: Users },
+    { label: 'Ukupno Izazova', value: challengesList.length, bg: 'bg-primary/10', color: 'text-primary', icon: Trophy },
+    { label: 'Aktivni Izazovi', value: challengesList.filter(c => c.status === 'Aktivan').length, bg: 'bg-green-100', color: 'text-green-600', icon: Trophy },
+    { label: 'Ukupno Ucesnika', value: challengesList.reduce((sum, c) => sum + c.participants, 0), bg: 'bg-purple-100', color: 'text-purple-600', icon: Users },
   ]
+
+  const activeMonthlyChallenges = challengesList.filter(c => c.status === 'Aktivan')
+  const pastChallenges = challengesList.filter(c => c.status === 'Zavrsen')
 
   async function fetchChallenges() {
     try {
@@ -100,10 +86,12 @@ export default function AdminChallenges() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleOpenAddModal = () => {
+  const resetForm = () => {
     setEditingId(null)
-    resetForm()
-    setShowModal(true)
+    setFormData(emptyForm)
+    setSaving(false)
+    setError(null)
+    setShowModal(false)
   }
 
   const handleOpenEditModal = (challenge) => {
@@ -112,10 +100,6 @@ export default function AdminChallenges() {
       title: challenge.title,
       description: challenge.description,
       rules: challenge.rules || '',
-      startDate: toInputDate(challenge.startDate),
-      endDate: toInputDate(challenge.endDate),
-      status: challenge.status,
-      isPublic: true,
     })
     setShowModal(true)
   }
@@ -153,18 +137,8 @@ export default function AdminChallenges() {
         title: formData.title,
         description: formData.description,
         rules: formData.rules || formData.description,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        status: mapUiStatusToBackend(formData.status),
-        isPublic: formData.isPublic,
       }
-      if (editingId) {
-        await challengesApi.update(editingId, payload)
-      } else {
-        await challengesApi.create(payload)
-      }
-      setShowModal(false)
-      setEditingId(null)
+      await challengesApi.update(editingId, payload)
       resetForm()
       await fetchChallenges()
     } catch (err) {
@@ -184,17 +158,53 @@ export default function AdminChallenges() {
     }
   }
 
+  const renderChallengeCards = (items, emptyText) => (
+    items.length === 0 ? (
+      <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
+        <p className="text-sm text-muted-foreground">{emptyText}</p>
+      </div>
+    ) : items.map(c => (
+      <div key={c.id} className="rounded-lg border border-border bg-card shadow-sm p-5">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+              <Trophy size={28} className="text-primary" />
+            </div>
+            <div>
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <h3 className="font-semibold text-foreground">{c.title}</h3>
+                <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${statusColors[c.status] || 'bg-gray-100 text-gray-700'}`}>{c.status}</span>
+                <span className="rounded border border-border px-2 py-0.5 text-xs text-muted-foreground">{c.type}</span>
+              </div>
+              <p className="mb-3 text-sm text-muted-foreground">{c.description}</p>
+              <div className="mb-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1"><Calendar size={14} />{formatDate(c.startDate)} - {formatDate(c.endDate)}</span>
+                <span className="flex items-center gap-1"><Users size={14} />{c.participants} participants</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => handleOpenParticipantsModal(c)}
+              className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+              <Eye size={14} /> Vidi Ucesnike
+            </button>
+            <button onClick={() => handleOpenEditModal(c)}
+              className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
+              <Edit size={14} /> Uredi
+            </button>
+          </div>
+        </div>
+      </div>
+    ))
+  )
+
   return (
     <div className="p-4 lg:p-8">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj izazovima</h1>
-          <p className="text-muted-foreground">Napravi i upravljaj izazovima</p>
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">Upravljaj Izazovima</h1>
+          <p className="text-muted-foreground">Upravljaj mjesečnim izazovima</p>
         </div>
-        <button onClick={handleOpenAddModal}
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
-          <Plus size={16} /> Napravi izazov
-        </button>
       </div>
 
       {error && (
@@ -206,23 +216,17 @@ export default function AdminChallenges() {
       {/* Modal kreiranje/uređivanje */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={resetForm} />
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-foreground">{editingId ? 'Uredi Izazov' : 'Napravi Novi Izazov'}</h2>
-              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground"><X size={24} /></button>
+              <h2 className="text-2xl font-bold text-foreground">Uredi Izazov</h2>
+              <button onClick={resetForm} className="text-muted-foreground hover:text-foreground"><X size={24} /></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="title" className={labelClass}>Naziv Izazova</label>
                 <input id="title" name="title" type="text" className={inputClass}
                   placeholder="Unesite naziv izazova" value={formData.title} onChange={handleInputChange} required />
-              </div>
-              <div>
-                <label htmlFor="status" className={labelClass}>Status Izazova</label>
-                <select id="status" name="status" className={inputClass} value={formData.status} onChange={handleInputChange}>
-                  {challengeStatuses.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
               </div>
               <div>
                 <label htmlFor="description" className={labelClass}>Opis Izazova</label>
@@ -234,26 +238,14 @@ export default function AdminChallenges() {
                 <textarea id="rules" name="rules" className={`${inputClass} min-h-20 resize-none`}
                   placeholder="Unesite pravila izazova" value={formData.rules} onChange={handleInputChange} />
               </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <label htmlFor="startDate" className={labelClass}>Datum Pocetka</label>
-                  <input id="startDate" name="startDate" type="date" className={inputClass}
-                    value={formData.startDate} onChange={handleInputChange} required />
-                </div>
-                <div>
-                  <label htmlFor="endDate" className={labelClass}>Datum Zavrsetka</label>
-                  <input id="endDate" name="endDate" type="date" className={inputClass}
-                    value={formData.endDate} onChange={handleInputChange} required />
-                </div>
-              </div>
               <div className="flex gap-3 pt-6">
-                <button type="button" onClick={() => setShowModal(false)}
+                <button type="button" onClick={resetForm}
                   className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground hover:bg-muted transition-colors">
                   Otkazi
                 </button>
                 <button type="submit" disabled={saving}
                   className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50">
-                  {saving ? 'Cuvanje...' : editingId ? 'Azuriraj Izazov' : 'Napravi Izazov'}
+                  {saving ? 'Cuvanje...' : 'Azuriraj Izazov'}
                 </button>
               </div>
             </form>
@@ -268,7 +260,7 @@ export default function AdminChallenges() {
           <div className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-card p-8 shadow-lg max-h-[90vh] overflow-y-auto">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-foreground">Učesnici izazova</h2>
+                <h2 className="text-2xl font-bold text-foreground">Ucesnici Izazova</h2>
                 <p className="mt-1 text-sm text-muted-foreground">{selectedChallenge.title}</p>
               </div>
               <button onClick={() => setShowParticipantsModal(false)} className="text-muted-foreground hover:text-foreground"><X size={24} /></button>
@@ -276,12 +268,12 @@ export default function AdminChallenges() {
             {participantsLoading || leaderboardLoading ? (
               <div className="rounded-lg border border-border bg-muted/50 p-8 text-center">
                 <div className="h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-2" />
-                <p className="text-muted-foreground">Učitavanje...</p>
+                <p className="text-muted-foreground">Ucitavanje...</p>
               </div>
             ) : participants.length === 0 ? (
               <div className="rounded-lg border border-border bg-muted/50 p-8 text-center">
                 <Users size={48} className="mx-auto mb-3 text-muted-foreground opacity-50" />
-                <p className="text-muted-foreground">Nema učesnika za ovaj izazov</p>
+                <p className="text-muted-foreground">Nema ucesnika za ovaj izazov</p>
               </div>
             ) : (
               <div>
@@ -340,7 +332,7 @@ export default function AdminChallenges() {
       )}
 
       {/* Stats */}
-      <div className="mb-6 grid w-fit gap-4 md:grid-cols-3">
+      <div className="mb-6 grid w-fit gap-4 md:grid-cols-3 mx-auto">
         {stats.map(({ label, value, bg, color, icon: Icon }) => (
           <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-3">
@@ -356,57 +348,17 @@ export default function AdminChallenges() {
 
       {/* Lista izazova */}
       {loading ? (
-        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground shadow-sm">Učitavanje izazova...</div>
+        <div className="rounded-lg border border-border bg-card p-8 text-center text-muted-foreground shadow-sm">Ucitavanje izazova...</div>
       ) : (
         <div className="grid gap-6">
-          {challengesList.map(c => (
-            <div key={c.id} className="rounded-lg border border-border bg-card shadow-sm p-5">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-primary/10 shrink-0">
-                    <Trophy size={28} className="text-primary" />
-                  </div>
-                  <div>
-                    <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <h3 className="font-semibold text-foreground">{c.title}</h3>
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${statusColors[c.status] || 'bg-gray-100 text-gray-700'}`}>{c.status}</span>
-                      <span className="rounded border border-border px-2 py-0.5 text-xs text-muted-foreground">{c.type}</span>
-                    </div>
-                    <p className="mb-3 text-sm text-muted-foreground">{c.description}</p>
-                    <div className="mb-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1"><Calendar size={14} />{formatDate(c.startDate)} - {formatDate(c.endDate)}</span>
-                      <span className="flex items-center gap-1"><Users size={14} />{c.participants} participants</span>
-                    </div>
-                    {c.status !== 'Nadolazi' && (
-                      <div className="w-64">
-                        <div className="mb-1 flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">Progress</span>
-                          <span className="text-foreground">{c.progress}%</span>
-                        </div>
-                        <div className="h-2 overflow-hidden rounded-full bg-muted">
-                          <div className="h-full rounded-full bg-primary" style={{ width: `${c.progress}%` }} />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <button onClick={() => handleOpenParticipantsModal(c)}
-                    className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
-                    <Eye size={14} /> Vidi Ucesnike
-                  </button>
-                  <button onClick={() => handleOpenEditModal(c)}
-                    className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors">
-                    <Edit size={14} /> Uredi
-                  </button>
-                  <button onClick={() => handleDelete(c.id)}
-                    className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-destructive hover:bg-muted transition-colors">
-                    <Trash2 size={14} /> Obrisi
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+          <div className="grid gap-4">
+            <h2 className="text-xl font-semibold text-foreground">Aktivni mjesečni izazov</h2>
+            {renderChallengeCards(activeMonthlyChallenges, 'Nema aktivnog mjesečnog izazova.')}
+          </div>
+          <div className="grid gap-4">
+            <h2 className="text-xl font-semibold text-foreground">Prošli izazovi</h2>
+            {renderChallengeCards(pastChallenges, 'Nema prošlih izazova.')}
+          </div>
         </div>
       )}
     </div>

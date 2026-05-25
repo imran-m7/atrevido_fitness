@@ -1,5 +1,4 @@
-const API_URL = 'https://localhost:7087'
-
+const API_URL = import.meta.env.VITE_API_URL //'https://localhost:7087' // -Radi Farisa
 const getToken = () => localStorage.getItem('token')
 
 const headers = (withAuth = true) => {

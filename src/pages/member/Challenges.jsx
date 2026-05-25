@@ -25,11 +25,9 @@ function normalizeChallenge(c) {
     rules: c.rules ?? c.Rules ?? '',
     startDate: c.startDate ?? c.StartDate ?? null,
     endDate: c.endDate ?? c.EndDate ?? null,
+    status: c.status ?? c.Status ?? '',
     type: 'Izazov',
     participants: c.participants ?? c.participantCount ?? c.ParticipantCount ?? 0,
-    progress: c.progress ?? 0,
-    daysCompleted: c.daysCompleted ?? 0,
-    totalDays: c.totalDays ?? 0,
     rank: c.rank ?? null,
     totalParticipants: c.totalParticipants ?? null,
     participationStatus: c.participationStatus ?? c.ParticipationStatus ?? null,
@@ -51,6 +49,7 @@ function parseMyChallengesResponse(data) {
 export default function MemberChallenges() {
   const [activeChallenges, setActiveChallenges] = useState([])
   const [availableChallenges, setAvailableChallenges] = useState([])
+  const [completedChallenges, setCompletedChallenges] = useState([])
   const [joiningChallengeId, setJoiningChallengeId] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -61,6 +60,7 @@ export default function MemberChallenges() {
 
   async function fetchLeaderboard(challenge) {
     if (!challenge?.id) { setLeaderboard([]); setLeaderboardMessage(null); return }
+    setLeaderboard([])
     setLeaderboardMessage(null)
     try {
       const data = await challengesApi.getLeaderboard(challenge.id)
@@ -88,14 +88,15 @@ export default function MemberChallenges() {
       const available = Array.isArray(availableResult) ? availableResult.map(normalizeChallenge) : []
       setActiveChallenges(parsed.active)
       setAvailableChallenges(available)
+      setCompletedChallenges(parsed.completed)
       const pref = preferredId ?? selectedChallenge?.id
-      const all = [...parsed.active, ...available]
+      const all = [...parsed.active, ...available, ...parsed.completed]
       const next = all.find(c => c?.id === pref) ?? parsed.active[0] ?? available[0] ?? null
       if (next) await handleSelectChallenge(next)
       else { setSelectedChallenge(null); setLeaderboard([]); setLeaderboardMessage(null) }
     } catch (err) {
       if (!isMounted()) return
-      setActiveChallenges([]); setAvailableChallenges([])
+      setActiveChallenges([]); setAvailableChallenges([]); setCompletedChallenges([])
       setSelectedChallenge(null); setLeaderboard([]); setLeaderboardMessage(null)
       setError(err.message || 'Greška pri učitavanju izazova')
     } finally {
@@ -135,6 +136,8 @@ export default function MemberChallenges() {
 
   if (loading) return <div className="p-8 text-center text-muted-foreground">Učitavanje izazova...</div>
 
+  const activeMonthlyChallenges = [...activeChallenges, ...availableChallenges]
+
   return (
     <div className="p-4 lg:p-8">
       <div className="mb-8">
@@ -148,20 +151,22 @@ export default function MemberChallenges() {
         <div className="space-y-6 lg:col-span-2">
           {/* Aktivni */}
           <div>
-            <h2 className="mb-4 text-xl font-semibold text-foreground">Moji aktivni izazovi</h2>
+            <h2 className="mb-4 text-xl font-semibold text-foreground">Aktivni mjesečni izazov</h2>
             <div className="grid gap-4">
-              {activeChallenges.length === 0 ? (
+              {activeMonthlyChallenges.length === 0 ? (
                 <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
-                  <p className="text-sm text-muted-foreground">Nema aktivnih izazova</p>
+                  <p className="text-sm text-muted-foreground">Nema aktivnog mjesečnog izazova</p>
                 </div>
-              ) : activeChallenges.map(c => (
+              ) : activeMonthlyChallenges.map(c => (
                 <div key={c.id ?? c.title} onClick={() => handleSelectChallenge(c)}
                   className={`cursor-pointer rounded-lg border border-border bg-card p-5 shadow-sm transition-colors hover:bg-muted/30 ${selectedChallenge?.id === c.id ? 'ring-2 ring-primary/30' : ''}`}>
                   <div className="mb-2 flex items-start justify-between">
                     <div>
-                      <span className="mb-2 inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
-                        <CheckCircle2 size={12} /> Prijavljena
-                      </span>
+                      {c.participationStatus === 'Active' && (
+                        <span className="mb-2 inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
+                          <CheckCircle2 size={12} /> Prijavljena
+                        </span>
+                      )}
                       <h3 className="text-lg font-semibold text-foreground">{c.title}</h3>
                     </div>
                     <div className="ml-4 shrink-0 text-right">
@@ -173,32 +178,32 @@ export default function MemberChallenges() {
                   <div className="mb-4 flex items-center gap-1 text-sm text-muted-foreground">
                     <Calendar size={14} /> {formatDate(c.startDate)} - {formatDate(c.endDate)}
                   </div>
-                  <div className="mb-1 flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Progress</span>
-                    <span className="font-medium text-foreground">{c.daysCompleted}/{c.totalDays} dana</span>
-                  </div>
-                  <div className="h-3 overflow-hidden rounded-full bg-muted">
-                    <div className="h-full rounded-full bg-primary" style={{ width: `${c.progress}%` }} />
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{c.progress}% zavrseno</p>
-                  <button onClick={e => { e.stopPropagation(); leaveChallenge(c.id) }}
-                    disabled={joiningChallengeId === c.id}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-70">
-                    <Target size={16} /> Napusti izazov
-                  </button>
+                  {c.participationStatus === 'Active' ? (
+                    <button onClick={e => { e.stopPropagation(); leaveChallenge(c.id) }}
+                      disabled={joiningChallengeId === c.id}
+                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-70">
+                      <Target size={16} /> Napusti izazov
+                    </button>
+                  ) : (
+                    <button onClick={e => { e.stopPropagation(); joinChallenge(c.id) }}
+                      disabled={joiningChallengeId === c.id}
+                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70">
+                      <Target size={16} /> Pridruzi se izazovu
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
           </div>
-          {/* Dostupni */}
+          {/* Prosli */}
           <div>
-            <h2 className="mb-4 text-xl font-semibold text-foreground">Dostupni izazovi</h2>
+            <h2 className="mb-4 text-xl font-semibold text-foreground">Prošli izazovi</h2>
             <div className="grid gap-4">
-              {availableChallenges.length === 0 ? (
+              {completedChallenges.length === 0 ? (
                 <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
-                  <p className="text-sm text-muted-foreground">Nema dostupnih izazova</p>
+                  <p className="text-sm text-muted-foreground">Nema prošlih izazova</p>
                 </div>
-              ) : availableChallenges.map(c => (
+              ) : completedChallenges.map(c => (
                 <div key={c.id ?? c.title} onClick={() => handleSelectChallenge(c)}
                   className={`cursor-pointer rounded-lg border border-border bg-card p-5 shadow-sm transition-colors hover:bg-muted/30 ${selectedChallenge?.id === c.id ? 'ring-2 ring-primary/30' : ''}`}>
                   <div className="mb-2 flex items-center justify-between">
@@ -210,11 +215,6 @@ export default function MemberChallenges() {
                   <div className="mb-4 flex items-center gap-1 text-sm text-muted-foreground">
                     <Calendar size={14} /> {formatDate(c.startDate)} - {formatDate(c.endDate)}
                   </div>
-                  <button onClick={e => { e.stopPropagation(); joinChallenge(c.id) }}
-                    disabled={joiningChallengeId === c.id}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70">
-                    <Target size={16} /> Pridruzi se izazovu
-                  </button>
                 </div>
               ))}
             </div>
