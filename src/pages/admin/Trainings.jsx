@@ -101,15 +101,23 @@ const weekTemplate = [
 
 
 // Provjeri da li je termin (dan u sedmici) vec prosao ove sedmice
-function isSessionPast(dayOfWeek) {
-  const today = new Date()
-  const todayDay = today.getDay() // 0=Ned, 1=Pon...
+// Provjeri da li je termin vec prosao (dan + vrijeme zavrsetka)
+function isSessionPast(dayOfWeek, endTime) {
+  const now = new Date()
+  const todayDay = now.getDay()
   const engDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   const sessionDay = engDays.indexOf(dayOfWeek)
   if (sessionDay === -1) return false
-  // Ako je sessionDay manji od danasnjeg dana u sedmici = prosao
-  // Ako je jednak = danas (nije prosao)
-  return sessionDay < todayDay
+
+  if (sessionDay < todayDay) return true   // prošli dan
+  if (sessionDay > todayDay) return false  // budući dan
+
+  // Isti dan — usporedi tačno vrijeme završetka
+  if (!endTime) return false
+  const [h, m] = endTime.substring(0, 5).split(':').map(Number)
+  const sessionEnd = new Date(now)
+  sessionEnd.setHours(h, m, 0, 0)
+  return now >= sessionEnd
 }
 
 const emptyForm = {
@@ -298,7 +306,9 @@ export default function AdminTrainings() {
 
   // Filtriraj po view: aktivni (danas i budući) ili prošli
   const filteredByView = filtered.filter(s =>
-    view === 'past' ? isSessionPast(s.dayOfWeek, s.endTime) : !isSessionPast(s.dayOfWeek, s.endTime)
+    view === 'past'
+      ? isSessionPast(s.dayOfWeek, s.endTime)
+      : !isSessionPast(s.dayOfWeek, s.endTime)
   )
 
   const grouped = orderedDays.map(day => ({
@@ -340,8 +350,8 @@ export default function AdminTrainings() {
 
       {/* ── Sedmica info banner ── */}
       <div className={`mb-6 flex items-center gap-3 rounded-lg border p-4 ${isWeekend
-          ? 'border-primary/30 bg-primary/5'
-          : 'border-border bg-card'
+        ? 'border-primary/30 bg-primary/5'
+        : 'border-border bg-card'
         }`}>
         <Calendar size={18} className={isWeekend ? 'text-primary shrink-0' : 'text-muted-foreground shrink-0'} />
         <div>
@@ -687,11 +697,7 @@ export default function AdminTrainings() {
         >
           Prošli treninzi
         </button>
-        {view === 'past' && (
-          <span className="text-xs text-muted-foreground ml-2">
-            Treninzi čiji je dan u sedmici već prošao
-          </span>
-        )}
+
       </div>
 
       {/* Select All / Clear / Delete */}
