@@ -79,6 +79,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<JwtHelper>();
 
 builder.Services.AddHostedService<AtrevidoFitness.API.Services.MembershipExpiryService>();
+builder.Services.AddHostedService<AtrevidoFitness.API.Services.ChallengeLifecycleService>();
 
 var app = builder.Build();
 
