@@ -15,6 +15,8 @@ export default function AdminNutrition() {
   const fetchMembers = async () => {
     try {
       const data = await nutritionApi.getMembers()
+      console.log('MEMBERS:', data)
+      console.log('PRVA SLIKA:', data[0]?.profileImageBase64?.substring(0, 50))
       setMembers(Array.isArray(data) ? data : [])
     } catch (err) {
       console.error('Greška pri učitavanju')
@@ -178,10 +180,15 @@ export default function AdminNutrition() {
                   className="flex flex-col gap-4 rounded-lg border border-border p-4 sm:flex-row sm:items-center sm:justify-between">
                   {/* Član info */}
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 shrink-0">
-                      <span className="text-lg font-semibold text-primary">
-                        {member.firstName[0]}{member.lastName[0]}
-                      </span>
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 overflow-hidden">
+                      {member.profileImageBase64 ? (
+                        <img src={member.profileImageBase64} alt={member.firstName}
+                          className="h-12 w-12 rounded-full object-cover" />
+                      ) : (
+                        <span className="text-lg font-semibold text-primary">
+                          {member.firstName[0]}{member.lastName[0]}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground">

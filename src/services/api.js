@@ -1,5 +1,5 @@
-//const API_URL = import.meta.env.VITE_API_URL //'https://localhost:7087' // -Radi Farisa
-const API_URL = 'https://localhost:7087'
+const API_URL = import.meta.env.VITE_API_URL
+
 const getToken = () => localStorage.getItem('token')
 
 const headers = (withAuth = true) => {
@@ -313,5 +313,34 @@ export const profileApi = {
             method: 'PUT',
             headers: headers(),
             body: JSON.stringify(data)
+        }).then(handleResponse),
+}
+
+// ── BLOG ──────────────────────────────────────────────
+export const blogApi = {
+    getAll: () =>
+        fetch(`${API_URL}/api/blog`).then(handleResponse),
+
+    getById: (id) =>
+        fetch(`${API_URL}/api/blog/${id}`).then(handleResponse),
+
+    create: (data) =>
+        fetch(`${API_URL}/api/blog`, {
+            method: 'POST',
+            headers: headers(),
+            body: JSON.stringify(data)
+        }).then(handleResponse),
+
+    update: (id, data) =>
+        fetch(`${API_URL}/api/blog/${id}`, {
+            method: 'PUT',
+            headers: headers(),
+            body: JSON.stringify(data)
+        }).then(handleResponse),
+
+    delete: (id) =>
+        fetch(`${API_URL}/api/blog/${id}`, {
+            method: 'DELETE',
+            headers: headers()
         }).then(handleResponse),
 }

@@ -1,3 +1,4 @@
+import { profileApi } from '../services/api'
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext(null)
@@ -21,13 +22,21 @@ export function AuthProvider({ children }) {
         setLoading(false)
     }, [])
 
-    const login = (data) => {
+    const login = async (data) => {
         localStorage.setItem('token', data.token)
         localStorage.setItem('role', data.role)
         localStorage.setItem('firstName', data.firstName)
         localStorage.setItem('username', data.username || '')
         localStorage.setItem('userId', data.id)
         localStorage.setItem('isActive', data.isActive ? 'true' : 'false')
+
+        let profileImage = null
+        try {
+            const profile = await profileApi.get()
+            profileImage = profile.profileImageBase64 || null
+            if (profileImage) localStorage.setItem('profileImage', profileImage)
+        } catch { }
+
         setUser({
             token: data.token,
             role: data.role,
@@ -35,7 +44,7 @@ export function AuthProvider({ children }) {
             username: data.username,
             userId: data.id,
             isActive: data.isActive,
-            profileImage: null
+            profileImage,
         })
     }
 

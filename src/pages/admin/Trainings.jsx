@@ -613,12 +613,17 @@ export default function AdminTrainings() {
                 <div className="space-y-2">
                   {registrations.map((reg, i) => (
                     <div key={i} className="flex items-center gap-3 rounded-lg border border-border p-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 shrink-0">
-                        <span className="text-xs font-semibold text-primary">
-                          {reg.userFirstName?.[0] || '?'}{reg.userLastName?.[0] || ''}
-                        </span>
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 overflow-hidden">
+                        {reg.userProfileImage ? (
+                          <img src={reg.userProfileImage} alt={reg.userFirstName}
+                            className="h-9 w-9 rounded-full object-cover" />
+                        ) : (
+                          <span className="text-xs font-semibold text-primary">
+                            {reg.userFirstName?.[0] || '?'}{reg.userLastName?.[0] || ''}
+                          </span>
+                        )}
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div classNam e="flex-1 min-w-0">
                         <p className="font-medium text-foreground text-sm">
                           {reg.userFirstName} {reg.userLastName}
                         </p>

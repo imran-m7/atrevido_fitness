@@ -28,7 +28,7 @@ export default function Login() {
     setLoading(true)
     try {
       const data = await authApi.login(form.username, form.password)
-      login(data)
+      await login(data)
       const from = location.state?.from?.pathname
       if (from) return navigate(from, { replace: true })
       if (data.role === 'Admin') navigate('/admin/dashboard')
