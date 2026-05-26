@@ -1,20 +1,27 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Calendar, Clock, ArrowRight, User } from 'lucide-react'
+import { Calendar, Clock, ArrowRight } from 'lucide-react'
 import { useBlog } from '../../context/BlogContext'
-
 import trcanje3 from '../../assets/trcanje31.jpeg'
  
 const categories = ['Sve', 'Fitness savjeti', 'Ishrana', 'Motivacija', 'Lifestyle']
-
+ 
+const formatDate = (post) => {
+  const d = post.publishedAt || post.createdAt
+  if (!d) return ''
+  return new Date(d).toLocaleDateString('bs-BA', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+ 
+const getImage = (post) => post.imageBase64 || post.imageUrl || null
+ 
 export default function Blog() {
   const { blogs: blogPosts } = useBlog()
   const [activeCategory, setActiveCategory] = useState('Sve')
-
+ 
   const getExcerpt = (content) => {
     return content.length > 150 ? content.substring(0, 150) + '...' : content
   }
-
+ 
   const getReadTime = (content) => {
     const words = content.split(/\s+/).length
     const minutes = Math.ceil(words / 200)
@@ -24,7 +31,7 @@ export default function Blog() {
   const filtered = activeCategory === 'Sve'
     ? blogPosts
     : blogPosts.filter((p) => p.category === activeCategory)
-
+ 
   const featuredPost = filtered.length > 0 ? filtered[0] : null
   const otherPosts = filtered.slice(1)
  
@@ -34,28 +41,21 @@ export default function Blog() {
       {/* Hero */}
       <section
         className="relative px-4 py-16 lg:py-24 overflow-hidden bg-cover bg-no-repeat min-h-[400px]"
-        style={{
-          backgroundImage: `url(${trcanje3})`,
-          backgroundPosition: 'center 20%',
-        }}
+        style={{ backgroundImage: `url(${trcanje3})`, backgroundPosition: 'center 20%' }}
       >
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 container mx-auto max-w-4xl text-center">
-
           <span className="inline-block mb-4 rounded-full bg-white/20 px-4 py-1.5 text-2xl font-medium text-white">
             Blog
           </span>
-
           <h1 className="mb-4 text-4xl font-bold text-white lg:text-5xl">
             Fitness savjeti & inspiracija
           </h1>
-
           <p className="text-lg text-white/90 mt-7">
-            Stručni savjeti, preporuke za trening i ishranu, motivacijski sadržaj i korisne smjernice koje će vam pomoći da 
-            ostvarite svoje ciljeve i izgradite zdraviji način života. Kroz naše članke dijelimo znanje, iskustva i 
+            Stručni savjeti, preporuke za trening i ishranu, motivacijski sadržaj i korisne smjernice koje će vam pomoći da
+            ostvarite svoje ciljeve i izgradite zdraviji način života. Kroz naše članke dijelimo znanje, iskustva i
             praktične savjete koji će vas podržati na putu prema boljoj formi, većoj energiji i dugoročnom očuvanju zdravlja.
           </p>
-
         </div>
       </section>
  
@@ -87,12 +87,9 @@ export default function Blog() {
           <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
             <div className="grid lg:grid-cols-2">
               <div className="flex items-center justify-center overflow-hidden bg-linear-to-br from-primary/20 to-accent/20 p-6 min-h-[200px]">
-                {featuredPost.image ? (
-                  <img
-                    src={featuredPost.image}
-                    alt={featuredPost.title}
-                    className="max-w-[300px] max-h-[300px] w-auto h-auto object-contain"
-                  />
+                {getImage(featuredPost) ? (
+                  <img src={getImage(featuredPost)} alt={featuredPost.title}
+                    className="max-w-[300px] max-h-[300px] w-auto h-auto object-contain" />
                 ) : (
                   <div className="text-center text-muted-foreground">
                     <div className="mx-auto mb-2 h-16 w-16 rounded-full bg-primary/20" />
@@ -104,18 +101,14 @@ export default function Blog() {
                 <span className="mb-3 inline-block w-fit rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
                   {featuredPost.category}
                 </span>
-                <h2 className="mb-3 text-2xl font-bold text-foreground lg:text-3xl">
-                  {featuredPost.title}
-                </h2>
+                <h2 className="mb-3 text-2xl font-bold text-foreground lg:text-3xl">{featuredPost.title}</h2>
                 <p className="mb-4 text-muted-foreground">{getExcerpt(featuredPost.content)}</p>
                 <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1"><Calendar size={14} />{featuredPost.date}</span>
+                  <span className="flex items-center gap-1"><Calendar size={14} />{formatDate(featuredPost)}</span>
                   <span className="flex items-center gap-1"><Clock size={14} />{getReadTime(featuredPost.content)}</span>
                 </div>
-                <Link
-                  to={`/blog/${featuredPost.id}`}
-                  className="inline-flex w-fit items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
-                >
+                <Link to={`/blog/${featuredPost.id}`}
+                  className="inline-flex w-fit items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity">
                   Pročitaj Članak <ArrowRight size={16} />
                 </Link>
               </div>
@@ -131,12 +124,9 @@ export default function Blog() {
           {otherPosts.map((post) => (
             <div key={post.id} className="flex flex-col rounded-lg border border-border bg-card shadow-sm overflow-hidden">
               <div className="flex items-center justify-center bg-linear-to-br from-primary/10 to-accent/10 p-4 min-h-[160px]">
-                {post.image ? (
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="max-w-[220px] max-h-[190px] w-auto h-auto object-contain"
-                  />
+                {getImage(post) ? (
+                  <img src={getImage(post)} alt={post.title}
+                    className="max-w-[220px] max-h-[190px] w-auto h-auto object-contain" />
                 ) : (
                   <div className="h-10 w-10 rounded-full bg-primary/20" />
                 )}
@@ -152,12 +142,10 @@ export default function Blog() {
               </div>
               <div className="flex items-center justify-between p-4 pt-3">
                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Calendar size={12} />{post.date}
+                  <Calendar size={12} />{formatDate(post)}
                 </span>
-                <Link
-                  to={`/blog/${post.id}`}
-                  className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
-                >
+                <Link to={`/blog/${post.id}`}
+                  className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
                   Čitaj <ArrowRight size={12} />
                 </Link>
               </div>
@@ -177,7 +165,6 @@ export default function Blog() {
           </button>
         </div>
       </section>
- 
     </div>
   )
 }
