@@ -8,7 +8,7 @@ test.describe('Member Dashboard Tests', () => {
         const loginPage = new LoginPage(page);
 
         await loginPage.goto();
-        await loginPage.login('member.test', 'Member123!');
+        await loginPage.login('lejla.goralija', 'Member123!');
     });
 
     test('Member dashboard loads', async ({ page }) => {

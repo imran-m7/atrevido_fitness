@@ -5,11 +5,13 @@ export class MemberDashboardPage {
         this.page = page;
 
         // Header
-        this.welcomeText = page.getByText(/Dobro došla nazad/i);
+        this.dashboardTitle = page.getByRole('heading', { name: /Dobro do.la nazad/i });
+        this.welcomeText = this.dashboardTitle;
 
         // Membership banners
-        this.pendingBanner = page.getByText(/Čekanje odobrenja/i);
-        this.activeBanner = page.getByText(/Aktivno članstvo/i);
+        this.membershipBanner = page.getByText(/Aktivno .lanstvo|.ekanje odobrenja/i);
+        this.pendingBanner = page.getByText(/.ekanje odobrenja/i);
+        this.activeBanner = page.getByText(/Aktivno .lanstvo/i);
 
         // Stats
         this.membershipCard = page.getByText('Plan');
@@ -17,12 +19,14 @@ export class MemberDashboardPage {
         this.totalTrainingCard = page.getByText('Ukupno treninga');
 
         // Sections
-        this.nextTrainingSection = page.getByText('Sljedeći trening');
-        this.upcomingReservationsSection = page.getByText('Nadolazeće rezervacije');
+        this.nextTrainingSection = page.getByRole('heading', { name: /Sljede.i trening/i });
+        this.upcomingReservationsSection = page.getByRole('heading', { name: /Nadolaze.e rezervacije/i });
+        this.quickActionsSection = page.getByRole('heading', { name: /Brze akcije/i });
 
-        // Buttons
-        this.bookTrainingButton = page.getByRole('link', { name: /Rezerviši trening/i });
-        this.quickBookButton = page.getByRole('link', { name: /Rezerviši trening/i });
+        // Buttons and links
+        this.bookTrainingButton = page.getByRole('link', { name: /Rezervi.i trening/i });
+        this.quickBookButton = this.bookTrainingButton;
+        this.bookTrainingNavLink = page.getByRole('link', { name: /Rezervacija treninga/i });
     }
 
     async goto() {
@@ -44,5 +48,9 @@ export class MemberDashboardPage {
 
     async clickBookTraining() {
         await this.bookTrainingButton.first().click();
+    }
+
+    async goToBookTraining() {
+        await this.bookTrainingNavLink.click();
     }
 }

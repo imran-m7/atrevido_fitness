@@ -28,7 +28,7 @@ test.describe('Authentication Tests', () => {
 
         await loginPage.goto();
 
-        await loginPage.login('admin.test', 'Admin123!');
+        await loginPage.login('dika.admin', 'Admin123!');
 
         await expect(page).toHaveURL(/admin/);
     });
@@ -38,7 +38,7 @@ test.describe('Authentication Tests', () => {
 
         await loginPage.goto();
 
-        await loginPage.login('member.test', 'Member123!');
+        await loginPage.login('lejla.goralija', 'Member123!');
 
         await expect(page).toHaveURL(/member/);
     });

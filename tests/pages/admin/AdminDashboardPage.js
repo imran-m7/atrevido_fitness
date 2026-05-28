@@ -5,19 +5,22 @@ export class AdminDashboardPage {
         this.page = page;
 
         // Header
-        this.welcomeTitle = page.getByRole('heading', { name: /dobrodošli nazad/i });
+        this.dashboardTitle = page.getByRole('heading', { name: /dobrodo.li nazad/i });
+        this.welcomeTitle = this.dashboardTitle;
 
         // Stats
-        this.statsCards = page.locator('.border.border-border.bg-card');
+        this.statsCards = page.getByText(/Ukupno .lanova|Dana.nji Treninzi|Prijave Ove Sedmice/i);
 
         // Quick actions
+        this.quickActionsSection = page.getByRole('heading', { name: /Brzo Upravljanje/i });
         this.quickActions = page.getByRole('link');
+        this.membersQuickAction = page.getByRole('link', { name: /Upravljanje .lanovima/i });
 
         // Sessions
-        this.sessionsSection = page.getByText('Nadolazeći Treninzi Danas');
+        this.sessionsSection = page.getByRole('heading', { name: /Nadolaze.i Treninzi Danas/i });
 
         // Challenges
-        this.challengesSection = page.getByText('Pregled Aktivnih Izazova');
+        this.challengesSection = page.getByRole('heading', { name: /Pregled Aktivnih Izazova/i });
     }
 
     async goto() {
@@ -32,6 +35,10 @@ export class AdminDashboardPage {
 
     async clickQuickAction(name) {
         await this.page.getByRole('link', { name: new RegExp(name, 'i') }).click();
+    }
+
+    async goToMembers() {
+        await this.membersQuickAction.click();
     }
 
     async expectStatsVisible() {

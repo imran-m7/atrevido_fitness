@@ -8,7 +8,7 @@ test.describe('Admin Dashboard Tests', () => {
         const loginPage = new LoginPage(page);
 
         await loginPage.goto();
-        await loginPage.login('admin.test', 'Admin123!');
+        await loginPage.login('dika.admin', 'Admin123!');
     });
 
     test('Admin dashboard loads', async ({ page }) => {
