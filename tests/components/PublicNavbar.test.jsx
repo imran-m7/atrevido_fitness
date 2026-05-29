@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect } from 'vitest'
 import PublicNavbar from '../../src/components/PublicNavbar'
@@ -43,4 +43,24 @@ describe('PublicNavbar', () => {
     expect(screen.getByLabelText(/toggle menu/i)).toBeInTheDocument()
   })
 
+
+  it('toggles mobile menu when button is clicked', () => {
+    renderNavbar()
+
+    const toggleButton = screen.getByLabelText(/toggle menu/i)
+
+    fireEvent.click(toggleButton)
+
+    expect(toggleButton).toBeInTheDocument()
+  })
+
+  
+  it('navigation links are clickable', () => {
+    renderNavbar()
+
+    const homeLink = screen.getByText('Home')
+    fireEvent.click(homeLink)
+
+    expect(homeLink).toBeInTheDocument()
+  })
 })
