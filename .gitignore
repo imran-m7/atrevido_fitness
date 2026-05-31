@@ -1,7 +1,23 @@
-node_modules
-dist
+# ----------------------
+# Node / Frontend
+# ----------------------
+node_modules/
+dist/
+coverage/
 .env
 .env.local
 .DS_Store
 .vscode/
-coverage/
+
+# ----------------------
+# .NET / Backend
+# ----------------------
+**/bin/
+**/obj/
+.vs/
+*.vsidx
+
+# App settings (backend)
+**/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Production.json
