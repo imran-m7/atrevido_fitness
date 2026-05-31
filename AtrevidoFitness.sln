@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35222.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtrevidoFitness.API", "AtrevidoFitness.API\AtrevidoFitness.API.csproj", "{4E50F073-4074-488D-8D2A-2751FF60502D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E50F073-4074-488D-8D2A-2751FF60502D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E50F073-4074-488D-8D2A-2751FF60502D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E50F073-4074-488D-8D2A-2751FF60502D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E50F073-4074-488D-8D2A-2751FF60502D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B0D74949-F558-45D8-BD00-CB7669A1CC23}
+	EndGlobalSection
+EndGlobal

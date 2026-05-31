@@ -6,3 +6,26 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+# ----------------------
+# Node / Frontend
+# ----------------------
+node_modules/
+dist/
+coverage/
+.env
+.env.local
+.DS_Store
+.vscode/
+
+# ----------------------
+# .NET / Backend
+# ----------------------
+**/bin/
+**/obj/
+.vs/
+*.vsidx
+
+# App settings (backend)
+**/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Production.json

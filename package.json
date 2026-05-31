@@ -1,14 +1,40 @@
 {
   "name": "atrevido_fitness",
   "version": "1.0.0",
-  "description": "updated later",
-  "main": "index.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "private": true,
+  "type": "module",
+
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage"
+  },
+
+  "dependencies": {
+    "lucide-react": "^0.383.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "recharts": "^3.8.1"
+  },
+
   "devDependencies": {
     "@playwright/test": "^1.60.0",
-    "@types/node": "^25.9.1"
+    "@types/node": "^25.9.1",
+
+    "@tailwindcss/vite": "^4.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^4.1.7",
+    "jsdom": "^28.1.0",
+    "tailwindcss": "^4.0.0",
+    "vite": "^5.4.1",
+    "vitest": "^4.1.7"
   }
 }
